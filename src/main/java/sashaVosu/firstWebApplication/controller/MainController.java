@@ -2,6 +2,7 @@ package sashaVosu.firstWebApplication.controller;
 
 import org.springframework.web.bind.annotation.*;
 import sashaVosu.firstWebApplication.domain.Tweet;
+import sashaVosu.firstWebApplication.pojo.Pojo;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,36 +26,17 @@ public class MainController {
     }
 
     @PostMapping
-    public String createTweet(@RequestBody String tweetText) throws IndexOutOfBoundsException{
-        if (tweetText.length() > 1 && tweetText.length() <= 140) {
+    public String createTweet(@RequestBody Pojo pojo) throws IndexOutOfBoundsException{
+        if (pojo.getTweetText().length() > 1 && pojo.getTweetText().length() <= 140) {
             Tweet newOne = new Tweet();
-            newOne.setText(tweetText);
+            newOne.setText(pojo.getTweetText());
+            newOne.setCreator(pojo.getCreator());
             newOne.setCreationData(LocalDateTime.now());
             tweetsList.add(newOne);
+
             return newOne.getText();
         }  else {
             throw new IndexOutOfBoundsException();
         }
     }
-
-   /* private List<String> tweetsList = new ArrayList<String>(){{
-        add("First application message");
-        add("Second application message");
-    }};
-
-    @GetMapping
-    private List<String> listOfTweets() {
-
-        return tweetsList;
-    }
-
-    @PostMapping
-    public String createTweet(@RequestBody String tweetText) throws IndexOutOfBoundsException{
-        if (tweetText.length() > 1 && tweetText.length() <= 140) {
-            tweetsList.add(tweetText);
-            return tweetText;
-        }  else {
-            throw new IndexOutOfBoundsException();
-        }
-    }*/
 }
