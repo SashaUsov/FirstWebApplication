@@ -9,22 +9,22 @@ import java.util.List;
 @RequestMapping("main")
 public class MainController {
 
-    private List<String> messageList = new ArrayList<String>(){{
+    private List<String> tweetsList = new ArrayList<String>(){{
         add("First application message");
         add("Second application message");
     }};
 
     @GetMapping
-    private List<String> main() {
+    private List<String> listOfTweets() {
 
-        return messageList;
+        return tweetsList;
     }
 
     @PostMapping
-    public String createMessage(@RequestBody String messageText) throws IndexOutOfBoundsException{
-        if (messageText.length() > 1 && messageText.length() <= 140) {
-            messageList.add(messageText);
-            return messageText;
+    public String createTweet(@RequestBody String tweetText) throws IndexOutOfBoundsException{
+        if (tweetText.length() > 1 && tweetText.length() <= 140) {
+            tweetsList.add(tweetText);
+            return tweetText;
         }  else {
             throw new IndexOutOfBoundsException();
         }
