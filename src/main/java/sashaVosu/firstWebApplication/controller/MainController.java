@@ -1,8 +1,11 @@
 package sashaVosu.firstWebApplication.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import sashaVosu.firstWebApplication.domain.Tweet;
-import sashaVosu.firstWebApplication.pojo.Pojo;
+import sashaVosu.firstWebApplication.exception.NotFoundException;
+import sashaVosu.firstWebApplication.pojo.PojoTweet;
+import sashaVosu.firstWebApplication.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,7 +15,10 @@ import java.util.List;
 @RequestMapping("main")
 public class MainController {
 
-    private List<Tweet> tweetsList = new ArrayList<Tweet>(){{
+    @Autowired
+    private UserService userService;
+
+    private List<Tweet> tweetsList = new ArrayList<Tweet>() {{
         Tweet first = new Tweet();
         first.setText("First message in object");
         first.setCreationData(LocalDateTime.now());
@@ -26,17 +32,24 @@ public class MainController {
     }
 
     @PostMapping
-    public String createTweet(@RequestBody Pojo pojo) throws IndexOutOfBoundsException{
-        if (pojo.getTweetText().length() > 1 && pojo.getTweetText().length() <= 140) {
-            Tweet newOne = new Tweet();
-            newOne.setText(pojo.getTweetText());
-            newOne.setCreator(pojo.getCreator());
-            newOne.setCreationData(LocalDateTime.now());
-            tweetsList.add(newOne);
+    public String createTweet(@RequestBody PojoTweet pojoTweet) throws IndexOutOfBoundsException, NotFoundException {
+        if (userService.getUser(pojoTweet.getCreator())) {
 
-            return newOne.getText();
-        }  else {
-            throw new IndexOutOfBoundsException();
+            if (pojoTweet.getTweetText().length() > 1 && pojoTweet.getTweetText().length() <= 140) {
+
+                Tweet newOne = new Tweet();
+                newOne.setText(pojoTweet.getTweetText());
+                newOne.setCreator(pojoTweet.getCreator());
+                newOne.setCreationData(LocalDateTime.now());
+                tweetsList.add(newOne);
+
+                return newOne.getText();
+
+            } else {
+                throw new IndexOutOfBoundsException();
+            }
+        } else {
+            throw  new NotFoundException();
         }
     }
 }

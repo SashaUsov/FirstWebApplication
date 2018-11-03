@@ -4,7 +4,7 @@ package sashaVosu.firstWebApplication.pojo;
 import javax.validation.constraints.NotNull;
 
 
-public class Pojo {
+public class PojoTweet {
     private String tweetText;
 
     @NotNull
