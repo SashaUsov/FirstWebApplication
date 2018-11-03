@@ -46,10 +46,10 @@ public class MainController {
                 return newOne.getText();
 
             } else {
-                throw new IndexOutOfBoundsException();
+                throw new IndexOutOfBoundsException("Not allowed length of nickname");
             }
         } else {
-            throw  new NotFoundException();
+            throw  new NotFoundException("User with this nickname not found");
         }
     }
 }

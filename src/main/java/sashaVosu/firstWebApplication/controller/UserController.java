@@ -1,10 +1,13 @@
 package sashaVosu.firstWebApplication.controller;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import sashaVosu.firstWebApplication.domain.User;
 import sashaVosu.firstWebApplication.exception.NotFoundException;
+import sashaVosu.firstWebApplication.exception.UserExistsException;
 import sashaVosu.firstWebApplication.pojo.PojoUser;
+import sashaVosu.firstWebApplication.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +15,9 @@ import java.util.List;
 @RestController
 @RequestMapping("user")
 public class UserController {
+
+    @Autowired
+    private UserService userService;
 
     private List<User> userList = new ArrayList<User>() {{
         User firstUser = new User();
@@ -40,31 +46,36 @@ public class UserController {
 
 
     @PostMapping
-    public String createUser(@RequestBody PojoUser pojoUser){
+    public String createUser(@RequestBody PojoUser pojoUser) throws UserExistsException{
 
-        if (pojoUser.getNickName().length() >= 3 && pojoUser.getNickName().length() <= 10) {
+        if (!userService.getUser(pojoUser.getNickName())) {
 
-            User user = new User();
-            user.setNickName(pojoUser.getNickName());
-            user.setFirstName(pojoUser.getFirstName());
-            user.setLastName(pojoUser.getLastName());
+            if (pojoUser.getNickName().length() >= 3 && pojoUser.getNickName().length() <= 10) {
 
-            if (!pojoUser.getEmail().isEmpty() && !pojoUser.getEmail().equals(null)) {
-                user.setEmail(pojoUser.getEmail());
+                User user = new User();
+                user.setNickName(pojoUser.getNickName());
+                user.setFirstName(pojoUser.getFirstName());
+                user.setLastName(pojoUser.getLastName());
+
+                if (!pojoUser.getEmail().isEmpty() && !pojoUser.getEmail().equals(null)) {
+                    user.setEmail(pojoUser.getEmail());
+
+                } else {
+                    return "Not valid email";
+                }
+
+                user.setGender(pojoUser.getGender());
+                user.setAge(pojoUser.getAge());
+                userList.add(user);
+
+                return user.getNickName();
 
             } else {
-                return "Not valid email";
+
+                return "Bad credentials";
             }
-
-            user.setGender(pojoUser.getGender());
-            user.setAge(pojoUser.getAge());
-            userList.add(user);
-
-            return user.getNickName();
-
-        } else {
-
-            return "Bad credentials";
         }
+
+        throw new UserExistsException("User with this nickname already exists");
     }
 }

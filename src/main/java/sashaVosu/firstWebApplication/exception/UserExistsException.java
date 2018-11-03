@@ -1,10 +1,11 @@
 package sashaVosu.firstWebApplication.exception;
 
-public class NotFoundException extends RuntimeException {
+
+public class UserExistsException extends RuntimeException{
 
     private String text;
 
-    public NotFoundException(String s) {
+    public UserExistsException(String s) {
         text = s ;
     }
 
