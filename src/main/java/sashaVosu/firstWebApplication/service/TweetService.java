@@ -1,7 +1,6 @@
 package sashaVosu.firstWebApplication.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetRequest;
 import sashaVosu.firstWebApplication.exception.NotAllowedLengthOfNicknameException;
@@ -35,14 +34,14 @@ public class TweetService {
         this.tweetsList = tweetsList;
     }
 
-    public Tweet tweetCreate(CreateTweetRequest req) {
-        if (userService.isUserExist(req.getCreator())) {
+    public Tweet tweetCreate(CreateTweetRequest req, String nickName, String userPassword) {
+        if (userService.isUserExist(nickName) && userService.isPasswordMatches(userPassword)) {
 
             if (req.getTweetText().length() > 1 && req.getTweetText().length() <= 140) {
 
                 Tweet newOne = new Tweet();
                 newOne.setText(req.getTweetText());
-                newOne.setCreator(req.getCreator());
+                newOne.setCreator(nickName);
                 newOne.setCreationData(LocalDateTime.now());
                 tweetsList.add(newOne);
 

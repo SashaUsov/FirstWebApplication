@@ -1,7 +1,6 @@
 package sashaVosu.firstWebApplication.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import sashaVosu.firstWebApplication.domain.User;
 import sashaVosu.firstWebApplication.domain.dto.CreateUserRequest;
 import sashaVosu.firstWebApplication.exception.NotAllowLengthOfPasswordException;
@@ -31,7 +30,7 @@ public class UserService {
         return userList;
     }
 
-    public User userCreate(@RequestBody CreateUserRequest req) {
+    public User userCreate(CreateUserRequest req) {
 
         if (!isUserExist(req.getNickName())
                 && !isEmailExist(req.getEmail()))
@@ -79,7 +78,7 @@ public class UserService {
         throw new UserExistsException("User with this nickname or email already exists");
     }
 
-    public boolean isUserExist(String nickName) {
+    boolean isUserExist(String nickName) {
 
         for (User user : getUserList()){
 
@@ -89,10 +88,19 @@ public class UserService {
         return false;
     }
 
-    public boolean isEmailExist(String email) {
+    private boolean isEmailExist(String email) {
 
         for (User user : getUserList()) {
             if (email.equals(user.getEmail())) return true;
+        }
+
+        return false;
+    }
+
+    boolean isPasswordMatches(String password) {
+
+        for (User user : getUserList()) {
+            if (password.equals(user.getPassword())) return true;
         }
 
         return false;

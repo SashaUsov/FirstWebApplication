@@ -6,20 +6,18 @@ import sashaVosu.firstWebApplication.domain.Error;
 import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetRequest;
 import sashaVosu.firstWebApplication.service.TweetService;
-import sashaVosu.firstWebApplication.service.UserService;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 
 @RestController
 @RequestMapping("tweet")
 public class TweetController {
 
-    private final UserService userService;
-
     private final TweetService tweetService;
 
-    public TweetController(UserService userService, TweetService tweetService) {
-        this.userService = userService;
+    public TweetController(TweetService tweetService) {
         this.tweetService = tweetService;
     }
 
@@ -30,9 +28,17 @@ public class TweetController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Tweet createTweet(@RequestBody CreateTweetRequest req) {
 
-        return tweetService.tweetCreate(req);
+    public Tweet createTweet(@RequestBody CreateTweetRequest req,
+                             @RequestHeader(value = "Authorization") String header)
+    {
+        String decode = new String(Base64.getDecoder().decode(header.split(" ")[1]), StandardCharsets.UTF_8);
+
+        String nickName = decode.split(":")[0];
+
+        String userPassword = decode.split(":")[1];
+
+        return tweetService.tweetCreate(req, nickName, userPassword);
     }
 
     @ExceptionHandler
