@@ -1,9 +1,6 @@
 package sashaVosu.firstWebApplication.domain.dto;
 
 
-import javax.validation.constraints.NotNull;
-
-
 public class CreateTweetRequest {
     private String tweetText;
 

@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class Tweet {
+
     private String text;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -14,6 +15,8 @@ public class Tweet {
 
     @NotNull
     private String creator;
+
+    private long id;
 
     public String getText() {
         return text;
@@ -37,5 +40,13 @@ public class Tweet {
 
     public void setCreator(String creator) {
         this.creator = creator;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

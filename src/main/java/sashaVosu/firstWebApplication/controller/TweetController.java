@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import sashaVosu.firstWebApplication.domain.Error;
 import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetRequest;
+import sashaVosu.firstWebApplication.domain.dto.DeleteTweetRequest;
 import sashaVosu.firstWebApplication.service.TweetService;
 
 import java.nio.charset.StandardCharsets;
@@ -39,6 +40,19 @@ public class TweetController {
         String userPassword = decode.split(":")[1];
 
         return tweetService.tweetCreate(req, nickName, userPassword);
+    }
+
+    @DeleteMapping
+    public void delete(@RequestBody DeleteTweetRequest id,
+                        @RequestHeader(value = "Authorization") String header)
+    {
+        String decode = new String(Base64.getDecoder().decode(header.split(" ")[1]), StandardCharsets.UTF_8);
+
+        String nickName = decode.split(":")[0];
+
+        String userPassword = decode.split(":")[1];
+
+        tweetService.del(id, nickName, userPassword);
     }
 
     @ExceptionHandler
