@@ -1,81 +1,41 @@
 package sashaVosu.firstWebApplication.controller;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import sashaVosu.firstWebApplication.domain.Error;
 import sashaVosu.firstWebApplication.domain.User;
-import sashaVosu.firstWebApplication.exception.NotFoundException;
-import sashaVosu.firstWebApplication.exception.UserExistsException;
-import sashaVosu.firstWebApplication.pojo.PojoUser;
+import sashaVosu.firstWebApplication.domain.dto.CreateUserRequest;
 import sashaVosu.firstWebApplication.service.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("user")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    private List<User> userList = new ArrayList<User>() {{
-        User firstUser = new User();
-        firstUser.setNickName("firstUser");
-        firstUser.setEmail("sashavosu@gmail.com");
-        firstUser.setFirstName("Sasha");
-        firstUser.setLastName("Vosu");
-        firstUser.setGender("male");
-        firstUser.setAge("28");
-        add(firstUser);
-    }};
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
 
     @GetMapping
-    private List<User> listOfUser() throws NotFoundException{
+    private List<User> listOfUser() {
 
-        return userList;
+        return userService.getUserList();
     }
-
-    public List<User> getUserList() {
-        return userList;
-    }
-
-    public void setUserList(List<User> userList) {
-        this.userList = userList;
-    }
-
 
     @PostMapping
-    public String createUser(@RequestBody PojoUser pojoUser) throws UserExistsException{
+    @ResponseStatus(HttpStatus.CREATED)
+    public User createUser(@RequestBody CreateUserRequest req) {
 
-        if (!userService.getUser(pojoUser.getNickName())) {
+        return userService.userCreate(req);
+    }
 
-            if (pojoUser.getNickName().length() >= 3 && pojoUser.getNickName().length() <= 10) {
-
-                User user = new User();
-                user.setNickName(pojoUser.getNickName());
-                user.setFirstName(pojoUser.getFirstName());
-                user.setLastName(pojoUser.getLastName());
-
-                if (!pojoUser.getEmail().isEmpty() && !pojoUser.getEmail().equals(null)) {
-                    user.setEmail(pojoUser.getEmail());
-
-                } else {
-                    return "Not valid email";
-                }
-
-                user.setGender(pojoUser.getGender());
-                user.setAge(pojoUser.getAge());
-                userList.add(user);
-
-                return user.getNickName();
-
-            } else {
-
-                return "Bad credentials";
-            }
-        }
-
-        throw new UserExistsException("User with this nickname already exists");
+    @ExceptionHandler
+    public Error handleException(Exception e) {
+        return new Error(e.getMessage());
     }
 }

@@ -1,10 +1,10 @@
-package sashaVosu.firstWebApplication.pojo;
+package sashaVosu.firstWebApplication.domain.dto;
 
 
 import javax.validation.constraints.NotNull;
 
 
-public class PojoTweet {
+public class CreateTweetRequest {
     private String tweetText;
 
     @NotNull

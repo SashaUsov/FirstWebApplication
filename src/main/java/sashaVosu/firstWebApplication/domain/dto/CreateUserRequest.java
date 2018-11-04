@@ -1,11 +1,11 @@
-package sashaVosu.firstWebApplication.pojo;
+package sashaVosu.firstWebApplication.domain.dto;
 
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-public class PojoUser {
+public class CreateUserRequest {
     @NotNull
     @NotEmpty
     private String nickName;
@@ -18,6 +18,10 @@ public class PojoUser {
     @NotEmpty
     @Email
     private String email;
+
+    @NotNull
+    @NotEmpty
+    private String password;
 
     private String gender;
 
@@ -69,5 +73,13 @@ public class PojoUser {
 
     public void setAge(String age) {
         this.age = age;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

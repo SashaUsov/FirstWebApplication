@@ -2,12 +2,12 @@ package sashaVosu.firstWebApplication.domain;
 
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class User {
     @NotNull
-    @NotEmpty
+    @NotBlank(message = "Username cannot be empty")
     private String nickName;
 
     private String firstName;
@@ -15,9 +15,13 @@ public class User {
     private String lastName;
 
     @NotNull
-    @NotEmpty
-    @Email
+    @NotBlank(message = "Email cannot be empty")
+    @Email(message = "Email is not correct")
     private String email;
+
+    @NotNull
+    @NotBlank(message = "Password cannot be empty")
+    private String password;
 
     private String gender;
 
@@ -69,5 +73,13 @@ public class User {
 
     public void setAge(String age) {
         this.age = age;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -1,15 +1,10 @@
 package sashaVosu.firstWebApplication.exception;
 
 
-public class UserExistsException extends RuntimeException{
+public class UserExistsException extends BuissnessExceptions{
 
-    private String text;
 
-    public UserExistsException(String s) {
-        text = s ;
-    }
-
-    public String toString() {
-        return  "UserExistsException : " + text;
+    public UserExistsException(String message) {
+        super(message);
     }
 }
