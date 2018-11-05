@@ -1,7 +1,7 @@
 package sashaVosu.firstWebApplication.exception;
 
 
-public class UserExistsException extends BuissnessExceptions{
+public class UserExistsException extends BusinessExceptions {
 
 
     public UserExistsException(String message) {

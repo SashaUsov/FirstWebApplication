@@ -1,80 +1,63 @@
 package sashaVosu.firstWebApplication.service;
 
 import org.springframework.stereotype.Service;
+import sashaVosu.firstWebApplication.converters.TweetConverters;
 import sashaVosu.firstWebApplication.domain.Tweet;
-import sashaVosu.firstWebApplication.domain.dto.CreateTweetRequest;
-import sashaVosu.firstWebApplication.domain.dto.DeleteTweetRequest;
-import sashaVosu.firstWebApplication.exception.NotAllowedLengthOfNicknameException;
+import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
+import sashaVosu.firstWebApplication.domain.dto.TweetModel;
+import sashaVosu.firstWebApplication.exception.NotAllowedLengthOfTextException;
 import sashaVosu.firstWebApplication.exception.TweetNotFoundException;
 import sashaVosu.firstWebApplication.exception.UserNotFoundException;
+import sashaVosu.firstWebApplication.repo.TweetRepo;
+import sashaVosu.firstWebApplication.repo.UserRepo;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class TweetService {
 
-    private long id = 2;
-
     private final UserService userService;
 
-    public TweetService(UserService userService) {
-        this.userService = userService;
-    }
+    private final TweetRepo tweetRepo;
 
-    private List<Tweet> tweetsList = new ArrayList<Tweet>() {{
-        Tweet first = new Tweet();
-        first.setText("First message in object");
-        first.setCreationData(LocalDateTime.now());
-        first.setId(1l);
-        add(first);
-    }};
+    private final UserRepo userRepo;
+
+    public TweetService(UserService userService, TweetRepo tweetRepo, UserRepo userRepo) {
+        this.userService = userService;
+        this.tweetRepo = tweetRepo;
+        this.userRepo = userRepo;
+    }
 
     public List<Tweet> getTweetsList() {
-        return tweetsList;
+
+        return tweetRepo.findAll();
     }
 
-    public void setTweetsList(List<Tweet> tweetsList) {
-        this.tweetsList = tweetsList;
-    }
+    public TweetModel tweetCreate(CreateTweetModel tweetModel, String nickName, String userPassword){
+        if (userRepo.existsByNickName(nickName) && userRepo.existsByPassword(userPassword)) {
+            if (tweetModel.getTweetText().length() >= 1 && tweetModel.getTweetText().length() <= 140) {
 
-    public Tweet tweetCreate(CreateTweetRequest req, String nickName, String userPassword) {
+                Tweet newTweet = TweetConverters.toEntity(tweetModel, nickName);
 
-        if (userService.isUserExist(nickName) && userService.isPasswordMatches(userPassword)) {
-
-            if (req.getTweetText().length() > 1 && req.getTweetText().length() <= 140) {
-
-                Tweet newOne = new Tweet();
-                newOne.setText(req.getTweetText());
-                newOne.setCreator(nickName);
-                newOne.setCreationData(LocalDateTime.now());
-                newOne.setId(id);
-                id++;
-                tweetsList.add(newOne);
-
-                return newOne;
+                return TweetConverters.toModel(tweetRepo.save(newTweet));
 
             } else {
 
-                throw new NotAllowedLengthOfNicknameException("Not allowed length of nickname");
+                throw new NotAllowedLengthOfTextException("Not allowed length of tweet");
             }
         } else {
 
-            throw new UserNotFoundException("User with this nickname not found");
+            throw new UserNotFoundException("User with this nickname or password not found");
         }
     }
 
-    public void del(DeleteTweetRequest id, String nickName, String userPassword) {
+    public void del(Long id, String nickName, String userPassword) {
+        if (userRepo.existsByNickName(nickName) && userRepo.existsByPassword(userPassword)) {
 
-        if (userService.isUserExist(nickName) && userService.isPasswordMatches(userPassword)) {
-
-            for (Tweet tweet : tweetsList) {
-                if (id.getId() == tweet.getId()) tweetsList.remove(tweet);
-            }
+            tweetRepo.deleteById(id);
         } else {
 
-            throw new TweetNotFoundException("Tweet with id: " + id.getId() + " not found");
+            throw new TweetNotFoundException("Tweet with id: " + id + " not found");
         }
     }
 }

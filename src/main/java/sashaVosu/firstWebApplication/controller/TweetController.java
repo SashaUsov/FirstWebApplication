@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sashaVosu.firstWebApplication.domain.Error;
 import sashaVosu.firstWebApplication.domain.Tweet;
-import sashaVosu.firstWebApplication.domain.dto.CreateTweetRequest;
-import sashaVosu.firstWebApplication.domain.dto.DeleteTweetRequest;
+import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
+import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.service.TweetService;
 
 import java.nio.charset.StandardCharsets;
@@ -30,8 +30,8 @@ public class TweetController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
 
-    public Tweet createTweet(@RequestBody CreateTweetRequest req,
-                             @RequestHeader(value = "Authorization") String header)
+    public TweetModel createTweet(@RequestBody CreateTweetModel model,
+                                  @RequestHeader(value = "Authorization") String header)
     {
         String decode = new String(Base64.getDecoder().decode(header.split(" ")[1]), StandardCharsets.UTF_8);
 
@@ -39,11 +39,11 @@ public class TweetController {
 
         String userPassword = decode.split(":")[1];
 
-        return tweetService.tweetCreate(req, nickName, userPassword);
+        return tweetService.tweetCreate(model, nickName, userPassword);
     }
 
-    @DeleteMapping
-    public void delete(@RequestBody DeleteTweetRequest id,
+    @DeleteMapping("{id}")
+    public void delete(@PathVariable("id") Long id,
                         @RequestHeader(value = "Authorization") String header)
     {
         String decode = new String(Base64.getDecoder().decode(header.split(" ")[1]), StandardCharsets.UTF_8);
@@ -57,6 +57,7 @@ public class TweetController {
 
     @ExceptionHandler
     public Error handleException(Exception e) {
+        e.printStackTrace();
         return new Error(e.getMessage());
     }
 }

@@ -5,13 +5,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sashaVosu.firstWebApplication.domain.Error;
 import sashaVosu.firstWebApplication.domain.User;
-import sashaVosu.firstWebApplication.domain.dto.CreateUserRequest;
+import sashaVosu.firstWebApplication.domain.dto.CreateUserModel;
+import sashaVosu.firstWebApplication.domain.dto.UserModel;
 import sashaVosu.firstWebApplication.service.UserService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("user")
+@RequestMapping("account")
 public class UserController {
 
     private final UserService userService;
@@ -29,9 +30,9 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public User createUser(@RequestBody CreateUserRequest req) {
+    public UserModel createUser(@RequestBody CreateUserModel model) {
 
-        return userService.userCreate(req);
+        return userService.userCreate(model);
     }
 
     @ExceptionHandler
