@@ -7,7 +7,5 @@ public interface UserRepo extends JpaRepository<User, String> {
 
     User findOneByNickNameAndEmail(String nickname, String email);
 
-    Boolean existsByPassword(String password);
-
-    Boolean existsByNickName(String nickName);
+    Boolean existsByNickNameAndPassword(String nickName, String password);
 }

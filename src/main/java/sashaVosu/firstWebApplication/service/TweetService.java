@@ -6,7 +6,7 @@ import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.exception.NotAllowedLengthOfTextException;
-import sashaVosu.firstWebApplication.exception.TweetNotFoundException;
+import sashaVosu.firstWebApplication.exception.NotAllowedAccessException;
 import sashaVosu.firstWebApplication.exception.UserNotFoundException;
 import sashaVosu.firstWebApplication.repo.TweetRepo;
 import sashaVosu.firstWebApplication.repo.UserRepo;
@@ -16,14 +16,11 @@ import java.util.List;
 @Service
 public class TweetService {
 
-    private final UserService userService;
-
     private final TweetRepo tweetRepo;
 
     private final UserRepo userRepo;
 
-    public TweetService(UserService userService, TweetRepo tweetRepo, UserRepo userRepo) {
-        this.userService = userService;
+    public TweetService(TweetRepo tweetRepo, UserRepo userRepo) {
         this.tweetRepo = tweetRepo;
         this.userRepo = userRepo;
     }
@@ -34,7 +31,8 @@ public class TweetService {
     }
 
     public TweetModel tweetCreate(CreateTweetModel tweetModel, String nickName, String userPassword){
-        if (userRepo.existsByNickName(nickName) && userRepo.existsByPassword(userPassword)) {
+
+        if (userRepo.existsByNickNameAndPassword(nickName, userPassword)) {
             if (tweetModel.getTweetText().length() >= 1 && tweetModel.getTweetText().length() <= 140) {
 
                 Tweet newTweet = TweetConverters.toEntity(tweetModel, nickName);
@@ -52,12 +50,13 @@ public class TweetService {
     }
 
     public void del(Long id, String nickName, String userPassword) {
-        if (userRepo.existsByNickName(nickName) && userRepo.existsByPassword(userPassword)) {
+        if (tweetRepo.existsByCreatorAndId(nickName, id) &&
+                userRepo.existsByNickNameAndPassword(nickName, userPassword)) {
 
             tweetRepo.deleteById(id);
         } else {
 
-            throw new TweetNotFoundException("Tweet with id: " + id + " not found");
+            throw new NotAllowedAccessException("Access to tweet with id: " + id + " is not allowed");
         }
     }
 }
