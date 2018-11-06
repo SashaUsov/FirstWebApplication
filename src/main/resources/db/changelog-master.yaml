@@ -1,0 +1,77 @@
+databaseChangeLog:
+
+- changeSet:
+    id: 1
+    author: sasha_vosu
+    changes:
+
+    - createTable:
+        tableName: tweet
+        columns:
+          - column:
+             name: text
+             type: varchar(140)
+          - column:
+             name: id
+             type: bigint
+             autoIncrement: true
+             constraints:
+                primaryKey: true
+                nullable: false
+          - column:
+             name: creator
+             type: varchar(10)
+          - column:
+             name: creation_data
+             type: timestamp
+
+- changeSet:
+    id: 2
+    author: sasha_vosu
+    changes:
+
+    - createTable:
+        tableName: account
+        columns:
+          - column:
+             name: nick_name
+             type: varchar(10)
+          - column:
+             name: id
+             type: bigint
+             autoIncrement: true
+             constraints:
+                primaryKey: true
+                nullable: false
+          - column:
+             name: email
+             type: varchar
+          - column:
+             name: password
+             type: varchar
+          - column:
+             name: first_name
+             type: varchar
+          - column:
+             name: last_name
+             type: varchar
+          - column:
+             name: age
+             type: varchar
+          - column:
+             name: gender
+             type: varchar
+
+changeSet:
+  id: 3
+  author: sasha_vosu
+  changes:
+  - createSequence:
+      cycle: true
+      incrementBy: 1
+      maxValue: 1000
+      minValue: 1
+      ordered: true
+      schemaName: public
+      sequenceName: hibernate_sequence
+      startValue: 1
