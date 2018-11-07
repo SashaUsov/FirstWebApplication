@@ -8,6 +8,7 @@ import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.exception.NotAllowedLengthOfTextException;
 import sashaVosu.firstWebApplication.repo.TweetRepo;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +40,7 @@ public class TweetService {
             }
     }
 
+    @Transactional
     public void del(Long id, String nickName) {
 
             tweetRepo.deleteByIdAndCreator(id, nickName);
