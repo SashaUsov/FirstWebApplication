@@ -25,6 +25,11 @@ public class TweetController {
         return tweetService.getTweetsList();
     }
 
+    @GetMapping("{id}")
+    public TweetModel getOneTweet(@PathVariable("id") Long id){
+        return tweetService.getOne(id);
+    }
+
     @PostMapping("add")
     @ResponseStatus(HttpStatus.CREATED)
     public TweetModel createTweet(@RequestBody CreateTweetModel model)

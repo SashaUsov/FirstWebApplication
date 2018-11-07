@@ -56,4 +56,9 @@ public class TweetService {
 
         return TweetConverters.toModel(tweetRepo.save(toUpdate));
     }
+
+    public TweetModel getOne(Long id) {
+
+        return TweetConverters.toModel(tweetRepo.findOneById(id));
+    }
 }
