@@ -46,4 +46,14 @@ public class TweetService {
             tweetRepo.deleteByIdAndCreator(id, nickName);
 
     }
+
+    public TweetModel update(CreateTweetModel model,
+                             String currentPrincipalName, Long id)
+    {
+        Tweet toUpdate = tweetRepo.findOneByCreatorAndId(currentPrincipalName, id);
+
+        toUpdate.setText(model.getTweetText());
+
+        return TweetConverters.toModel(tweetRepo.save(toUpdate));
+    }
 }

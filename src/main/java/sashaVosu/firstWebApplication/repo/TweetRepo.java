@@ -6,4 +6,6 @@ import sashaVosu.firstWebApplication.domain.Tweet;
 public interface TweetRepo extends JpaRepository<Tweet, Long> {
 
     void deleteByIdAndCreator(Long id, String creator);
+
+    Tweet findOneByCreatorAndId(String creator, Long id);
 }

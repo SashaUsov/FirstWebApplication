@@ -34,6 +34,15 @@ public class TweetController {
         return tweetService.tweetCreate(model, currentPrincipalName);
     }
 
+    @PutMapping("{id}")
+    public TweetModel updateTweet(@PathVariable("id") Long id,
+                                  @RequestBody CreateTweetModel model)
+    {
+        String currentPrincipalName = GetNickName.getNickName();
+
+        return tweetService.update(model, currentPrincipalName, id);
+    }
+
     @DeleteMapping("{id}")
     public void delete(@PathVariable("id") Long id)
     {
