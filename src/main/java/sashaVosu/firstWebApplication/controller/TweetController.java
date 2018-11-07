@@ -3,13 +3,11 @@ package sashaVosu.firstWebApplication.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sashaVosu.firstWebApplication.domain.Error;
-import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
+import sashaVosu.firstWebApplication.service.GetNickName;
 import sashaVosu.firstWebApplication.service.TweetService;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
 
 @RestController
@@ -22,37 +20,26 @@ public class TweetController {
         this.tweetService = tweetService;
     }
 
-    @GetMapping
-    private List<Tweet> listOfTweets() {
+    @GetMapping("list")
+    private List<TweetModel> listOfTweets() {
         return tweetService.getTweetsList();
     }
 
-    @PostMapping
+    @PostMapping("add")
     @ResponseStatus(HttpStatus.CREATED)
-
-    public TweetModel createTweet(@RequestBody CreateTweetModel model,
-                                  @RequestHeader(value = "Authorization") String header)
+    public TweetModel createTweet(@RequestBody CreateTweetModel model)
     {
-        String decode = new String(Base64.getDecoder().decode(header.split(" ")[1]), StandardCharsets.UTF_8);
+        String currentPrincipalName = GetNickName.getNickName();
 
-        String nickName = decode.split(":")[0];
-
-        String userPassword = decode.split(":")[1];
-
-        return tweetService.tweetCreate(model, nickName, userPassword);
+        return tweetService.tweetCreate(model, currentPrincipalName);
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable("id") Long id,
-                        @RequestHeader(value = "Authorization") String header)
+    public void delete(@PathVariable("id") Long id)
     {
-        String decode = new String(Base64.getDecoder().decode(header.split(" ")[1]), StandardCharsets.UTF_8);
+        String currentPrincipalName = GetNickName.getNickName();
 
-        String nickName = decode.split(":")[0];
-
-        String userPassword = decode.split(":")[1];
-
-        tweetService.del(id, nickName, userPassword);
+        tweetService.del(id, currentPrincipalName);
     }
 
     @ExceptionHandler

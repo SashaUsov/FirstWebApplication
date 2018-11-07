@@ -9,6 +9,7 @@ import sashaVosu.firstWebApplication.exception.UserExistsException;
 import sashaVosu.firstWebApplication.repo.UserRepo;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -19,8 +20,9 @@ public class UserService {
         this.userRepo = userRepo;
     }
 
-    public List<User> getUserList() {
-        return userRepo.findAll();
+    public List<UserModel> getUserList() {
+        return userRepo.findAll().stream()
+                .map(UserConverters::toModel).collect(Collectors.toList());
     }
 
     public UserModel userCreate(CreateUserModel model) {

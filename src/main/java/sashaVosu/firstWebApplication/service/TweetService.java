@@ -6,33 +6,27 @@ import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.exception.NotAllowedLengthOfTextException;
-import sashaVosu.firstWebApplication.exception.NotAllowedAccessException;
-import sashaVosu.firstWebApplication.exception.UserNotFoundException;
 import sashaVosu.firstWebApplication.repo.TweetRepo;
-import sashaVosu.firstWebApplication.repo.UserRepo;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TweetService {
 
     private final TweetRepo tweetRepo;
 
-    private final UserRepo userRepo;
-
-    public TweetService(TweetRepo tweetRepo, UserRepo userRepo) {
+    public TweetService(TweetRepo tweetRepo) {
         this.tweetRepo = tweetRepo;
-        this.userRepo = userRepo;
     }
 
-    public List<Tweet> getTweetsList() {
+    public List<TweetModel> getTweetsList() {
 
-        return tweetRepo.findAll();
+        return tweetRepo.findAll().stream().map(TweetConverters::toModel).collect(Collectors.toList());
     }
 
-    public TweetModel tweetCreate(CreateTweetModel tweetModel, String nickName, String userPassword){
+    public TweetModel tweetCreate(CreateTweetModel tweetModel, String nickName){
 
-        if (userRepo.existsByNickNameAndPassword(nickName, userPassword)) {
             if (tweetModel.getTweetText().length() >= 1 && tweetModel.getTweetText().length() <= 140) {
 
                 Tweet newTweet = TweetConverters.toEntity(tweetModel, nickName);
@@ -43,20 +37,11 @@ public class TweetService {
 
                 throw new NotAllowedLengthOfTextException("Not allowed length of tweet");
             }
-        } else {
-
-            throw new UserNotFoundException("User with this nickname or password not found");
-        }
     }
 
-    public void del(Long id, String nickName, String userPassword) {
-        if (tweetRepo.existsByCreatorAndId(nickName, id) &&
-                userRepo.existsByNickNameAndPassword(nickName, userPassword)) {
+    public void del(Long id, String nickName) {
 
-            tweetRepo.deleteById(id);
-        } else {
+            tweetRepo.deleteByIdAndCreator(id, nickName);
 
-            throw new NotAllowedAccessException("Access to tweet with id: " + id + " is not allowed");
-        }
     }
 }

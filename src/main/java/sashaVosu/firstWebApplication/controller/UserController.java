@@ -4,7 +4,6 @@ package sashaVosu.firstWebApplication.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sashaVosu.firstWebApplication.domain.Error;
-import sashaVosu.firstWebApplication.domain.User;
 import sashaVosu.firstWebApplication.domain.dto.CreateUserModel;
 import sashaVosu.firstWebApplication.domain.dto.UserModel;
 import sashaVosu.firstWebApplication.service.UserService;
@@ -22,13 +21,13 @@ public class UserController {
     }
 
 
-    @GetMapping
-    private List<User> listOfUser() {
+    @GetMapping("list")
+    private List<UserModel> listOfUser() {
 
         return userService.getUserList();
     }
 
-    @PostMapping
+    @PostMapping("create")
     @ResponseStatus(HttpStatus.CREATED)
     public UserModel createUser(@RequestBody CreateUserModel model) {
 
@@ -37,6 +36,7 @@ public class UserController {
 
     @ExceptionHandler
     public Error handleException(Exception e) {
+        e.printStackTrace();
         return new Error(e.getMessage());
     }
 }

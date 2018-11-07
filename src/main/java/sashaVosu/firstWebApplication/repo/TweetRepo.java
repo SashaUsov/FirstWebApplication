@@ -5,5 +5,5 @@ import sashaVosu.firstWebApplication.domain.Tweet;
 
 public interface TweetRepo extends JpaRepository<Tweet, Long> {
 
-    Boolean existsByCreatorAndId(String nickName, Long id);
+    void deleteByIdAndCreator(Long id, String creator);
 }

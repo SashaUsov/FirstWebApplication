@@ -1,5 +1,7 @@
 package sashaVosu.firstWebApplication.converters;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import sashaVosu.firstWebApplication.domain.User;
 import sashaVosu.firstWebApplication.domain.dto.CreateUserModel;
 import sashaVosu.firstWebApplication.domain.dto.UserModel;
@@ -7,9 +9,12 @@ import sashaVosu.firstWebApplication.domain.dto.UserModel;
 public class UserConverters {
 
     public static User toEntity(CreateUserModel model) {
+
+        final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
+
         User newUser = new User();
         newUser.setNickName(model.getNickName());
-        newUser.setPassword(model.getPassword());
+        newUser.setPassword(PASSWORD_ENCODER.encode(model.getPassword()));
         newUser.setFirstName(model.getFirstName());
         newUser.setLastName(model.getLastName());
         newUser.setEmail(model.getEmail());
