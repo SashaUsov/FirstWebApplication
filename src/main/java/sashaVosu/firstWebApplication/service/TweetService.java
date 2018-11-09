@@ -40,7 +40,6 @@ public class TweetService {
             }
     }
 
-    @Transactional
     public void del(Long id, String nickName) {
 
             tweetRepo.deleteByIdAndCreator(id, nickName);

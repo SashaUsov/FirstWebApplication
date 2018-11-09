@@ -34,6 +34,7 @@ public class UserConverters {
         model.setId(user.getId());
         model.setGender(user.getGender());
         model.setAge(user.getAge());
+        model.setEmail(user.getEmail());
 
         return model;
     }

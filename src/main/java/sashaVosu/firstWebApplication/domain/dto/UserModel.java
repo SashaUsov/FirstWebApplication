@@ -16,4 +16,6 @@ public class UserModel {
     private String gender;
 
     private String age;
+
+    private String email;
 }

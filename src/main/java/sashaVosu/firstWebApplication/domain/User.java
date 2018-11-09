@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "account")
 public class User {
 
-    @Column(name = "id", updatable=false, nullable=false)
+    @Column(name = "user_id", updatable=false, nullable=false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
