@@ -1,0 +1,19 @@
+databaseChangeLog:
+
+    - changeSet:
+        id: 1
+        author: sasha_vosu
+        changes:
+
+        - createTable:
+            tableName: user_tweet_likes
+            columns:
+              - column:
+                 name: tweet_id
+                 type: bigint
+              - column:
+                 name: user_id
+                 type: bigint
+              - column:
+                 name: likes
+                 type: boolean

@@ -17,6 +17,7 @@ public class ProfileService {
         this.tweetRepo = tweetRepo;
     }
 
+//get list of all tweets by specific user id
     public List<TweetModel> getListOfMyTweet(String currentPrincipalName) {
 
         return tweetRepo.findAllByCreator(currentPrincipalName).stream()

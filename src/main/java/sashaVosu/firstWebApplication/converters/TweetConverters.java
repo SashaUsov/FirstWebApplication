@@ -3,10 +3,13 @@ package sashaVosu.firstWebApplication.converters;
 import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
+import sashaVosu.firstWebApplication.service.UserTweetLikesService;
 
 import java.time.LocalDateTime;
 
 public class TweetConverters {
+
+//method helper. convert tweet dto class to tweet entity
     public static Tweet toEntity(CreateTweetModel tweetModel, String nickName) {
 
         Tweet newTweet = new Tweet();
@@ -15,9 +18,11 @@ public class TweetConverters {
         newTweet.setCreator(nickName);
         newTweet.setCreationData(LocalDateTime.now());
 
+
         return newTweet;
     }
 
+//method helper. convert tweet entity to tweet dto model
     public static TweetModel toModel(Tweet tweet) {
 
         TweetModel model = new TweetModel();
@@ -26,6 +31,7 @@ public class TweetConverters {
         model.setCreator(tweet.getCreator());
         model.setId(tweet.getId());
         model.setText(tweet.getText());
+
 
         return model;
     }

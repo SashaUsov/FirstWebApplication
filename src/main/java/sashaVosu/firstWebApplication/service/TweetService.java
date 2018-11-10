@@ -21,11 +21,13 @@ public class TweetService {
         this.tweetRepo = tweetRepo;
     }
 
+//return list of all tweets
     public List<TweetModel> getTweetsList() {
 
         return tweetRepo.findAll().stream().map(TweetConverters::toModel).collect(Collectors.toList());
     }
 
+//create new tweet
     public TweetModel tweetCreate(CreateTweetModel tweetModel, String nickName){
 
             if (tweetModel.getTweetText().length() >= 1 && tweetModel.getTweetText().length() <= 140) {
@@ -40,12 +42,14 @@ public class TweetService {
             }
     }
 
+//delete one tweet by tweet id
     public void del(Long id, String nickName) {
 
             tweetRepo.deleteByIdAndCreator(id, nickName);
 
     }
 
+//update tweet by tweet id
     public TweetModel update(CreateTweetModel model,
                              String currentPrincipalName, Long id)
     {
@@ -56,6 +60,7 @@ public class TweetService {
         return TweetConverters.toModel(tweetRepo.save(toUpdate));
     }
 
+//get one tweet by tweet id
     public TweetModel getOne(Long id) {
 
         return TweetConverters.toModel(tweetRepo.findOneById(id));

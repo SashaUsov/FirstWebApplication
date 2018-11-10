@@ -4,9 +4,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sashaVosu.firstWebApplication.domain.Error;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
+import sashaVosu.firstWebApplication.domain.dto.CreateUserTweetLikesModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.service.GetNickNameUtils;
 import sashaVosu.firstWebApplication.service.TweetService;
+import sashaVosu.firstWebApplication.service.UserTweetLikesService;
 
 import java.util.List;
 
@@ -16,10 +18,14 @@ public class TweetController {
 
     private final TweetService tweetService;
 
-    public TweetController(TweetService tweetService) {
+    private final UserTweetLikesService userTweetLikesService;
+
+    public TweetController(TweetService tweetService, UserTweetLikesService userTweetLikesService) {
         this.tweetService = tweetService;
+        this.userTweetLikesService = userTweetLikesService;
     }
 
+//return list of all tweets
     @GetMapping("list")
     private List<TweetModel> listOfTweets() {
         return tweetService.getTweetsList();
@@ -30,6 +36,7 @@ public class TweetController {
         return tweetService.getOne(id);
     }
 
+//create new tweet
     @PostMapping("add")
     @ResponseStatus(HttpStatus.CREATED)
     public TweetModel createTweet(@RequestBody CreateTweetModel model)
@@ -39,6 +46,7 @@ public class TweetController {
         return tweetService.tweetCreate(model, currentPrincipalName);
     }
 
+//update one tweet by tweet id
     @PutMapping("{id}")
     public TweetModel updateTweet(@PathVariable("id") Long id,
                                   @RequestBody CreateTweetModel model)
@@ -48,12 +56,22 @@ public class TweetController {
         return tweetService.update(model, currentPrincipalName, id);
     }
 
+//delete one tweet by tweet id
     @DeleteMapping("{id}")
     public void delete(@PathVariable("id") Long id)
     {
         String currentPrincipalName = GetNickNameUtils.getNickName();
 
         tweetService.del(id, currentPrincipalName);
+    }
+//put like to tweet. if successful returns true
+    @PutMapping("like")
+    public boolean putLike(@RequestBody CreateUserTweetLikesModel userTweetLikes)
+    {
+        String nickName = GetNickNameUtils.getNickName();
+
+        return userTweetLikesService.like(userTweetLikes, nickName);
+
     }
 
     @ExceptionHandler

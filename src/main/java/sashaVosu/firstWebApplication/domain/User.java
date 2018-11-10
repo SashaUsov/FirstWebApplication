@@ -22,7 +22,7 @@ public class User {
 
     @Column(name = "nick_name")
     @NotNull
-    @NotBlank(message = "Username cannot be empty")
+    @NotBlank(message = "Nickname cannot be empty")
     private String nickName;
 
     @Column(name = "email")

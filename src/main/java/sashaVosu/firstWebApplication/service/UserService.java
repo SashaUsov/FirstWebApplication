@@ -20,11 +20,13 @@ public class UserService {
         this.userRepo = userRepo;
     }
 
+//return list of all users
     public List<UserModel> getUserList() {
         return userRepo.findAll().stream()
                 .map(UserConverters::toModel).collect(Collectors.toList());
     }
 
+//create new user
     public UserModel userCreate(CreateUserModel model) {
 
         User userFromDb = userRepo.findOneByNickNameAndEmail(model.getNickName(), model.getEmail());

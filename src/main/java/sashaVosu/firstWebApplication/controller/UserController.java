@@ -20,13 +20,13 @@ public class UserController {
         this.userService = userService;
     }
 
-
+//return list of all users
     @GetMapping("list")
     private List<UserModel> listOfUser() {
 
         return userService.getUserList();
     }
-
+//create new user
     @PostMapping("create")
     @ResponseStatus(HttpStatus.CREATED)
     public UserModel createUser(@RequestBody CreateUserModel model) {

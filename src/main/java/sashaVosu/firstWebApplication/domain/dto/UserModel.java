@@ -1,8 +1,11 @@
 package sashaVosu.firstWebApplication.domain.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+//dto class to create user model from entity and give back to frontend
+@Getter
+@Setter
 public class UserModel {
 
     private Long id;
@@ -18,4 +21,5 @@ public class UserModel {
     private String age;
 
     private String email;
+
 }

@@ -7,6 +7,7 @@ public class GetNickNameUtils {
 
     public static String getNickName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         return authentication.getName();
     }
 }

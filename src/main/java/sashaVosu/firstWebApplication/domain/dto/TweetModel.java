@@ -1,10 +1,13 @@
 package sashaVosu.firstWebApplication.domain.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Data
+//dto class to create tweet model from entity and give back to frontend
+@Getter
+@Setter
 public class TweetModel {
 
     private String text;
@@ -14,4 +17,5 @@ public class TweetModel {
     private String  creator;
 
     private LocalDateTime creationData;
+
 }

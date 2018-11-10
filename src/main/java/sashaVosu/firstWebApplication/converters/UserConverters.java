@@ -8,6 +8,7 @@ import sashaVosu.firstWebApplication.domain.dto.UserModel;
 
 public class UserConverters {
 
+//method helper. convert user dto class to user entity
     public static User toEntity(CreateUserModel model) {
 
         final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
@@ -24,6 +25,7 @@ public class UserConverters {
         return newUser;
     }
 
+//method helper. convert user entity to user dto model
     public static UserModel toModel(User user) {
 
         UserModel model = new UserModel();
