@@ -28,7 +28,7 @@ public class Tweet {
     @NotNull
     private String creator;
 
-    @Column(name = "tweet_id", updatable=false, nullable=false)
+    @Column(name = "id", updatable=false, nullable=false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

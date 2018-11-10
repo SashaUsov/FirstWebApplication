@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import sashaVosu.firstWebApplication.domain.Error;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
-import sashaVosu.firstWebApplication.service.GetNickName;
+import sashaVosu.firstWebApplication.service.GetNickNameUtils;
 import sashaVosu.firstWebApplication.service.TweetService;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class TweetController {
     @ResponseStatus(HttpStatus.CREATED)
     public TweetModel createTweet(@RequestBody CreateTweetModel model)
     {
-        String currentPrincipalName = GetNickName.getNickName();
+        String currentPrincipalName = GetNickNameUtils.getNickName();
 
         return tweetService.tweetCreate(model, currentPrincipalName);
     }
@@ -43,7 +43,7 @@ public class TweetController {
     public TweetModel updateTweet(@PathVariable("id") Long id,
                                   @RequestBody CreateTweetModel model)
     {
-        String currentPrincipalName = GetNickName.getNickName();
+        String currentPrincipalName = GetNickNameUtils.getNickName();
 
         return tweetService.update(model, currentPrincipalName, id);
     }
@@ -51,7 +51,7 @@ public class TweetController {
     @DeleteMapping("{id}")
     public void delete(@PathVariable("id") Long id)
     {
-        String currentPrincipalName = GetNickName.getNickName();
+        String currentPrincipalName = GetNickNameUtils.getNickName();
 
         tweetService.del(id, currentPrincipalName);
     }
