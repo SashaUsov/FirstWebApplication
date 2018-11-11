@@ -70,5 +70,10 @@ public class UserService {
 
         userRepo.deleteOneById(userId);
     }
+
+    public UserModel getOneUser(Long id) {
+
+        return UserConverters.toModel(userRepo.findOneById(id));
+    }
 }
 

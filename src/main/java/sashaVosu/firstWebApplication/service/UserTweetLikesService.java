@@ -3,7 +3,6 @@ package sashaVosu.firstWebApplication.service;
 import org.springframework.stereotype.Service;
 import sashaVosu.firstWebApplication.converters.TweetConverters;
 import sashaVosu.firstWebApplication.converters.UserConverters;
-import sashaVosu.firstWebApplication.domain.User;
 import sashaVosu.firstWebApplication.domain.UserTweetLikes;
 import sashaVosu.firstWebApplication.domain.dto.CreateUserTweetLikesModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;

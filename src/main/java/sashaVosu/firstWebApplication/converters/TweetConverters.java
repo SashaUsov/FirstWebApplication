@@ -3,7 +3,6 @@ package sashaVosu.firstWebApplication.converters;
 import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
-import sashaVosu.firstWebApplication.service.UserTweetLikesService;
 
 import java.time.LocalDateTime;
 

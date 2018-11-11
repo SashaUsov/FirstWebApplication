@@ -34,6 +34,12 @@ public class UserController {
         return userService.userCreate(model);
     }
 
+    @GetMapping("{id}")
+    public UserModel getOneUser(@PathVariable("id") Long id) {
+
+        return userService.getOneUser(id);
+    }
+
     @ExceptionHandler
     public Error handleException(Exception e) {
         e.printStackTrace();
