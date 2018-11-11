@@ -38,9 +38,6 @@ public class TweetService {
                 .collect(Collectors.toList());
 
         return tweetIdList.stream().map(a -> getOne(a, nickName)).collect(Collectors.toList());
-//        return tweetRepo.findAll().stream()
-//                .map(TweetConverters::toModel)
-//                .collect(Collectors.toList());
     }
 
 //create new tweet
