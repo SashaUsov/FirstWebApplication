@@ -7,8 +7,8 @@ import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.exception.NotAllowedLengthOfTextException;
 import sashaVosu.firstWebApplication.repo.TweetRepo;
+import sashaVosu.firstWebApplication.repo.UserTweetLikesRepo;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,20 +17,38 @@ public class TweetService {
 
     private final TweetRepo tweetRepo;
 
-    public TweetService(TweetRepo tweetRepo) {
+    private final UserTweetLikesRepo userTweetLikesRepo;
+
+    private final UserTweetLikesService tweetLikesService;
+
+    public TweetService(TweetRepo tweetRepo,
+                        UserTweetLikesRepo userTweetLikesRepo,
+                        UserTweetLikesService tweetLikesService)
+    {
         this.tweetRepo = tweetRepo;
+        this.userTweetLikesRepo = userTweetLikesRepo;
+        this.tweetLikesService = tweetLikesService;
     }
 
 //return list of all tweets
-    public List<TweetModel> getTweetsList() {
+    public List<TweetModel> getTweetsList(String nickName) {
 
-        return tweetRepo.findAll().stream().map(TweetConverters::toModel).collect(Collectors.toList());
+        List<Long> tweetIdList = tweetRepo.findAll().stream()
+                .map(Tweet::getId)
+                .collect(Collectors.toList());
+
+        return tweetIdList.stream().map(a -> getOne(a, nickName)).collect(Collectors.toList());
+//        return tweetRepo.findAll().stream()
+//                .map(TweetConverters::toModel)
+//                .collect(Collectors.toList());
     }
 
 //create new tweet
     public TweetModel tweetCreate(CreateTweetModel tweetModel, String nickName){
 
-            if (tweetModel.getTweetText().length() >= 1 && tweetModel.getTweetText().length() <= 140) {
+            if (tweetModel.getTweetText().length() >= 1
+                    && tweetModel.getTweetText().length() <= 140)
+            {
 
                 Tweet newTweet = TweetConverters.toEntity(tweetModel, nickName);
 
@@ -61,8 +79,19 @@ public class TweetService {
     }
 
 //get one tweet by tweet id
-    public TweetModel getOne(Long id) {
+    public TweetModel getOne(Long tweetId, String nickName) {
 
-        return TweetConverters.toModel(tweetRepo.findOneById(id));
+        TweetModel model = TweetConverters.toModel(tweetRepo.findOneById(tweetId));
+
+        Long likeCount = userTweetLikesRepo.findAllByTweetId(tweetId).stream().count();
+
+        model.setLikeCount(likeCount);
+
+        boolean iLikeIt = tweetLikesService.whoLikeTweet(tweetId).stream()
+                .anyMatch(a -> nickName.equals(a.getNickName()));
+
+        model.setiLikeIt(iLikeIt);
+
+        return model;
     }
 }

@@ -14,8 +14,21 @@ public class TweetModel {
 
     private Long id;
 
-    private String  creator;
+    private String creator;
 
     private LocalDateTime creationData;
 
+    private Long likeCount;
+
+    private Boolean iLikeIt;
+
+    public TweetModel() {
+        iLikeIt = Boolean.FALSE;
+        likeCount = 0L;
+    }
+
+
+    public void setiLikeIt(Boolean iLikeIt) {
+        this.iLikeIt = iLikeIt;
+    }
 }

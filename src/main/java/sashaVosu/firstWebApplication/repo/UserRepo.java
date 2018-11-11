@@ -2,8 +2,11 @@ package sashaVosu.firstWebApplication.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import sashaVosu.firstWebApplication.domain.User;
+import sashaVosu.firstWebApplication.domain.dto.UserModel;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
+import java.util.List;
 
 public interface UserRepo extends JpaRepository<User, String> {
 
@@ -13,5 +16,7 @@ public interface UserRepo extends JpaRepository<User, String> {
 
     @Transactional
     void deleteOneById(Long userId);
+
+    List<User> findAllByIdIn(Collection<Long> id);
 }
 

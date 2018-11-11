@@ -28,12 +28,18 @@ public class TweetController {
 //return list of all tweets
     @GetMapping("list")
     private List<TweetModel> listOfTweets() {
-        return tweetService.getTweetsList();
+
+        String nickName = GetNickNameUtils.getNickName();
+
+        return tweetService.getTweetsList(nickName);
     }
 
     @GetMapping("{id}")
     public TweetModel getOneTweet(@PathVariable("id") Long id){
-        return tweetService.getOne(id);
+
+        String nickName = GetNickNameUtils.getNickName();
+
+        return tweetService.getOne(id, nickName);
     }
 
 //create new tweet
@@ -41,9 +47,9 @@ public class TweetController {
     @ResponseStatus(HttpStatus.CREATED)
     public TweetModel createTweet(@RequestBody CreateTweetModel model)
     {
-        String currentPrincipalName = GetNickNameUtils.getNickName();
+        String nickName = GetNickNameUtils.getNickName();
 
-        return tweetService.tweetCreate(model, currentPrincipalName);
+        return tweetService.tweetCreate(model, nickName);
     }
 
 //update one tweet by tweet id
@@ -51,18 +57,18 @@ public class TweetController {
     public TweetModel updateTweet(@PathVariable("id") Long id,
                                   @RequestBody CreateTweetModel model)
     {
-        String currentPrincipalName = GetNickNameUtils.getNickName();
+        String nickName = GetNickNameUtils.getNickName();
 
-        return tweetService.update(model, currentPrincipalName, id);
+        return tweetService.update(model, nickName, id);
     }
 
 //delete one tweet by tweet id
     @DeleteMapping("{id}")
     public void delete(@PathVariable("id") Long id)
     {
-        String currentPrincipalName = GetNickNameUtils.getNickName();
+        String nickName = GetNickNameUtils.getNickName();
 
-        tweetService.del(id, currentPrincipalName);
+        tweetService.del(id, nickName);
     }
 //put like to tweet. if successful returns true
     @PutMapping("like")
