@@ -30,14 +30,15 @@ public class TweetService {
         this.tweetLikesService = tweetLikesService;
     }
 
-//return list of all tweets
+//return list of all tweets with like count and user like status as to tweet
     public List<TweetModel> getTweetsList(String nickName) {
 
         List<Long> tweetIdList = tweetRepo.findAll().stream()
                 .map(Tweet::getId)
                 .collect(Collectors.toList());
 
-        return tweetIdList.stream().map(a -> getOne(a, nickName)).collect(Collectors.toList());
+        return tweetIdList.stream().map(a -> getOne(a, nickName))
+                .collect(Collectors.toList());
     }
 
 //create new tweet
@@ -57,10 +58,12 @@ public class TweetService {
             }
     }
 
-//delete one tweet by tweet id
+//delete one tweet by tweet id from TWEET  and USER-LIKE-TWEET table
     public void del(Long id, String nickName) {
 
-            tweetRepo.deleteByIdAndCreator(id, nickName);
+        userTweetLikesRepo.deleteAllByTweetId(id);
+
+        tweetRepo.deleteByIdAndCreator(id, nickName);
 
     }
 
@@ -75,7 +78,7 @@ public class TweetService {
         return TweetConverters.toModel(tweetRepo.save(toUpdate));
     }
 
-//get one tweet by tweet id
+//get one tweet by tweet id with like count and user like status as to tweet
     public TweetModel getOne(Long tweetId, String nickName) {
 
         TweetModel model = TweetConverters.toModel(tweetRepo.findOneById(tweetId));

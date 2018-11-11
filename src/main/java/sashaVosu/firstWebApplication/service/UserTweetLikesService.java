@@ -82,6 +82,7 @@ public boolean like(CreateUserTweetLikesModel userTweetLikes, String nickName) {
                     .collect(Collectors.toList());
     }
 
+//return list of user who like tweet by tweet id
     List<UserModel> whoLikeTweet(Long tweetId) {
 
         List<Long> userIdList =  userTweetRepo.findAllByTweetId(tweetId).stream()
