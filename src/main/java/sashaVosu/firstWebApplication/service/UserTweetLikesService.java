@@ -33,9 +33,9 @@ public class UserTweetLikesService {
 // and delete from userTweet table if like=false (return false)
 public boolean like(CreateUserTweetLikesModel userTweetLikes, String nickName) {
 
-    Long userId = userRepo.findOneByNickName(nickName).getId();
+    Long userId = getUserIdByNickName(nickName);
 
-        if(userTweetLikes.isLike()) {
+    if(userTweetLikes.isLike()) {
 
             UserTweetLikes create = new UserTweetLikes();
 
@@ -57,15 +57,19 @@ public boolean like(CreateUserTweetLikesModel userTweetLikes, String nickName) {
 //Return list of Tweet what user likes
     public List<TweetModel> tweetWhatLike (String nickName) {
 
-        Long userId = userRepo.findOneByNickName(nickName).getId();
+        Long userIdByNickName = getUserIdByNickName(nickName);
 
-        List<Long> tweetIdList = getTweetIdList(userId);
+        List<Long> tweetIdList = getTweetIdList(userIdByNickName);
 
-        long likeCount = getTweetIdList(userId).size();
+        long likeCount = getTweetIdList(userIdByNickName).size();
 
         return tweetRepo.findAllByIdIn(tweetIdList).stream()
                 .map(TweetConverters::toModel)
                 .collect(Collectors.toList());
+    }
+
+    private Long getUserIdByNickName(String nickName) {
+        return userRepo.findOneByNickName(nickName).getId();
     }
 
 //Return list of tweet Id what specific user like

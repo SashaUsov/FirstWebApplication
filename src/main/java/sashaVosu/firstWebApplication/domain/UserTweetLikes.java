@@ -11,10 +11,14 @@ import javax.persistence.*;
 @Table(name = "user_tweet_likes")
 public class UserTweetLikes {
 
+    @Column(name = "id", updatable=false, nullable=false)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @Column(name = "tweet_id")
     private Long tweetId;
 
-    @Id
     @Column(name = "user_id")
     private Long userId;
 

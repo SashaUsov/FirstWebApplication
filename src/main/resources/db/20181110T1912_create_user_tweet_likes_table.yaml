@@ -1,13 +1,19 @@
 databaseChangeLog:
 
     - changeSet:
-        id: 1
+        id: 3
         author: sasha_vosu
         changes:
 
         - createTable:
             tableName: user_tweet_likes
             columns:
+              - column:
+                 name: id
+                 type: bigint
+                 constraints:
+                    primaryKey: true
+                    nullable: false
               - column:
                  name: tweet_id
                  type: bigint

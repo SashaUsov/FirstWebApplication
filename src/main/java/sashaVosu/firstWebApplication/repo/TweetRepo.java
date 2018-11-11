@@ -19,4 +19,8 @@ public interface TweetRepo extends JpaRepository<Tweet, Long> {
     List<Tweet> findAllByCreator(String currentPrincipalName);
 
     List<Tweet> findAllByIdIn(Collection<Long> tweetIdList);
+
+    @Transactional
+    void deleteAllByCreator(String nickName);
+
 }

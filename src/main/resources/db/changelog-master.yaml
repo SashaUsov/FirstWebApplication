@@ -2,4 +2,7 @@ databaseChangeLog:
 
     - include:
         file: db/20181109T1341_create_user_and_tweet_table.yaml
+    - include:
         file: db/20181110T1912_create_user_tweet_likes_table.yaml
+    - include:
+        file: db/20181111T1257_hibernate_sequence.yaml

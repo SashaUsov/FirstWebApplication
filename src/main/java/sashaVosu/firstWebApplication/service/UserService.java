@@ -2,11 +2,14 @@ package sashaVosu.firstWebApplication.service;
 
 import org.springframework.stereotype.Service;
 import sashaVosu.firstWebApplication.converters.UserConverters;
+import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.User;
 import sashaVosu.firstWebApplication.domain.dto.CreateUserModel;
 import sashaVosu.firstWebApplication.domain.dto.UserModel;
 import sashaVosu.firstWebApplication.exception.UserExistsException;
+import sashaVosu.firstWebApplication.repo.TweetRepo;
 import sashaVosu.firstWebApplication.repo.UserRepo;
+import sashaVosu.firstWebApplication.repo.UserTweetLikesRepo;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,8 +19,14 @@ public class UserService {
 
     private final UserRepo userRepo;
 
-    public UserService(UserRepo userRepo) {
+    private final TweetRepo tweetRepo;
+
+    private final UserTweetLikesRepo userTweetLikesRepo;
+
+    public UserService(UserRepo userRepo, TweetRepo tweetRepo, UserTweetLikesRepo userTweetLikesRepo) {
         this.userRepo = userRepo;
+        this.tweetRepo = tweetRepo;
+        this.userTweetLikesRepo = userTweetLikesRepo;
     }
 
 //return list of all users
@@ -43,6 +52,23 @@ public class UserService {
         }
     }
 
+//delete user account and all user tweet and like from user-tweet-like table
+//Deleted account cannot be recovered.
+    public void deleteProfile(String nickName) {
 
+        List<Long> tweetIdList = tweetRepo.findAllByCreator(nickName).
+                stream().map(Tweet::getId)
+                .collect(Collectors.toList());
+
+        Long userId = userRepo.findOneByNickName(nickName).getId();
+
+        userTweetLikesRepo.deleteAllByTweetIdIn(tweetIdList);
+
+        userTweetLikesRepo.deleteAllByUserId(userId);
+
+        tweetRepo.deleteAllByCreator(nickName);
+
+        userRepo.deleteOneById(userId);
     }
+}
 

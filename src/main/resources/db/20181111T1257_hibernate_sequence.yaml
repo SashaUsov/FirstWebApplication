@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+    - changeSet:
+            id: 4
+            author: sasha_vosu
+            changes:
+
+            - createSequence:
+                incrementBy: 1
+                sequenceName: hibernate_sequence
+                startValue: 1
