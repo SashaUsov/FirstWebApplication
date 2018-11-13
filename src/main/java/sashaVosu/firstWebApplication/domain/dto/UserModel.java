@@ -2,6 +2,10 @@ package sashaVosu.firstWebApplication.domain.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import sashaVosu.firstWebApplication.domain.User;
+
+import java.util.HashSet;
+import java.util.Set;
 
 //dto class to create user model from entity and give back to frontend
 @Getter
@@ -22,4 +26,7 @@ public class UserModel {
 
     private String email;
 
+    private Integer subscribersCount;
+
+    private Integer subscriptionsCount;
 }

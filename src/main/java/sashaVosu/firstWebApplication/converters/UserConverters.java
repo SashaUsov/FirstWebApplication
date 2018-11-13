@@ -37,6 +37,8 @@ public class UserConverters {
         model.setGender(user.getGender());
         model.setAge(user.getAge());
         model.setEmail(user.getEmail());
+        model.setSubscribersCount(user.getSubscribers().size());
+        model.setSubscriptionsCount(user.getSubscriptions().size());
 
         return model;
     }

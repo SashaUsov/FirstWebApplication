@@ -1,0 +1,28 @@
+databaseChangeLog:
+
+    - changeSet:
+        id: 1
+        author: sasha_vosu
+        changes:
+
+        - createTable:
+            tableName: user_subscriptions
+            columns:
+              - column:
+                 name: channel_id
+                 type: bigint
+                 autoIncrement: true
+                 constraints:
+                    primaryKey: true
+                    nullable: false
+                    foreignKeyName: fk_us_subs_channel_id
+                    references: account(id)
+              - column:
+                 name: subscriber_id
+                 type: bigint
+                 autoIncrement: true
+                 constraints:
+                    primaryKey: true
+                    nullable: false
+                    foreignKeyName: fk_us_subs_suscr_id
+                    references: account(id)

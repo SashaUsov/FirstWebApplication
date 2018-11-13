@@ -1,14 +1,9 @@
 package sashaVosu.firstWebApplication.controller;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
-import sashaVosu.firstWebApplication.service.GetNickNameUtils;
-import sashaVosu.firstWebApplication.service.ProfileService;
-import sashaVosu.firstWebApplication.service.UserService;
-import sashaVosu.firstWebApplication.service.UserTweetLikesService;
+import sashaVosu.firstWebApplication.domain.dto.UserModel;
+import sashaVosu.firstWebApplication.service.*;
 
 import java.util.List;
 
@@ -22,12 +17,17 @@ public class ProfileController {
 
     private final UserTweetLikesService userTweetLikesService;
 
-    public ProfileController(UserService userService, ProfileService profileService,
-                             UserTweetLikesService userTweetLikesService)
+    private final SubscriberService subscriberService;
+
+    public ProfileController(UserService userService,
+                             ProfileService profileService,
+                             UserTweetLikesService userTweetLikesService,
+                             SubscriberService subscriberService)
     {
         this.userService = userService;
         this.profileService = profileService;
         this.userTweetLikesService = userTweetLikesService;
+        this.subscriberService = subscriberService;
     }
 
 //return list of tweet what create specific user
@@ -56,5 +56,37 @@ public class ProfileController {
         String nickName = GetNickNameUtils.getNickName();
 
         userService.deleteProfile(nickName);
+    }
+
+//Subscribe to user
+    @PostMapping("subscribe/{id}")
+    public void subscribe(@PathVariable("id") Long channelId) {
+
+        String nickName = GetNickNameUtils.getNickName();
+
+        subscriberService.subscribe(nickName, channelId);
+    }
+
+//Unsubscribe from user
+    @DeleteMapping("unsubscribe/{id}")
+    public void unSubscribe(@PathVariable("id") Long channelId) {
+
+        String nickName = GetNickNameUtils.getNickName();
+
+        subscriberService.unsubscribe(nickName, channelId);
+    }
+
+//Show list of followers
+    @GetMapping("subscribers/{id}")
+    public List<UserModel> showSubscribers(@PathVariable("id") Long userId) {
+
+        return subscriberService.subscribersList(userId);
+    }
+
+//Show list of subscriptions
+    @GetMapping("subscriptions/{id}")
+    public List<UserModel> showSubscriptions(@PathVariable("id") Long userId) {
+
+        return subscriberService.subscriptionsList(userId);
     }
 }
