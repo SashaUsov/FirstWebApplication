@@ -70,14 +70,23 @@ public class TweetController {
 
         tweetService.del(id, nickName);
     }
+
 //put like to tweet. if successful returns true
-    @PutMapping("like")
-    public boolean putLike(@RequestBody CreateUserTweetLikesModel userTweetLikes)
-    {
+    @PutMapping("like/{id}")
+    public void putLike(@PathVariable("id") Long tweetId) {
+
         String nickName = GetNickNameUtils.getNickName();
 
-        return userTweetLikesService.like(userTweetLikes, nickName);
+        userTweetLikesService.like(tweetId, nickName);
+    }
 
+//remove like from tweet
+    @DeleteMapping("unlike/{id}")
+    public void unlike(@PathVariable("id") Long tweetId) {
+
+        String nickName = GetNickNameUtils.getNickName();
+
+        userTweetLikesService.unlike(tweetId, nickName);
     }
 
     @ExceptionHandler

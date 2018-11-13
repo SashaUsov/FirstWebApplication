@@ -25,4 +25,3 @@ public interface UserTweetLikesRepo extends JpaRepository<UserTweetLikes, Long> 
     @Transactional
     void deleteAllByTweetId(Long id);
 }
-

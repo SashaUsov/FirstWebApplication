@@ -1,9 +1,11 @@
 package sashaVosu.firstWebApplication.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -22,7 +24,7 @@ public class UserTweetLikes {
     @Column(name = "user_id")
     private Long userId;
 
-//true if user like it, else - false
-    @Column(name = "likes")
-    private boolean like;
+    @Column(name = "creation_data", updatable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime timeWhenLiked;
 }

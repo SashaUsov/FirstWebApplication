@@ -1,0 +1,26 @@
+databaseChangeLog:
+
+    - changeSet:
+        id: 1
+        author: sasha_vosu
+        changes:
+
+        - dropColumn:
+              columnName: likes
+              tableName: user_tweet_likes
+
+    - changeSet:
+        id: 2
+        author: sasha_vosu
+        changes:
+
+        - addColumn:
+              columns:
+              - column:
+                  name: creation_data
+                  type: timestamp
+                  defaultValueDate: CURRENT_TIMESTAMP
+                  constraints:
+                     nullable: false
+              tableName: user_tweet_likes
+

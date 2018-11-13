@@ -4,13 +4,13 @@ import org.springframework.stereotype.Service;
 import sashaVosu.firstWebApplication.converters.TweetConverters;
 import sashaVosu.firstWebApplication.converters.UserConverters;
 import sashaVosu.firstWebApplication.domain.UserTweetLikes;
-import sashaVosu.firstWebApplication.domain.dto.CreateUserTweetLikesModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.domain.dto.UserModel;
 import sashaVosu.firstWebApplication.repo.TweetRepo;
 import sashaVosu.firstWebApplication.repo.UserRepo;
 import sashaVosu.firstWebApplication.repo.UserTweetLikesRepo;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,30 +31,25 @@ public class UserTweetLikesService {
         this.tweetRepo = tweetRepo;
     }
 
-//Add like if boolean like=true (return true)
-// and delete from userTweet table if like=false (return false)
-public boolean like(CreateUserTweetLikesModel userTweetLikes, String nickName) {
+//Add like to tweet
+public void like(Long tweetId, String nickName) {
 
     Long userId = getUserIdByNickName(nickName);
-
-    if(userTweetLikes.isLike()) {
 
             UserTweetLikes create = new UserTweetLikes();
 
             create.setUserId(userId);
-            create.setTweetId(userTweetLikes.getTweetId());
-            create.setLike(userTweetLikes.isLike());
+            create.setTweetId(tweetId);
+            create.setTimeWhenLiked(LocalDateTime.now());
 
             userTweetRepo.save(create);
+    }
+//remove like from tweet
+    public void unlike(Long tweetId, String nickName) {
 
-            return true;
+        Long userId = getUserIdByNickName(nickName);
 
-        } else {
-
-            userTweetRepo.deleteByUserIdAndTweetId(userId, userTweetLikes.getTweetId());
-
-            return false;
-        }
+        userTweetRepo.deleteByUserIdAndTweetId(userId, tweetId);
     }
 //Return list of Tweet what user likes
     public List<TweetModel> tweetWhatLike (String nickName) {
