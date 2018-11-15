@@ -10,3 +10,5 @@ databaseChangeLog:
         file: db/20181111T2006_create_user_subscriptions_table.yaml
     - include:
         file: db/20181113T1438_change_user_tweet_like_table.yaml
+    - include:
+        file: db/20181114T1820_change_tweet_table_add_re_tweet.yaml

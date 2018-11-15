@@ -27,8 +27,11 @@ public class TweetModel {
         likeCount = 0L;
     }
 
-
-    public void setiLikeIt(Boolean iLikeIt) {
+    public void setILikeIt(Boolean iLikeIt) {
         this.iLikeIt = iLikeIt;
     }
+
+    private Integer reTweetCount;
+
+    private boolean isReTweet;
 }

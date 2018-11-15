@@ -33,16 +33,16 @@ public class ProfileController {
 //return list of tweet what create specific user
     @GetMapping("listOfMyTweet")
     public List<TweetModel> getMyTweetList(){
-        String currentPrincipalName = GetNickNameUtils.getNickName();
+        String nickName = Utils.getNickName();
 
-        return profileService.getListOfMyTweet(currentPrincipalName);
+        return profileService.getListOfMyTweet(nickName);
     }
 
 //return list of tweet what likes specific user
     @GetMapping("likesTweet")
     public List<TweetModel> likesTweetList () {
 
-        String nickName = GetNickNameUtils.getNickName();
+        String nickName = Utils.getNickName();
 
         return userTweetLikesService.tweetWhatLike(nickName);
 
@@ -53,7 +53,7 @@ public class ProfileController {
     @DeleteMapping("delete")
     public void deleteAccount() {
 
-        String nickName = GetNickNameUtils.getNickName();
+        String nickName = Utils.getNickName();
 
         userService.deleteProfile(nickName);
     }
@@ -62,7 +62,7 @@ public class ProfileController {
     @PostMapping("subscribe/{id}")
     public void subscribe(@PathVariable("id") Long channelId) {
 
-        String nickName = GetNickNameUtils.getNickName();
+        String nickName = Utils.getNickName();
 
         subscriberService.subscribe(nickName, channelId);
     }
@@ -71,7 +71,7 @@ public class ProfileController {
     @DeleteMapping("unsubscribe/{id}")
     public void unSubscribe(@PathVariable("id") Long channelId) {
 
-        String nickName = GetNickNameUtils.getNickName();
+        String nickName = Utils.getNickName();
 
         subscriberService.unsubscribe(nickName, channelId);
     }

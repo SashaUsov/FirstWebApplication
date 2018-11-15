@@ -23,4 +23,9 @@ public interface TweetRepo extends JpaRepository<Tweet, Long> {
     @Transactional
     void deleteAllByCreator(String nickName);
 
+    @Transactional
+    void deleteAllByFirstTweet(Tweet tweet);
+
+    @Transactional
+    void deleteAllByFirstTweetIn(Collection<Tweet> firstTweet);
 }

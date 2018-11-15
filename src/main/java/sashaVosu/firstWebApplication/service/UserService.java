@@ -23,7 +23,10 @@ public class UserService {
 
     private final UserTweetLikesRepo userTweetLikesRepo;
 
-    public UserService(UserRepo userRepo, TweetRepo tweetRepo, UserTweetLikesRepo userTweetLikesRepo) {
+    public UserService(UserRepo userRepo,
+                       TweetRepo tweetRepo,
+                       UserTweetLikesRepo userTweetLikesRepo)
+    {
         this.userRepo = userRepo;
         this.tweetRepo = tweetRepo;
         this.userTweetLikesRepo = userTweetLikesRepo;
@@ -56,8 +59,9 @@ public class UserService {
 //Deleted account cannot be recovered.
     public void deleteProfile(String nickName) {
 
-        List<Long> tweetIdList = tweetRepo.findAllByCreator(nickName).
-                stream().map(Tweet::getId)
+        List<Tweet> tweetList = tweetRepo.findAllByCreator(nickName);
+
+        List<Long> tweetIdList = tweetList.stream().map(Tweet::getId)
                 .collect(Collectors.toList());
 
         Long userId = userRepo.findOneByNickName(nickName).getId();
@@ -65,6 +69,8 @@ public class UserService {
         userTweetLikesRepo.deleteAllByTweetIdIn(tweetIdList);
 
         userTweetLikesRepo.deleteAllByUserId(userId);
+
+        tweetRepo.deleteAllByFirstTweetIn(tweetList);
 
         tweetRepo.deleteAllByCreator(nickName);
 

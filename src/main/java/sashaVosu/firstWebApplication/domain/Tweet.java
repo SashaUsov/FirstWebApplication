@@ -9,6 +9,8 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "tweet")
@@ -33,4 +35,13 @@ public class Tweet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "is_re_tweet")
+    private boolean isReTweet;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "re_tweet")
+    private Tweet firstTweet;
+
+    @OneToMany(mappedBy = "firstTweet", fetch = FetchType.LAZY)
+    private Set<Tweet> whoReTweet = new HashSet<>();
 }

@@ -33,11 +33,12 @@ public class TweetService {
 //return list of all tweets with like count and user like status as to tweet
     public List<TweetModel> getTweetsList(String nickName) {
 
-        List<Long> tweetIdList = tweetRepo.findAll().stream()
-                .map(Tweet::getId)
-                .collect(Collectors.toList());
+        List<Tweet> tweetList = tweetRepo.findAll();
 
-        return tweetIdList.stream().map(a -> getOne(a, nickName))
+        List<TweetModel> modelList = tweetList.stream()
+                .map(Utils::convert).collect(Collectors.toList());
+
+        return modelList.stream().map(a -> tweetLikesService.likeStatistic(a, nickName))
                 .collect(Collectors.toList());
     }
 
@@ -49,8 +50,11 @@ public class TweetService {
             {
 
                 Tweet newTweet = TweetConverters.toEntity(tweetModel, nickName);
+                newTweet.setReTweet(false);
 
-                return TweetConverters.toModel(tweetRepo.save(newTweet));
+                tweetRepo.save(newTweet);
+
+                return TweetConverters.toModel(newTweet);
 
             } else {
 
@@ -61,10 +65,31 @@ public class TweetService {
 //delete one tweet by tweet id from TWEET  and USER-LIKE-TWEET table
     public void del(Long id, String nickName) {
 
-        userTweetLikesRepo.deleteAllByTweetId(id);
+        Tweet tweet = tweetRepo.findOneById(id);
 
-        tweetRepo.deleteByIdAndCreator(id, nickName);
+        if (tweet.isReTweet()) {
+            userTweetLikesRepo.deleteAllByTweetId(id);
 
+            Tweet firstTweet = tweet.getFirstTweet();
+            firstTweet.getWhoReTweet().remove(tweet);
+            tweetRepo.save(firstTweet);
+
+            tweetRepo.deleteByIdAndCreator(id, nickName);
+
+        } else {
+
+            userTweetLikesRepo.deleteAllByTweetId(id);
+
+            tweetRepo.deleteAllByFirstTweet(tweet);
+
+            tweetRepo.deleteByIdAndCreator(id, nickName);
+        }
+
+    }
+
+    public TweetModel getOne (Long id) {
+
+        return Utils.convert(tweetRepo.findOneById(id));
     }
 
 //update tweet by tweet id
@@ -75,23 +100,6 @@ public class TweetService {
 
         toUpdate.setText(model.getTweetText());
 
-        return TweetConverters.toModel(tweetRepo.save(toUpdate));
-    }
-
-//get one tweet by tweet id with like count and user like status as to tweet
-    public TweetModel getOne(Long tweetId, String nickName) {
-
-        TweetModel model = TweetConverters.toModel(tweetRepo.findOneById(tweetId));
-
-        Long likeCount = userTweetLikesRepo.findAllByTweetId(tweetId).stream().count();
-
-        model.setLikeCount(likeCount);
-
-        boolean iLikeIt = tweetLikesService.whoLikeTweet(tweetId).stream()
-                .anyMatch(a -> nickName.equals(a.getNickName()));
-
-        model.setiLikeIt(iLikeIt);
-
-        return model;
+        return Utils.convert(tweetRepo.save(toUpdate));
     }
 }

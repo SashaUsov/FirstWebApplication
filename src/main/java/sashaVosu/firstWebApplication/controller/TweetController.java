@@ -4,9 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sashaVosu.firstWebApplication.domain.Error;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
-import sashaVosu.firstWebApplication.domain.dto.CreateUserTweetLikesModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
-import sashaVosu.firstWebApplication.service.GetNickNameUtils;
+import sashaVosu.firstWebApplication.service.Utils;
+import sashaVosu.firstWebApplication.service.ReTweetService;
 import sashaVosu.firstWebApplication.service.TweetService;
 import sashaVosu.firstWebApplication.service.UserTweetLikesService;
 
@@ -20,16 +20,22 @@ public class TweetController {
 
     private final UserTweetLikesService userTweetLikesService;
 
-    public TweetController(TweetService tweetService, UserTweetLikesService userTweetLikesService) {
+    private final ReTweetService reTweetService;
+
+    public TweetController(TweetService tweetService,
+                           UserTweetLikesService userTweetLikesService,
+                           ReTweetService reTweetService)
+    {
         this.tweetService = tweetService;
         this.userTweetLikesService = userTweetLikesService;
+        this.reTweetService = reTweetService;
     }
 
 //return list of all tweets
     @GetMapping("list")
     private List<TweetModel> listOfTweets() {
 
-        String nickName = GetNickNameUtils.getNickName();
+        String nickName = Utils.getNickName();
 
         return tweetService.getTweetsList(nickName);
     }
@@ -37,9 +43,11 @@ public class TweetController {
     @GetMapping("{id}")
     public TweetModel getOneTweet(@PathVariable("id") Long id){
 
-        String nickName = GetNickNameUtils.getNickName();
+        String nickName = Utils.getNickName();
 
-        return tweetService.getOne(id, nickName);
+        TweetModel model = tweetService.getOne(id);
+
+        return userTweetLikesService.likeStatistic(model, nickName);
     }
 
 //create new tweet
@@ -47,7 +55,7 @@ public class TweetController {
     @ResponseStatus(HttpStatus.CREATED)
     public TweetModel createTweet(@RequestBody CreateTweetModel model)
     {
-        String nickName = GetNickNameUtils.getNickName();
+        String nickName = Utils.getNickName();
 
         return tweetService.tweetCreate(model, nickName);
     }
@@ -57,7 +65,7 @@ public class TweetController {
     public TweetModel updateTweet(@PathVariable("id") Long id,
                                   @RequestBody CreateTweetModel model)
     {
-        String nickName = GetNickNameUtils.getNickName();
+        String nickName = Utils.getNickName();
 
         return tweetService.update(model, nickName, id);
     }
@@ -66,7 +74,7 @@ public class TweetController {
     @DeleteMapping("{id}")
     public void delete(@PathVariable("id") Long id)
     {
-        String nickName = GetNickNameUtils.getNickName();
+        String nickName = Utils.getNickName();
 
         tweetService.del(id, nickName);
     }
@@ -75,7 +83,7 @@ public class TweetController {
     @PutMapping("like/{id}")
     public void putLike(@PathVariable("id") Long tweetId) {
 
-        String nickName = GetNickNameUtils.getNickName();
+        String nickName = Utils.getNickName();
 
         userTweetLikesService.like(tweetId, nickName);
     }
@@ -84,9 +92,36 @@ public class TweetController {
     @DeleteMapping("unlike/{id}")
     public void unlike(@PathVariable("id") Long tweetId) {
 
-        String nickName = GetNickNameUtils.getNickName();
+        String nickName = Utils.getNickName();
 
         userTweetLikesService.unlike(tweetId, nickName);
+    }
+
+//Repost tweet user to your page
+    @PostMapping("retweet/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public TweetModel createTweet(@RequestBody CreateTweetModel model,
+                                  @PathVariable("id") Long tweetId)
+    {
+        String nickName = Utils.getNickName();
+
+        return reTweetService.reTweet(nickName, model, tweetId);
+    }
+
+//Get a list of tweets containing the original message
+    @GetMapping("tweetShare/{id}")
+    public List<TweetModel> tweetShare(@PathVariable("id") Long tweetId) {
+
+        return reTweetService.listOfReTweets(tweetId);
+    }
+
+//Tweets shared by this user
+    @GetMapping("iShared")
+    public List<TweetModel> tweetsUserShared() {
+
+        String nickName = Utils.getNickName();
+
+        return reTweetService.myReTweetList(nickName);
     }
 
     @ExceptionHandler

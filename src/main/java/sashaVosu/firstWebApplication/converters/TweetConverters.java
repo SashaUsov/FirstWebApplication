@@ -30,7 +30,8 @@ public class TweetConverters {
         model.setCreator(tweet.getCreator());
         model.setId(tweet.getId());
         model.setText(tweet.getText());
-
+        model.setReTweetCount(tweet.getWhoReTweet().size());
+        model.setReTweet(tweet.isReTweet());
 
         return model;
     }

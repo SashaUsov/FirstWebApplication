@@ -1,7 +1,6 @@
 package sashaVosu.firstWebApplication.service;
 
 import org.springframework.stereotype.Service;
-import sashaVosu.firstWebApplication.converters.TweetConverters;
 import sashaVosu.firstWebApplication.converters.UserConverters;
 import sashaVosu.firstWebApplication.domain.UserTweetLikes;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
@@ -24,7 +23,8 @@ public class UserTweetLikesService {
     private final TweetRepo tweetRepo;
 
     public UserTweetLikesService(UserTweetLikesRepo userTweetRepo,
-                                 UserRepo userRepo, TweetRepo tweetRepo)
+                                 UserRepo userRepo,
+                                 TweetRepo tweetRepo)
     {
         this.userTweetRepo = userTweetRepo;
         this.userRepo = userRepo;
@@ -44,6 +44,7 @@ public void like(Long tweetId, String nickName) {
 
             userTweetRepo.save(create);
     }
+
 //remove like from tweet
     public void unlike(Long tweetId, String nickName) {
 
@@ -51,6 +52,7 @@ public void like(Long tweetId, String nickName) {
 
         userTweetRepo.deleteByUserIdAndTweetId(userId, tweetId);
     }
+
 //Return list of Tweet what user likes
     public List<TweetModel> tweetWhatLike (String nickName) {
 
@@ -58,11 +60,28 @@ public void like(Long tweetId, String nickName) {
 
         List<Long> tweetIdList = getTweetIdList(userIdByNickName);
 
-        long likeCount = getTweetIdList(userIdByNickName).size();
-
-        return tweetRepo.findAllByIdIn(tweetIdList).stream()
-                .map(TweetConverters::toModel)
+        List<TweetModel> tweetModelList = tweetRepo.findAllByIdIn(tweetIdList).stream()
+                .map(Utils::convert)
                 .collect(Collectors.toList());
+
+        return tweetModelList.stream().map(a -> likeStatistic(a, nickName))
+                .collect(Collectors.toList());
+    }
+
+//set like count and user like status as to tweet
+    public TweetModel likeStatistic(TweetModel model, String nickName) {
+
+        Long likeCount = (long) userTweetRepo.findAllByTweetId(model.getId()).size();
+
+        model.setLikeCount(likeCount);
+
+        boolean iLikeIt = whoLikeTweet(model.getId()).stream()
+                    .anyMatch(a -> nickName.equals(a.getNickName()));
+
+        model.setILikeIt(iLikeIt);
+
+        return model;
+
     }
 
     private Long getUserIdByNickName(String nickName) {
@@ -72,12 +91,12 @@ public void like(Long tweetId, String nickName) {
 //Return list of tweet Id what specific user like
     private List<Long> getTweetIdList(Long userId) {
         return userTweetRepo.findAllByUserId(userId).stream()
-                    .map(UserTweetLikes::getTweetId)
-                    .collect(Collectors.toList());
+                .map(UserTweetLikes::getTweetId)
+                .collect(Collectors.toList());
     }
 
 //return list of user who like tweet by tweet id
-    List<UserModel> whoLikeTweet(Long tweetId) {
+    private List<UserModel> whoLikeTweet(Long tweetId) {
 
         List<Long> userIdList =  userTweetRepo.findAllByTweetId(tweetId).stream()
                 .map(UserTweetLikes::getUserId)
