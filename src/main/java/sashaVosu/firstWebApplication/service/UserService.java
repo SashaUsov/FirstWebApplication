@@ -60,12 +60,12 @@ public class UserService {
 //Deleted account cannot be recovered.
     public void deleteProfile(String nickName) {
 
+        Long userId = userRepo.findOneByNickName(nickName).getId();
+
         List<Tweet> tweetList = tweetRepo.findAllByCreator(nickName);
 
         List<Long> tweetIdList = tweetList.stream().map(Tweet::getId)
                 .collect(Collectors.toList());
-
-        Long userId = userRepo.findOneByNickName(nickName).getId();
 
         userTweetLikesRepo.deleteAllByTweetIdIn(tweetIdList);
 
