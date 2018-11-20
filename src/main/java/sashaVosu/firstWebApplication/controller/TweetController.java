@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import sashaVosu.firstWebApplication.domain.Error;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
+import sashaVosu.firstWebApplication.fasades.TweetFacades;
 import sashaVosu.firstWebApplication.service.Utils;
 import sashaVosu.firstWebApplication.service.ReTweetService;
 import sashaVosu.firstWebApplication.service.TweetService;
@@ -22,13 +23,16 @@ public class TweetController {
 
     private final ReTweetService reTweetService;
 
+    private final TweetFacades tweetFacades;
+
     public TweetController(TweetService tweetService,
                            UserTweetLikesService userTweetLikesService,
-                           ReTweetService reTweetService)
+                           ReTweetService reTweetService, TweetFacades tweetFacades)
     {
         this.tweetService = tweetService;
         this.userTweetLikesService = userTweetLikesService;
         this.reTweetService = reTweetService;
+        this.tweetFacades = tweetFacades;
     }
 
 //return list of all tweets
@@ -37,7 +41,9 @@ public class TweetController {
 
         String nickName = Utils.getNickName();
 
-        return tweetService.getTweetsList(nickName);
+        List<TweetModel> modelList = tweetService.getTweetsList();
+
+        return tweetFacades.getTweetsList(nickName, modelList);
     }
 
     @GetMapping("{id}")
@@ -121,7 +127,11 @@ public class TweetController {
 
         String nickName = Utils.getNickName();
 
-        return reTweetService.myReTweetList(nickName);
+        List<TweetModel> modelList = tweetService.getTweetsList();
+
+        List<TweetModel> listWithLike = tweetFacades.getTweetsList(nickName, modelList);
+
+        return tweetService.myReTweetList(listWithLike);
     }
 
     @ExceptionHandler

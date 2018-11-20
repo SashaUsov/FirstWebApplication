@@ -19,27 +19,36 @@ public class TweetService {
 
     private final UserTweetLikesRepo userTweetLikesRepo;
 
-    private final UserTweetLikesService tweetLikesService;
-
     public TweetService(TweetRepo tweetRepo,
-                        UserTweetLikesRepo userTweetLikesRepo,
-                        UserTweetLikesService tweetLikesService)
+                        UserTweetLikesRepo userTweetLikesRepo)
     {
         this.tweetRepo = tweetRepo;
         this.userTweetLikesRepo = userTweetLikesRepo;
-        this.tweetLikesService = tweetLikesService;
     }
 
 //return list of all tweets with like count and user like status as to tweet
-    public List<TweetModel> getTweetsList(String nickName) {
+    public List<TweetModel> getTweetsList() {
 
         List<Tweet> tweetList = tweetRepo.findAll();
 
-        List<TweetModel> modelList = tweetList.stream()
+        return tweetList.stream()
                 .map(Utils::convert).collect(Collectors.toList());
 
-        return modelList.stream().map(a -> tweetLikesService.likeStatistic(a, nickName))
+    }
+
+//get list of all tweets by specific user id. With data about likes
+    public List<TweetModel> getListOfMyTweet(String nickName) {
+
+        return tweetRepo.findAllByCreator(nickName).stream()
+                .map(Utils::convert)
                 .collect(Collectors.toList());
+    }
+
+//Tweets shared by current user
+    public List<TweetModel> myReTweetList(List<TweetModel> myTweets) {
+
+        return myTweets.stream().filter(TweetModel::isReTweet).collect(Collectors.toList());
+
     }
 
 //create new tweet

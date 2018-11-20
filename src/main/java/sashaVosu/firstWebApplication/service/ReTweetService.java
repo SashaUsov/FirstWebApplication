@@ -17,13 +17,9 @@ public class ReTweetService {
 
     private final TweetRepo tweetRepo;
 
-    private final  ProfileService profileService;
-
-    public ReTweetService(TweetRepo tweetRepo,
-                          ProfileService profileService)
+    public ReTweetService(TweetRepo tweetRepo)
     {
         this.tweetRepo = tweetRepo;
-        this.profileService = profileService;
     }
 
 //Repost tweet user to your page
@@ -76,13 +72,5 @@ public class ReTweetService {
         return tweetFromDb.getWhoReTweet().stream()
                 .map(ReTweetConverters::toModel)
                 .collect(Collectors.toList());
-    }
-
-//Tweets shared by this user
-    public List<TweetModel> myReTweetList(String nickName) {
-
-        List<TweetModel> myTweets = profileService.getListOfMyTweet(nickName);
-
-        return myTweets.stream().filter(TweetModel::isReTweet).collect(Collectors.toList());
     }
 }

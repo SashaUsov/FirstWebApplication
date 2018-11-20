@@ -3,6 +3,7 @@ package sashaVosu.firstWebApplication.controller;
 import org.springframework.web.bind.annotation.*;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.domain.dto.UserModel;
+import sashaVosu.firstWebApplication.fasades.TweetFacades;
 import sashaVosu.firstWebApplication.service.*;
 
 import java.util.List;
@@ -13,21 +14,25 @@ public class ProfileController {
 
     private final UserService userService;
 
-    private final ProfileService profileService;
+    private final TweetService tweetService;
 
     private final UserTweetLikesService userTweetLikesService;
 
     private final SubscriberService subscriberService;
 
+    private final TweetFacades tweetFacades;
+
     public ProfileController(UserService userService,
-                             ProfileService profileService,
+                             TweetService tweetService,
                              UserTweetLikesService userTweetLikesService,
-                             SubscriberService subscriberService)
+                             SubscriberService subscriberService,
+                             TweetFacades tweetFacades)
     {
         this.userService = userService;
-        this.profileService = profileService;
+        this.tweetService = tweetService;
         this.userTweetLikesService = userTweetLikesService;
         this.subscriberService = subscriberService;
+        this.tweetFacades = tweetFacades;
     }
 
 //return list of tweet what create specific user
@@ -35,7 +40,9 @@ public class ProfileController {
     public List<TweetModel> getMyTweetList(){
         String nickName = Utils.getNickName();
 
-        return profileService.getListOfMyTweet(nickName);
+        List<TweetModel> myTweetList =  tweetService.getListOfMyTweet(nickName);
+
+        return tweetFacades.getTweetsList(nickName, myTweetList);
     }
 
 //return list of tweet what likes specific user

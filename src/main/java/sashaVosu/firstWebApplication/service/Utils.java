@@ -16,7 +16,7 @@ public class Utils {
     }
 
 //Converts entity to tweetModel or reTweetModel
-    static TweetModel convert(Tweet tweet) {
+    public static TweetModel convert(Tweet tweet) {
 
         if (tweet.isReTweet()) {
 
