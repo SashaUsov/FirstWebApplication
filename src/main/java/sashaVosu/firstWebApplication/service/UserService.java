@@ -34,6 +34,7 @@ public class UserService {
 
 //return list of all users
     public List<UserModel> getUserList() {
+
         return userRepo.findAll().stream()
                 .map(UserConverters::toModel).collect(Collectors.toList());
     }
@@ -79,7 +80,16 @@ public class UserService {
 
     public UserModel getOneUser(Long id) {
 
-        return UserConverters.toModel(userRepo.findOneById(id));
+        User user = userRepo.findOneById(id);
+
+        if (user != null) {
+
+            return UserConverters.toModel(user);
+
+        } else {
+
+            return null;
+        }
     }
 }
 

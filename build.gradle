@@ -33,5 +33,9 @@ dependencies {
 	compile('org.postgresql:postgresql')
 	compile('org.hibernate:hibernate-core')
 	compile("org.liquibase:liquibase-core")
-	testImplementation('org.springframework.boot:spring-boot-starter-test')
+
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	testCompile (group: 'org.springframework.security', name: 'spring-security-test')
+	testCompile ('junit:junit')
+	testImplementation ('org.mockito:mockito-core')
 }
