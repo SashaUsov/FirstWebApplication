@@ -1,7 +1,10 @@
 package sashaVosu.firstWebApplication.Utils;
 
+import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.User;
+import sashaVosu.firstWebApplication.domain.UserTweetLikes;
 import sashaVosu.firstWebApplication.domain.dto.CreateUserModel;
+import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.domain.dto.UserModel;
 
 import java.util.ArrayList;
@@ -9,7 +12,7 @@ import java.util.List;
 
 public class TestUtil {
 
-    public static CreateUserModel getCreateUserModel() {
+    public static CreateUserModel returnCreateUserModel() {
 
         CreateUserModel createUserModel = new CreateUserModel();
 
@@ -24,7 +27,7 @@ public class TestUtil {
         return createUserModel;
     }
 
-    public static User getUser() {
+    public static User returnUserWithId1() {
 
         User user = new User();
 
@@ -39,7 +42,7 @@ public class TestUtil {
         return user;
     }
 
-    public static UserModel getUserModel() {
+    public static UserModel returnUserModelWitgId1() {
 
         UserModel userModel = new UserModel();
 
@@ -56,7 +59,7 @@ public class TestUtil {
         return userModel;
     }
 
-    public static List<User> getUserList() {
+    public static List<User> returnListOfUserWithId1AndId2() {
 
         User user = new User();
 
@@ -86,7 +89,7 @@ public class TestUtil {
         return userList;
     }
 
-    public static List<UserModel> getUserModelList() {
+    public static List<UserModel> returnListOfUserModelWithId1AndId2() {
 
         List<UserModel> userModelList = new ArrayList<>();
 
@@ -119,5 +122,106 @@ public class TestUtil {
         userModelList.add(userModel2);
 
         return userModelList;
+    }
+
+    public static List<UserTweetLikes> returnListUserTweetLikesWhereTwetWithId1Has2Like() {
+
+        List<UserTweetLikes> userModelList = new ArrayList<>();
+
+        UserTweetLikes model1 = new UserTweetLikes();
+
+        model1.setId(1L);
+        model1.setUserId(1L);
+        model1.setTweetId(1L);
+
+        userModelList.add(model1);
+
+        UserTweetLikes model2 = new UserTweetLikes();
+
+        model1.setId(2L);
+        model1.setUserId(2L);
+        model1.setTweetId(1L);
+
+        userModelList.add(model2);
+
+        return userModelList;
+    }
+
+    public static TweetModel returnTweetModekWithId1() {
+
+        TweetModel model = new TweetModel();
+
+        model.setId(1L);
+
+        return model;
+    }
+
+    public static TweetModel returnTweetModelWithId1() {
+
+        TweetModel model = new TweetModel();
+
+        model.setId(1L);
+
+        return model;
+    }
+
+    public static TweetModel returnTweetModelWithLikeStatistic() {
+
+        TweetModel model = new TweetModel();
+
+        model.setId(1L);
+        model.setLikeCount(2L);
+        model.setILikeIt(true);
+        model.setReTweet(false);
+
+        return model;
+    }
+
+    public static List<UserTweetLikes> returnUserTweetLikesListWhatLikeUserWithNickNameBob() {
+
+        List<UserTweetLikes> userModelList = new ArrayList<>();
+
+        UserTweetLikes model1 = new UserTweetLikes();
+
+        model1.setId(1L);
+        model1.setUserId(1L);
+        model1.setTweetId(1L);
+
+        userModelList.add(model1);
+
+        return  userModelList;
+    }
+
+    public static List<Tweet> returnTweetListWhatLikeUserWithNickNameBob() {
+
+        List<Tweet> tweetList = new ArrayList<>();
+
+        Tweet tweet = new Tweet();
+
+        tweet.setId(1L);
+        tweet.setCreator("bob");
+
+
+        tweetList.add(tweet);
+
+        return tweetList;
+    }
+
+    public static List<TweetModel> returnTweetModelListWhatLikeUserWithNickNameBob() {
+
+        List<TweetModel> tweetModelList = new ArrayList<>();
+
+        TweetModel tweetModel = new TweetModel();
+
+        tweetModel.setId(1L);
+        tweetModel.setCreator("bob");
+        tweetModel.setLikeCount(2L);
+        tweetModel.setILikeIt(true);
+        tweetModel.setReTweet(false);
+        tweetModel.setReTweetCount(0);
+
+        tweetModelList.add(tweetModel);
+
+        return tweetModelList;
     }
 }

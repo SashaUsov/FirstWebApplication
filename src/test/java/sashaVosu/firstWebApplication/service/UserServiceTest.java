@@ -22,7 +22,9 @@ import sashaVosu.firstWebApplication.repo.UserTweetLikesRepo;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -41,102 +43,102 @@ public class UserServiceTest {
     private UserTweetLikesRepo userTweetLikesRepo;
 
     @Test
-    public void getUserList() throws Exception {
+    public void shouldReturnUserModelList() {
 
-        List<UserModel> userModelList = TestUtil.getUserModelList();
+        List<UserModel> expectedUserModelList = TestUtil.returnListOfUserModelWithId1AndId2();
 
-        List<User> userList = TestUtil.getUserList();
+        List<User> givenUserList = TestUtil.returnListOfUserWithId1AndId2();
 
-        Mockito.doReturn(userList).when(userRepo).findAll();
+        doReturn(givenUserList).when(userRepo).findAll();
 
-        List<UserModel> modelListFromDb = userService.getUserList();
+        List<UserModel> actual = userService.getUserList();
 
-        Mockito.verify(userRepo, Mockito.times(1)).findAll();
+        verify(userRepo).findAll();
 
-        Assert.assertEquals(userModelList, modelListFromDb);
+        Assert.assertEquals(expectedUserModelList, actual);
     }
 
     @Test(expected = UserNotFoundException.class)
-    public void getUserListFail() throws Exception {
+    public void shouldThrowExceptionWhenGetUserList() {
 
-        Mockito.doThrow(new UserNotFoundException("Any user not found")).when(userRepo).findAll();
+        doThrow(new UserNotFoundException("Any user not found")).when(userRepo).findAll();
 
         List<UserModel> modelListFromDb = userService.getUserList();
 
-        Mockito.verify(userRepo, Mockito.times(1)).findAll();
+        verify(userRepo).findAll();
     }
 
     @Test(expected = UserExistsException.class)
-    public void userCreateFail() throws Exception {
+    public void shouldThrowExceptionOnCreateUser() {
 
-        CreateUserModel userModel = new CreateUserModel();
+        CreateUserModel givenCreateUserModel = new CreateUserModel();
 
-        userModel.setNickName("bob");
-        userModel.setEmail("same@mail.com");
+        givenCreateUserModel.setNickName("bob");
+        givenCreateUserModel.setEmail("same@mail.com");
 
 
-        Mockito.doReturn(new User()).when(userRepo)
-                .findOneByNickNameAndEmail("bob", "same@mail.com");
+        doReturn(new User()).when(userRepo)
+                .findOneByNickNameAndEmail(givenCreateUserModel.getNickName(), givenCreateUserModel.getEmail());
 
-        UserModel model = userService.userCreate(userModel);
+        UserModel actual = userService.userCreate(givenCreateUserModel);
 
-        Mockito.verify(userRepo, Mockito.times(1))
-                .findOneByNickNameAndEmail("bob", "same@mail.com");
+        verify(userRepo)
+                .findOneByNickNameAndEmail(givenCreateUserModel.getNickName(), givenCreateUserModel.getEmail());
     }
 
     @Test
-    public void userCreate() throws Exception {
+    public void shouldCreateUserAndReturnUserModelWithId1() {
 
-        CreateUserModel createUserModel = TestUtil.getCreateUserModel();
+        CreateUserModel givenCreateUserModel = TestUtil.returnCreateUserModel();
 
-        User user = TestUtil.getUser();
+        User givenUser = TestUtil.returnUserWithId1();
 
-        UserModel userModel = TestUtil.getUserModel();
+        UserModel expectedUserModel = TestUtil.returnUserModelWitgId1();
 
-        Mockito.doReturn(null).when(userRepo)
-                .findOneByNickNameAndEmail("bob", "same@mail.com");
+        doReturn(null).when(userRepo)
+                .findOneByNickNameAndEmail(givenCreateUserModel.getNickName(), givenCreateUserModel.getEmail());
 
-        Mockito.doReturn(user).when(userRepo)
+        doReturn(givenUser).when(userRepo)
                 .save(any(User.class));
 
-        UserModel model = userService.userCreate(createUserModel);
+        UserModel actual = userService.userCreate(givenCreateUserModel);
 
-        Mockito.verify(userRepo, Mockito.times(1))
-                .findOneByNickNameAndEmail("bob", "same@mail.com");
+        verify(userRepo)
+                .findOneByNickNameAndEmail(givenCreateUserModel.getNickName(), givenCreateUserModel.getEmail());
 
-        Mockito.verify(userRepo, Mockito.times(1))
-                .save(any(User.class));
+        verify(userRepo).save(any(User.class));
 
-       Assert.assertEquals(model, userModel);
+       assertEquals(expectedUserModel, actual);
     }
 
     @Test
-    public void getOneUser() throws Exception {
+    public void shouldFindUserWithId1() {
 
-        User user = TestUtil.getUser();
+        long givenUserId = 1L;
 
-        UserModel userModel = TestUtil.getUserModel();
+        User givenUser = TestUtil.returnUserWithId1();
 
-        Mockito.doReturn(user).when(userRepo).findOneById(1L);
+        UserModel expectedUserModel = TestUtil.returnUserModelWitgId1();
 
-        UserModel model = userService.getOneUser(1L);
+        doReturn(givenUser).when(userRepo).findOneById(givenUserId);
 
-        Mockito.verify(userRepo, Mockito.times(1))
-                .findOneById(1L);
-        Assert.assertEquals(userModel, model);
+        UserModel actual = userService.getOneUser(givenUserId);
+
+        assertEquals(expectedUserModel, actual);
     }
 
     @Test
-    public void getOneUserFail() throws Exception {
+    public void shouldReturnNullOnGetOneUserById21() {
 
-        Mockito.doReturn(null).when(userRepo).findOneById(21L);
+        long givenUserId = 21L;
 
-        UserModel model = userService.getOneUser(21L);
+        Mockito.doReturn(null).when(userRepo).findOneById(givenUserId);
 
-        Mockito.verify(userRepo, Mockito.times(1))
-                .findOneById(21L);
+        UserModel actual = userService.getOneUser(givenUserId);
 
-        Assert.assertEquals(null, model);
+        verify(userRepo).findOneById(givenUserId);
+
+        assertNull(null, actual);
     }
 
     @Test
@@ -150,44 +152,44 @@ public class UserServiceTest {
 
         tweetList.add(tweet1);
 
-        Mockito.doReturn(tweetList).when(tweetRepo).findAllByCreator(anyString());
+        doReturn(tweetList).when(tweetRepo).findAllByCreator(anyString());
 
-        Mockito.doReturn(TestUtil.getUser()).when(userRepo).findOneByNickName("bob");
+        doReturn(TestUtil.returnUserWithId1()).when(userRepo).findOneByNickName("bob");
 
-        Mockito.doNothing().when(userTweetLikesRepo).deleteAllByTweetIdIn(anyList());
+        doNothing().when(userTweetLikesRepo).deleteAllByTweetIdIn(anyList());
 
-        Mockito.doNothing().when(userTweetLikesRepo).deleteAllByUserId(anyLong());
+        doNothing().when(userTweetLikesRepo).deleteAllByUserId(anyLong());
 
-        Mockito.doNothing().when(tweetRepo).deleteAllByFirstTweetIn(anyList());
+        doNothing().when(tweetRepo).deleteAllByFirstTweetIn(anyList());
 
-        Mockito.doNothing().when(tweetRepo).deleteAllByCreator(anyString());
+        doNothing().when(tweetRepo).deleteAllByCreator(anyString());
 
-        Mockito.doNothing().when(userRepo).deleteOneById(anyLong());
+        doNothing().when(userRepo).deleteOneById(anyLong());
 
         userService.deleteProfile("bob");
 
-        Mockito.verify(userRepo, Mockito.times(1)).findOneByNickName("bob");
+        verify(userRepo).findOneByNickName("bob");
 
-        Mockito.verify(userRepo, Mockito.times(1)).deleteOneById(anyLong());
+        verify(userRepo).deleteOneById(anyLong());
 
-        Mockito.verify(tweetRepo, Mockito.times(1)).findAllByCreator(anyString());
+        verify(tweetRepo).findAllByCreator(anyString());
 
-        Mockito.verify(tweetRepo, Mockito.times(1)).deleteAllByFirstTweetIn(anyList());
+        verify(tweetRepo).deleteAllByFirstTweetIn(anyList());
 
-        Mockito.verify(tweetRepo, Mockito.times(1)).deleteAllByCreator(anyString());
+        verify(tweetRepo).deleteAllByCreator(anyString());
 
-        Mockito.verify(userTweetLikesRepo, Mockito.times(1)).deleteAllByTweetIdIn(anyList());
+        verify(userTweetLikesRepo).deleteAllByTweetIdIn(anyList());
 
-        Mockito.verify(userTweetLikesRepo, Mockito.times(1)).deleteAllByUserId(anyLong());
+        verify(userTweetLikesRepo).deleteAllByUserId(anyLong());
     }
 
     @Test(expected = UserNotFoundException.class)
     public void deleteProfileFail() throws Exception {
 
-        Mockito.doThrow(new UserNotFoundException("Not found")).when(userRepo).findOneByNickName("bob");
+        doThrow(new UserNotFoundException("Not found")).when(userRepo).findOneByNickName("bob");
 
         userService.deleteProfile("bob");
 
-        Mockito.verify(userRepo, Mockito.times(1)).findOneByNickName("bob");
+        verify(userRepo, Mockito.times(1)).findOneByNickName("bob");
     }
 }
