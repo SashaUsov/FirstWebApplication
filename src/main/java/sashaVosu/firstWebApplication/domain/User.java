@@ -65,4 +65,12 @@ public class User {
             inverseJoinColumns = { @JoinColumn(name = "channel_id") }
     )
     private Set<User> subscriptions = new HashSet<>();
+
+    @Column(name = "is_active")
+    private boolean isActive;
+
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles = new HashSet<>();
 }

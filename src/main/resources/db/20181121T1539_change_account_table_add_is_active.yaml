@@ -1,0 +1,16 @@
+databaseChangeLog:
+
+    - changeSet:
+        id: 1
+        author: sasha_vosu
+        changes:
+
+        - addColumn:
+            tableName: account
+            columns:
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                     nullable: false

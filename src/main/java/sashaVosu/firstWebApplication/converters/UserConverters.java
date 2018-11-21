@@ -2,9 +2,12 @@ package sashaVosu.firstWebApplication.converters;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import sashaVosu.firstWebApplication.domain.Role;
 import sashaVosu.firstWebApplication.domain.User;
 import sashaVosu.firstWebApplication.domain.dto.CreateUserModel;
 import sashaVosu.firstWebApplication.domain.dto.UserModel;
+
+import java.util.Collections;
 
 public class UserConverters {
 
@@ -14,6 +17,7 @@ public class UserConverters {
         final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
         User newUser = new User();
+
         newUser.setNickName(model.getNickName());
         newUser.setPassword(PASSWORD_ENCODER.encode(model.getPassword()));
         newUser.setFirstName(model.getFirstName());
@@ -21,6 +25,8 @@ public class UserConverters {
         newUser.setEmail(model.getEmail());
         newUser.setGender(model.getGender());
         newUser.setAge(model.getAge());
+        newUser.setActive(true);
+        newUser.setRoles(Collections.singleton(Role.USER));
 
         return newUser;
     }

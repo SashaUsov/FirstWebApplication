@@ -1,0 +1,19 @@
+databaseChangeLog:
+
+    - changeSet:
+        id: 1
+        author: sasha_vosu
+        changes:
+
+        - createTable:
+            tableName: user_role
+            columns:
+              - column:
+                 name: user_id
+                 type: bigint
+                 autoIncrement: true
+                 constraints:
+                    primaryKey: true
+                    nullable: false
+                    foreignKeyName: fk_us_role
+                    references: account(id)

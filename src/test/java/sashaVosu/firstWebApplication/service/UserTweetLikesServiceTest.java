@@ -137,8 +137,6 @@ public class UserTweetLikesServiceTest {
 
         doReturn(givenUser).when(userRepo).findOneByNickName(givenNickName);
 
-        //doReturn(expectedTweetModelList).when(userTweetLikesService.likeStatistic(any(TweetModel.class), givenNickName));
-
         List<TweetModel> actual = userTweetLikesService.tweetWhatLike(givenNickName);
 
         assertEquals(expectedTweetModelList, actual);
