@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+    - changeSet:
+            id: 1
+            author: sasha_vosu
+            changes:
+
+            - createSequence:
+                incrementBy: 1
+                sequenceName: user_tweet_likes_seq
+                startValue: 1

@@ -19,7 +19,7 @@ public class ApplicationUser {
 
     @Column(name = "id", updatable=false, nullable=false)
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usr_sequence")
     private Long id;
 
     @Column(name = "nick_name")

@@ -15,7 +15,7 @@ public class UserTweetLikes {
 
     @Column(name = "id", updatable=false, nullable=false)
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_tweet_likes_seq")
     private Long id;
 
     @Column(name = "tweet_id")

@@ -32,7 +32,7 @@ public class Tweet {
 
     @Column(name = "id", updatable=false, nullable=false)
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tweet_sequence")
     private Long id;
 
     @Column(name = "is_re_tweet")

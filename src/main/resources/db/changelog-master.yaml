@@ -18,3 +18,9 @@ databaseChangeLog:
         file: db/20181121T1539_change_account_table_add_is_active.yaml
     - include:
         file: db/20181121T1708_add_roles_column_to_user_role_table.yaml
+    - include:
+        file: db/20181125T1421_usr_sequence.yaml
+    - include:
+        file: db/20181125T1437_tweet_sequence.yaml
+    - include:
+        file: db/20181125T1450_user_tweet_likes_seq.yaml
