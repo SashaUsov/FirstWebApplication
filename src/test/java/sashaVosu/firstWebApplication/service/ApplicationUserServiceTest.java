@@ -9,8 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import sashaVosu.firstWebApplication.Utils.TestUtil;
+import sashaVosu.firstWebApplication.domain.ApplicationUser;
 import sashaVosu.firstWebApplication.domain.Tweet;
-import sashaVosu.firstWebApplication.domain.User;
 import sashaVosu.firstWebApplication.domain.dto.CreateUserModel;
 import sashaVosu.firstWebApplication.domain.dto.UserModel;
 import sashaVosu.firstWebApplication.exception.UserExistsException;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class UserServiceTest {
+public class ApplicationUserServiceTest {
 
     @Autowired
     private UserService userService;
@@ -47,7 +47,7 @@ public class UserServiceTest {
 
         List<UserModel> expectedUserModelList = TestUtil.returnListOfUserModelWithId1AndId2();
 
-        List<User> givenUserList = TestUtil.returnListOfUserWithId1AndId2();
+        List<ApplicationUser> givenUserList = TestUtil.returnListOfUserWithId1AndId2();
 
         doReturn(givenUserList).when(userRepo).findAll();
 
@@ -77,7 +77,7 @@ public class UserServiceTest {
         givenCreateUserModel.setEmail("same@mail.com");
 
 
-        doReturn(new User()).when(userRepo)
+        doReturn(new ApplicationUser()).when(userRepo)
                 .findOneByNickNameAndEmail(givenCreateUserModel.getNickName(), givenCreateUserModel.getEmail());
 
         UserModel actual = userService.userCreate(givenCreateUserModel);
@@ -91,7 +91,7 @@ public class UserServiceTest {
 
         CreateUserModel givenCreateUserModel = TestUtil.returnCreateUserModel();
 
-        User givenUser = TestUtil.returnUserWithId1();
+        ApplicationUser givenUser = TestUtil.returnUserWithId1();
 
         UserModel expectedUserModel = TestUtil.returnUserModelWitgId1();
 
@@ -99,14 +99,14 @@ public class UserServiceTest {
                 .findOneByNickNameAndEmail(givenCreateUserModel.getNickName(), givenCreateUserModel.getEmail());
 
         doReturn(givenUser).when(userRepo)
-                .save(any(User.class));
+                .save(any(ApplicationUser.class));
 
         UserModel actual = userService.userCreate(givenCreateUserModel);
 
         verify(userRepo)
                 .findOneByNickNameAndEmail(givenCreateUserModel.getNickName(), givenCreateUserModel.getEmail());
 
-        verify(userRepo).save(any(User.class));
+        verify(userRepo).save(any(ApplicationUser.class));
 
        assertEquals(expectedUserModel, actual);
     }
@@ -116,7 +116,7 @@ public class UserServiceTest {
 
         long givenUserId = 1L;
 
-        User givenUser = TestUtil.returnUserWithId1();
+        ApplicationUser givenUser = TestUtil.returnUserWithId1();
 
         UserModel expectedUserModel = TestUtil.returnUserModelWitgId1();
 

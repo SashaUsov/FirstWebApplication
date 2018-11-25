@@ -3,7 +3,7 @@ package sashaVosu.firstWebApplication.service;
 import org.springframework.stereotype.Service;
 import sashaVosu.firstWebApplication.converters.UserConverters;
 import sashaVosu.firstWebApplication.domain.Tweet;
-import sashaVosu.firstWebApplication.domain.User;
+import sashaVosu.firstWebApplication.domain.ApplicationUser;
 import sashaVosu.firstWebApplication.domain.dto.CreateUserModel;
 import sashaVosu.firstWebApplication.domain.dto.UserModel;
 import sashaVosu.firstWebApplication.exception.UserExistsException;
@@ -42,17 +42,17 @@ public class UserService {
 //create new user
     public UserModel userCreate(CreateUserModel model) {
 
-        User userFromDb = userRepo.findOneByNickNameAndEmail(model.getNickName(), model.getEmail());
+        ApplicationUser userFromDb = userRepo.findOneByNickNameAndEmail(model.getNickName(), model.getEmail());
 
         if (userFromDb == null) {
 
-            User newUser = UserConverters.toEntity(model);
+            ApplicationUser newUser = UserConverters.toEntity(model);
 
             return UserConverters.toModel(userRepo.save(newUser));
 
         } else {
 
-            throw new UserExistsException("User with this nickname or email already exists");
+            throw new UserExistsException("ApplicationUser with this nickname or email already exists");
         }
     }
 
@@ -80,7 +80,7 @@ public class UserService {
 
     public UserModel getOneUser(Long id) {
 
-        User user = userRepo.findOneById(id);
+        ApplicationUser user = userRepo.findOneById(id);
 
         if (user != null) {
 

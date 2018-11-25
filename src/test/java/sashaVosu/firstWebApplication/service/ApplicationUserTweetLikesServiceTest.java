@@ -7,8 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import sashaVosu.firstWebApplication.Utils.TestUtil;
+import sashaVosu.firstWebApplication.domain.ApplicationUser;
 import sashaVosu.firstWebApplication.domain.Tweet;
-import sashaVosu.firstWebApplication.domain.User;
 import sashaVosu.firstWebApplication.domain.UserTweetLikes;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.repo.TweetRepo;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class UserTweetLikesServiceTest {
+public class ApplicationUserTweetLikesServiceTest {
 
     @Autowired
     private UserTweetLikesService userTweetLikesService;
@@ -46,7 +46,7 @@ public class UserTweetLikesServiceTest {
 
         String givenNickName = "bob";
 
-        User givenUser = TestUtil.returnUserWithId1();
+        ApplicationUser givenUser = TestUtil.returnUserWithId1();
 
 
         doReturn(givenUser).when(userRepo).findOneByNickName(anyString());
@@ -67,7 +67,7 @@ public class UserTweetLikesServiceTest {
 
         String givenNickName = "bob";
 
-        User givenUser = TestUtil.returnUserWithId1();
+        ApplicationUser givenUser = TestUtil.returnUserWithId1();
 
         doReturn(givenUser).when(userRepo).findOneByNickName(anyString());
 
@@ -85,7 +85,7 @@ public class UserTweetLikesServiceTest {
 
         List<UserTweetLikes> givenUserTweetLikesList = TestUtil.returnListUserTweetLikesWhereTwetWithId1Has2Like();
 
-        List<User> givenUserList = TestUtil.returnListOfUserWithId1AndId2();
+        List<ApplicationUser> givenUserList = TestUtil.returnListOfUserWithId1AndId2();
 
         String givenNickName = "bob";
 
@@ -117,13 +117,13 @@ public class UserTweetLikesServiceTest {
 
         List<TweetModel> expectedTweetModelList = TestUtil.returnTweetModelListWhatLikeUserWithNickNameBob();
 
-        User givenUser = TestUtil.returnUserWithId1();
+        ApplicationUser givenUser = TestUtil.returnUserWithId1();
 
         //likeStatistic method
 
         List<UserTweetLikes> givenUserTweetLikesList2 = TestUtil.returnListUserTweetLikesWhereTwetWithId1Has2Like();
 
-        List<User> givenUserList = TestUtil.returnListOfUserWithId1AndId2();
+        List<ApplicationUser> givenUserList = TestUtil.returnListOfUserWithId1AndId2();
 
         doReturn(givenUserTweetLikesList2 ).when(userTweetLikesRepo).findAllByTweetId(anyLong());
 

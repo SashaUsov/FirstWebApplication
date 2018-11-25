@@ -15,7 +15,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Table(name = "account")
-public class User {
+public class ApplicationUser {
 
     @Column(name = "id", updatable=false, nullable=false)
     @Id
@@ -56,7 +56,7 @@ public class User {
             joinColumns = { @JoinColumn(name = "channel_id") },
             inverseJoinColumns = { @JoinColumn(name = "subscriber_id") }
     )
-    private Set<User> subscribers = new HashSet<>();
+    private Set<ApplicationUser> subscribers = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
@@ -64,7 +64,7 @@ public class User {
             joinColumns = { @JoinColumn(name = "subscriber_id") },
             inverseJoinColumns = { @JoinColumn(name = "channel_id") }
     )
-    private Set<User> subscriptions = new HashSet<>();
+    private Set<ApplicationUser> subscriptions = new HashSet<>();
 
     @Column(name = "is_active")
     private boolean isActive;

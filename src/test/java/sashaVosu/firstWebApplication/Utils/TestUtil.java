@@ -1,7 +1,7 @@
 package sashaVosu.firstWebApplication.Utils;
 
+import sashaVosu.firstWebApplication.domain.ApplicationUser;
 import sashaVosu.firstWebApplication.domain.Tweet;
-import sashaVosu.firstWebApplication.domain.User;
 import sashaVosu.firstWebApplication.domain.UserTweetLikes;
 import sashaVosu.firstWebApplication.domain.dto.CreateUserModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
@@ -27,9 +27,9 @@ public class TestUtil {
         return createUserModel;
     }
 
-    public static User returnUserWithId1() {
+    public static ApplicationUser returnUserWithId1() {
 
-        User user = new User();
+        ApplicationUser user = new ApplicationUser();
 
         user.setId(1L);
         user.setFirstName("rot");
@@ -59,9 +59,9 @@ public class TestUtil {
         return userModel;
     }
 
-    public static List<User> returnListOfUserWithId1AndId2() {
+    public static List<ApplicationUser> returnListOfUserWithId1AndId2() {
 
-        User user = new User();
+        ApplicationUser user = new ApplicationUser();
 
         user.setId(1L);
         user.setFirstName("rot");
@@ -71,7 +71,7 @@ public class TestUtil {
         user.setAge("22");
         user.setEmail("same@mail.com");
 
-        User user2 = new User();
+        ApplicationUser user2 = new ApplicationUser();
 
         user2.setId(2L);
         user2.setFirstName("Usr");
@@ -81,7 +81,7 @@ public class TestUtil {
         user2.setAge("25");
         user2.setEmail("samemail@mail.com");
 
-        List<User> userList = new ArrayList<>();
+        List<ApplicationUser> userList = new ArrayList<>();
 
         userList.add(user);
         userList.add(user2);
