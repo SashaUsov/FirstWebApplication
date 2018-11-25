@@ -26,6 +26,8 @@ public class UserModel {
 
     private Integer subscriptionsCount;
 
+    private String fileName;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

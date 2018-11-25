@@ -1,11 +1,14 @@
 package sashaVosu.firstWebApplication.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.domain.dto.UserModel;
 import sashaVosu.firstWebApplication.fasades.TweetFacades;
 import sashaVosu.firstWebApplication.service.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -55,6 +58,15 @@ public class ProfileController {
 
     }
 
+    @PostMapping("img")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addProfilePic(@RequestParam("file") MultipartFile file) throws IOException {
+
+        String nickName = Utils.getNickName();
+
+        userService.addProfilePic(nickName, file);
+
+    }
 //delete user account and all user and like from user-tweet-like table
 //Deleted account cannot be recovered.
     @DeleteMapping("delete")

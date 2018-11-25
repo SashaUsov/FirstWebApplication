@@ -50,6 +50,9 @@ public class ApplicationUser {
     @Column(name = "age")
     private String age;
 
+    @Column(name = "file_name")
+    private String fileName;
+
     @ManyToMany
     @JoinTable(
             name = "user_subscriptions",

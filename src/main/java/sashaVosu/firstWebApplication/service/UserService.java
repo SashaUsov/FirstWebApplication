@@ -1,6 +1,10 @@
 package sashaVosu.firstWebApplication.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import sashaVosu.firstWebApplication.converters.UserConverters;
 import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.ApplicationUser;
@@ -11,7 +15,10 @@ import sashaVosu.firstWebApplication.repo.TweetRepo;
 import sashaVosu.firstWebApplication.repo.UserRepo;
 import sashaVosu.firstWebApplication.repo.UserTweetLikesRepo;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +38,9 @@ public class UserService {
         this.tweetRepo = tweetRepo;
         this.userTweetLikesRepo = userTweetLikesRepo;
     }
+
+    @Value("${upload.path}")
+    public String uploadPath;
 
 //return list of all users
     public List<UserModel> getUserList() {
@@ -55,6 +65,7 @@ public class UserService {
             throw new UserExistsException("ApplicationUser with this nickname or email already exists");
         }
     }
+
 
 //delete user account and all user tweet and like from user-tweet-like table
 //Deleted account cannot be recovered.
@@ -90,6 +101,30 @@ public class UserService {
 
             return null;
         }
+    }
+
+    public void addProfilePic(String nickName, MultipartFile file) throws IOException {
+
+        ApplicationUser user = userRepo.findOneByNickName(nickName);
+
+        if (file != null) {
+
+            File uploadDir = new File(uploadPath);
+
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+
+            String uuidFile = UUID.randomUUID().toString();
+            String resultFileName = uuidFile + "." + file.getOriginalFilename();
+
+            file.transferTo(new File(uploadPath + "/" + resultFileName));
+
+            user.setFileName(resultFileName);
+
+            userRepo.save(user);
+        }
+
     }
 }
 
