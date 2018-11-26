@@ -10,4 +10,6 @@ public class CreateTweetModel {
 
     private String tweetText;
 
+    private String resultFileName;
+
 }

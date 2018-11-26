@@ -57,7 +57,7 @@ public class ProfileController {
         return userTweetLikesService.tweetWhatLike(nickName);
 
     }
-
+//add avatar image to user profile
     @PostMapping("img")
     @ResponseStatus(HttpStatus.CREATED)
     public void addProfilePic(@RequestParam("file") MultipartFile file) throws IOException {

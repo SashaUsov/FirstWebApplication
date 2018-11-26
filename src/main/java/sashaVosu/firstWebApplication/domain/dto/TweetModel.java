@@ -35,6 +35,8 @@ public class TweetModel {
 
     private boolean isReTweet;
 
+    private String pic;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

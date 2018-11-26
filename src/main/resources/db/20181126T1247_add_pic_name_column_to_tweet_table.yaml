@@ -1,0 +1,13 @@
+databaseChangeLog:
+
+    - changeSet:
+        id: 1
+        author: sasha_vosu
+        changes:
+
+        - addColumn:
+            tableName: tweet
+            columns:
+              - column:
+                 name: pic_name
+                 type: varchar

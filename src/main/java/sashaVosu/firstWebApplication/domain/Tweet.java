@@ -38,6 +38,9 @@ public class Tweet {
     @Column(name = "is_re_tweet")
     private boolean isReTweet;
 
+    @Column(name = "pic_name")
+    private String pic;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "re_tweet")
     private Tweet firstTweet;

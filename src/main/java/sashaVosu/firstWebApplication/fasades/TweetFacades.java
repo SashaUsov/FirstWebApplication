@@ -16,6 +16,7 @@ public class TweetFacades {
         this.tweetLikesService = tweetLikesService;
     }
 
+//return list of all tweets with like statistic
     public List<TweetModel> getTweetsList(String nickName, List<TweetModel> modelList) {
 
         return modelList.stream().map(a -> tweetLikesService.likeStatistic(a, nickName))

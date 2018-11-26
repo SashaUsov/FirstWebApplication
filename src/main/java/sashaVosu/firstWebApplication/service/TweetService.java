@@ -1,6 +1,8 @@
 package sashaVosu.firstWebApplication.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import sashaVosu.firstWebApplication.converters.TweetConverters;
 import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
@@ -9,7 +11,10 @@ import sashaVosu.firstWebApplication.exception.NotAllowedLengthOfTextException;
 import sashaVosu.firstWebApplication.repo.TweetRepo;
 import sashaVosu.firstWebApplication.repo.UserTweetLikesRepo;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +30,9 @@ public class TweetService {
         this.tweetRepo = tweetRepo;
         this.userTweetLikesRepo = userTweetLikesRepo;
     }
+
+    @Value("${pic.path}")
+    public String picPath;
 
 //return list of all tweets with like count and user like status as to tweet
     public List<TweetModel> getTweetsList() {
@@ -51,24 +59,16 @@ public class TweetService {
 
     }
 
-//create new tweet
-    public TweetModel tweetCreate(CreateTweetModel tweetModel, String nickName){
+//return TweetModel to the user after creating new tweet
+    public TweetModel tweetCreate(CreateTweetModel tweetModel,
+                                  String nickName
+    ) {
 
-            if (tweetModel.getTweetText().length() >= 1
-                    && tweetModel.getTweetText().length() <= 140)
-            {
+        Tweet tweet = createTweet(tweetModel, nickName);
 
-                Tweet newTweet = TweetConverters.toEntity(tweetModel, nickName);
-                newTweet.setReTweet(false);
+        return TweetConverters.toModel(tweet);
 
-                tweetRepo.save(newTweet);
 
-                return TweetConverters.toModel(newTweet);
-
-            } else {
-
-                throw new NotAllowedLengthOfTextException("Not allowed length of tweet");
-            }
     }
 
 //delete one tweet by tweet id from TWEET  and USER-LIKE-TWEET table
@@ -103,12 +103,56 @@ public class TweetService {
 
 //update tweet by tweet id
     public TweetModel update(CreateTweetModel model,
-                             String currentPrincipalName, Long id)
-    {
+                             String currentPrincipalName,
+                             Long id
+    ) {
         Tweet toUpdate = tweetRepo.findOneByCreatorAndId(currentPrincipalName, id);
 
         toUpdate.setText(model.getTweetText());
 
         return Utils.convert(tweetRepo.save(toUpdate));
+    }
+
+//create new tweet
+    private Tweet createTweet(CreateTweetModel tweetModel,
+                              String nickName
+    ) {
+
+
+        if (tweetModel.getTweetText().length() >= 1
+                && tweetModel.getTweetText().length() <= 140)
+        {
+
+            Tweet newTweet = TweetConverters.toEntity(tweetModel, nickName);
+
+            newTweet.setReTweet(false);
+
+            return tweetRepo.save(newTweet);
+
+
+        } else {
+
+            throw new NotAllowedLengthOfTextException("Not allowed length of tweet");
+        }
+    }
+//Get the name of the picture added by the user to the tweet
+    public String addTweetPic (MultipartFile file) throws IOException {
+
+        if (file != null) {
+
+            File uploadDir = new File(picPath);
+
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+
+            String uuidFile = UUID.randomUUID().toString();
+            String resultFileName = uuidFile + "." + file.getOriginalFilename();
+
+            file.transferTo(new File(picPath + "/" + resultFileName));
+
+            return resultFileName;
+        }
+        return null;
     }
 }

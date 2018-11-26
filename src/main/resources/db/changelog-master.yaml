@@ -26,3 +26,5 @@ databaseChangeLog:
         file: db/20181125T1450_user_tweet_likes_seq.yaml
     - include:
         file: db/20181125T1819_add_file_name_column_to_account_table.yaml
+    - include:
+        file: db/20181126T1247_add_pic_name_column_to_tweet_table.yaml

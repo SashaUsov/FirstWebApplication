@@ -2,6 +2,7 @@ package sashaVosu.firstWebApplication.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sashaVosu.firstWebApplication.domain.Error;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
@@ -11,6 +12,7 @@ import sashaVosu.firstWebApplication.service.ReTweetService;
 import sashaVosu.firstWebApplication.service.TweetService;
 import sashaVosu.firstWebApplication.service.UserTweetLikesService;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -56,11 +58,11 @@ public class TweetController {
         return userTweetLikesService.likeStatistic(model, nickName);
     }
 
-//create new tweet
+//return TweetModel to the user after creating new tweet
     @PostMapping("add")
     @ResponseStatus(HttpStatus.CREATED)
-    public TweetModel createTweet(@RequestBody CreateTweetModel model)
-    {
+    public TweetModel createTweet(@RequestBody CreateTweetModel model
+    ) {
         String nickName = Utils.getNickName();
 
         return tweetService.tweetCreate(model, nickName);
@@ -107,8 +109,8 @@ public class TweetController {
     @PostMapping("retweet/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public TweetModel createTweet(@RequestBody CreateTweetModel model,
-                                  @PathVariable("id") Long tweetId)
-    {
+                                  @PathVariable("id") Long tweetId
+    ) {
         String nickName = Utils.getNickName();
 
         return reTweetService.reTweet(nickName, model, tweetId);
@@ -132,6 +134,12 @@ public class TweetController {
         List<TweetModel> listWithLike = tweetFacades.getTweetsList(nickName, modelList);
 
         return tweetService.myReTweetList(listWithLike);
+    }
+
+    @PostMapping("add-pic")
+    public String addTweetPic(@RequestParam("file") MultipartFile file) throws IOException {
+
+        return tweetService.addTweetPic(file);
     }
 
     @ExceptionHandler

@@ -9,13 +9,19 @@ import java.time.LocalDateTime;
 public class TweetConverters {
 
 //method helper. convert tweet dto class to tweet entity
-    public static Tweet toEntity(CreateTweetModel tweetModel, String nickName) {
+    public static Tweet toEntity(CreateTweetModel tweetModel,
+                                 String nickName
+    ) {
 
         Tweet newTweet = new Tweet();
 
         newTweet.setText(tweetModel.getTweetText());
         newTweet.setCreator(nickName);
         newTweet.setCreationData(LocalDateTime.now());
+
+        if (tweetModel.getResultFileName() != null) {
+            newTweet.setPic(tweetModel.getResultFileName());
+        }
 
 
         return newTweet;
@@ -32,6 +38,11 @@ public class TweetConverters {
         model.setText(tweet.getText());
         model.setReTweetCount(tweet.getWhoReTweet().size());
         model.setReTweet(tweet.isReTweet());
+
+        if(tweet.getPic() != null && !tweet.getPic().isEmpty()) {
+
+            model.setPic(tweet.getPic());
+        }
 
         return model;
     }

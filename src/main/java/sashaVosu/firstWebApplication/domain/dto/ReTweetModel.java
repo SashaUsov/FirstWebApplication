@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+//dto class to create ReTweetModel model from entity and give back to frontend
+
 @Getter
 @Setter
 public class ReTweetModel extends TweetModel {

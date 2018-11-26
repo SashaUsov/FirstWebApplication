@@ -25,7 +25,8 @@ public class ReTweetService {
 //Repost tweet user to your page
     public TweetModel reTweet(String nickName,
                               CreateTweetModel tweetModel,
-                              Long tweetId) {
+                              Long tweetId
+    ) {
 
         Tweet tweetFromDb = tweetRepo.findOneById(tweetId);
 

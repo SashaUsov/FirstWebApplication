@@ -89,6 +89,7 @@ public class UserService {
         userRepo.deleteOneById(userId);
     }
 
+//get one user by user id
     public UserModel getOneUser(Long id) {
 
         ApplicationUser user = userRepo.findOneById(id);
@@ -103,6 +104,7 @@ public class UserService {
         }
     }
 
+//add avatar image to user profile
     public void addProfilePic(String nickName, MultipartFile file) throws IOException {
 
         ApplicationUser user = userRepo.findOneByNickName(nickName);
