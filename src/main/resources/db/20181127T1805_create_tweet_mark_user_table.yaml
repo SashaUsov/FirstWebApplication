@@ -1,0 +1,26 @@
+databaseChangeLog:
+
+    - changeSet:
+        id: 1
+        author: sasha_vosu
+        changes:
+
+        - createTable:
+            tableName: tweet_mark_user
+            columns:
+              - column:
+                 name: user_id
+                 type: bigint
+                 autoIncrement: true
+                 constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_mark_id
+                    references: hash_tag(id)
+              - column:
+                 name: tweet_id
+                 type: bigint
+                 autoIncrement: true
+                 constraints:
+                    nullable: false
+                    foreignKeyName: fk_tweet_mark_id
+                    references: tweet(id)

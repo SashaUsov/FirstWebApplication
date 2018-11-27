@@ -55,4 +55,12 @@ public class Tweet {
             inverseJoinColumns = { @JoinColumn(name = "tag_id") }
     )
     private Set<HashTag> listTagsInTweet = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "tweet_mark_user",
+            joinColumns = { @JoinColumn(name = "tweet_id") },
+            inverseJoinColumns = { @JoinColumn(name = "user_id") }
+    )
+    private Set<ApplicationUser> markUserList = new HashSet<>();
 }

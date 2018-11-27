@@ -69,6 +69,14 @@ public class ApplicationUser {
     )
     private Set<ApplicationUser> subscriptions = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "tweet_mark_user",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "tweet_id") }
+    )
+    private Set<Tweet> userMarkedTweetList = new HashSet<>();
+
     @Column(name = "is_active")
     private boolean isActive;
 

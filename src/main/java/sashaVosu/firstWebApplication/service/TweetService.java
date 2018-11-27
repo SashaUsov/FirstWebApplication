@@ -4,15 +4,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import sashaVosu.firstWebApplication.converters.TweetConverters;
+import sashaVosu.firstWebApplication.converters.UserConverters;
+import sashaVosu.firstWebApplication.domain.ApplicationUser;
 import sashaVosu.firstWebApplication.domain.HashTag;
 import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
+import sashaVosu.firstWebApplication.domain.dto.UserModel;
 import sashaVosu.firstWebApplication.exception.NotAllowedLengthOfTextException;
 import sashaVosu.firstWebApplication.repo.HashTagRepo;
 import sashaVosu.firstWebApplication.repo.TweetRepo;
+import sashaVosu.firstWebApplication.repo.UserRepo;
 import sashaVosu.firstWebApplication.repo.UserTweetLikesRepo;
-import sashaVosu.firstWebApplication.utils.TagUtil;
+import sashaVosu.firstWebApplication.utils.TagMarkUtil;
 import sashaVosu.firstWebApplication.utils.Utils;
 
 import java.io.File;
@@ -31,11 +35,17 @@ public class TweetService {
 
     private final HashTagRepo hashTagRepo;
 
+    private final UserRepo userRepo;
+
     public TweetService(TweetRepo tweetRepo,
-                        UserTweetLikesRepo userTweetLikesRepo, HashTagRepo hashTagRepo) {
+                        UserTweetLikesRepo userTweetLikesRepo,
+                        HashTagRepo hashTagRepo,
+                        UserRepo userRepo
+    ) {
         this.tweetRepo = tweetRepo;
         this.userTweetLikesRepo = userTweetLikesRepo;
         this.hashTagRepo = hashTagRepo;
+        this.userRepo = userRepo;
     }
 
     @Value("${pic.path}")
@@ -122,7 +132,7 @@ public class TweetService {
             toUpdate.setText(model.getTweetText());
             toUpdate.getListTagsInTweet().clear();
 
-            Set<String> tagInTweet = TagUtil.tagDetector(model.getTweetText());
+            Set<String> tagInTweet = TagMarkUtil.tagDetector(model.getTweetText());
 
             if (tagInTweet.size() != 0) {
 
@@ -153,11 +163,18 @@ public class TweetService {
 
             tweetRepo.save(newTweet);
 
-            Set<String> tagInTweet = TagUtil.tagDetector(newTweet.getText());
+            Set<String> tagInTweet = TagMarkUtil.tagDetector(newTweet.getText());
 
             if (tagInTweet.size() != 0) {
 
                 addTagParam(newTweet, tagInTweet);
+            }
+
+            Set<String> markInTweet = TagMarkUtil.userMarkDetector(newTweet.getText());
+
+            if (markInTweet.size() != 0) {
+
+                addMarkParam(newTweet, markInTweet);
             }
 
             return newTweet;
@@ -169,10 +186,28 @@ public class TweetService {
         }
     }
 
+//mark user in tweet
+    private void addMarkParam(Tweet tweet, Set<String> markInTweet) {
+
+        Set<String> finalSet = TagMarkUtil.takeClearWord(markInTweet);
+
+        for (String mark : finalSet) {
+
+            ApplicationUser user = userRepo.findOneByNickName(mark);
+
+            if (user != null) {
+
+                tweet.getMarkUserList().add(user);
+
+            }
+        }
+        tweetRepo.save(tweet);
+    }
+
 //add hashTags to tweet
     private void addTagParam(Tweet tweet, Set<String> tagInTweet) {
 
-        Set<String> finalSet = TagUtil.getTag(tagInTweet);
+        Set<String> finalSet = TagMarkUtil.takeClearWord(tagInTweet);
 
         for (String tag : finalSet) {
 
@@ -228,6 +263,16 @@ public class TweetService {
 
         return hashTagFromDb.getTweetWithTagList().stream()
                 .map(Utils::convert)
+                .collect(Collectors.toList());
+    }
+
+//get user list by mark in tweet
+    public List<UserModel> getMarkUserList(Long tweetId) {
+
+        Tweet oneTweetById = tweetRepo.findOneById(tweetId);
+
+        return oneTweetById.getMarkUserList().stream()
+                .map(UserConverters::toModel)
                 .collect(Collectors.toList());
     }
 }

@@ -9,11 +9,14 @@ import sashaVosu.firstWebApplication.converters.UserConverters;
 import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.ApplicationUser;
 import sashaVosu.firstWebApplication.domain.dto.CreateUserModel;
+import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.domain.dto.UserModel;
+import sashaVosu.firstWebApplication.exception.AccessNotAllowedException;
 import sashaVosu.firstWebApplication.exception.UserExistsException;
 import sashaVosu.firstWebApplication.repo.TweetRepo;
 import sashaVosu.firstWebApplication.repo.UserRepo;
 import sashaVosu.firstWebApplication.repo.UserTweetLikesRepo;
+import sashaVosu.firstWebApplication.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -127,6 +130,20 @@ public class UserService {
             userRepo.save(user);
         }
 
+    }
+
+//Returns a list of tweets in which users are tagged
+    public List<TweetModel> getTweetListWhereIMark(String nickName, String userNick) {
+
+        if (userNick.equals(nickName)) {
+            ApplicationUser marksUser = userRepo.findOneByNickName(nickName);
+
+            return marksUser.getUserMarkedTweetList().stream()
+                    .map(Utils::convert)
+                    .collect(Collectors.toList());
+        } else {
+            throw new AccessNotAllowedException("Access to the resource is forbidden for the user " + nickName);
+        }
     }
 }
 

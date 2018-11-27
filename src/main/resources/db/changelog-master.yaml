@@ -34,3 +34,5 @@ databaseChangeLog:
         file: db/20181126T1913_tag_seq.yaml
     - include:
         file: db/20181126T1916_create_tweet_tag_table.yaml
+    - include:
+        file: db/20181127T1805_create_tweet_mark_user_table.yaml

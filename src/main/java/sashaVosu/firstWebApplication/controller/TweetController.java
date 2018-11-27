@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import sashaVosu.firstWebApplication.domain.Error;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
+import sashaVosu.firstWebApplication.domain.dto.UserModel;
 import sashaVosu.firstWebApplication.fasades.TweetFacades;
 import sashaVosu.firstWebApplication.utils.Utils;
 import sashaVosu.firstWebApplication.service.ReTweetService;
@@ -149,6 +150,14 @@ public class TweetController {
 
         return tweetService.getTweetListByTag(tagToFind);
     }
+
+//get user list by mark in tweet
+    @GetMapping("mark-in-tweet/{id}")
+    public List<UserModel> getMarkUserList(@PathVariable("id") Long tweetId){
+
+        return tweetService.getMarkUserList(tweetId);
+    }
+
     @ExceptionHandler
     public Error handleException(Exception e) {
         e.printStackTrace();

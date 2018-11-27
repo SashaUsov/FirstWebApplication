@@ -109,4 +109,14 @@ public class ProfileController {
 
         return subscriberService.subscriptionsList(userId);
     }
+
+//Returns a list of tweets in which users are tagged
+    @GetMapping("mark-with-me/{userNick}")
+    public List<TweetModel> getTweetListWhereIMark(@PathVariable("userNick") String userNick){
+
+        String nickName = Utils.getNickName();
+
+        return userService.getTweetListWhereIMark(nickName, userNick);
+
+    }
 }
