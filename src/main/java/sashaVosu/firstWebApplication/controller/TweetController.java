@@ -136,12 +136,19 @@ public class TweetController {
         return tweetService.myReTweetList(listWithLike);
     }
 
+//Get the name of the picture added by the user to the tweet
     @PostMapping("add-pic")
     public String addTweetPic(@RequestParam("file") MultipartFile file) throws IOException {
 
         return tweetService.addTweetPic(file);
     }
 
+//get tweet list by tag
+    @GetMapping("hash-tag/{tag}")
+    public List<TweetModel> getTweetListByTag(@PathVariable("tag") String tagToFind) {
+
+        return tweetService.getTweetListByTag(tagToFind);
+    }
     @ExceptionHandler
     public Error handleException(Exception e) {
         e.printStackTrace();

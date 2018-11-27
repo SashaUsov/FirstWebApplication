@@ -5,5 +5,5 @@ import sashaVosu.firstWebApplication.domain.HashTag;
 
 public interface HashTagRepo extends JpaRepository<HashTag, Long> {
 
-    HashTag findByTag(String tag);
+    HashTag findOneByTag(String tag);
 }

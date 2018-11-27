@@ -162,7 +162,7 @@ public class TweetService {
 
             if (tag.length() > 0) {
 
-                if (hashTagRepo.findByTag(tag) == null) {
+                if (hashTagRepo.findOneByTag(tag) == null) {
 
                     HashTag hashTag = new HashTag();
 
@@ -172,7 +172,7 @@ public class TweetService {
                     tweet.getListTagsInTweet().add(hashTag);
 
                 } else {
-                    HashTag hashTagFromDb = hashTagRepo.findByTag(tag);
+                    HashTag hashTagFromDb = hashTagRepo.findOneByTag(tag);
 
                     tweet.getListTagsInTweet().add(hashTagFromDb);
                 }
@@ -181,7 +181,7 @@ public class TweetService {
         tweetRepo.save(tweet);
     }
 
-    //Get the name of the picture added by the user to the tweet
+//Get the name of the picture added by the user to the tweet
     public String addTweetPic (MultipartFile file) throws IOException {
 
         if (file != null) {
@@ -200,5 +200,16 @@ public class TweetService {
             return resultFileName;
         }
         return null;
+    }
+
+//get tweet list by tag
+    public List<TweetModel> getTweetListByTag(String tag) {
+        String hashTag = tag.toLowerCase();
+
+        HashTag hashTagFromDb = hashTagRepo.findOneByTag(tag);
+
+        return hashTagFromDb.getTweetWithTagList().stream()
+                .map(Utils::convert)
+                .collect(Collectors.toList());
     }
 }
