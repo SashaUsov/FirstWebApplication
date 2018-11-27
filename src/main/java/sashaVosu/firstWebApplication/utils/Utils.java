@@ -1,4 +1,4 @@
-package sashaVosu.firstWebApplication.service;
+package sashaVosu.firstWebApplication.utils;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

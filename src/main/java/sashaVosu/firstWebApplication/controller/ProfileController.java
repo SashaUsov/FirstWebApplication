@@ -7,6 +7,7 @@ import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.domain.dto.UserModel;
 import sashaVosu.firstWebApplication.fasades.TweetFacades;
 import sashaVosu.firstWebApplication.service.*;
+import sashaVosu.firstWebApplication.utils.Utils;
 
 import java.io.IOException;
 import java.util.List;

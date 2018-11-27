@@ -1,10 +1,12 @@
 package sashaVosu.firstWebApplication.converters;
 
+import sashaVosu.firstWebApplication.domain.HashTag;
 import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 public class TweetConverters {
 

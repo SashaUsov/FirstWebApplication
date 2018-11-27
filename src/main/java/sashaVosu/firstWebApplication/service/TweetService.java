@@ -4,16 +4,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import sashaVosu.firstWebApplication.converters.TweetConverters;
+import sashaVosu.firstWebApplication.domain.HashTag;
 import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.exception.NotAllowedLengthOfTextException;
+import sashaVosu.firstWebApplication.repo.HashTagRepo;
 import sashaVosu.firstWebApplication.repo.TweetRepo;
 import sashaVosu.firstWebApplication.repo.UserTweetLikesRepo;
+import sashaVosu.firstWebApplication.utils.TagUtil;
+import sashaVosu.firstWebApplication.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -24,11 +29,14 @@ public class TweetService {
 
     private final UserTweetLikesRepo userTweetLikesRepo;
 
+    private final HashTagRepo hashTagRepo;
+
     public TweetService(TweetRepo tweetRepo,
-                        UserTweetLikesRepo userTweetLikesRepo)
+                        UserTweetLikesRepo userTweetLikesRepo, HashTagRepo hashTagRepo)
     {
         this.tweetRepo = tweetRepo;
         this.userTweetLikesRepo = userTweetLikesRepo;
+        this.hashTagRepo = hashTagRepo;
     }
 
     @Value("${pic.path}")
@@ -127,7 +135,16 @@ public class TweetService {
 
             newTweet.setReTweet(false);
 
-            return tweetRepo.save(newTweet);
+            tweetRepo.save(newTweet);
+
+            Set<String> tagInTweet = TagUtil.tagDetector(newTweet.getText());
+
+            if (tagInTweet.size() != 0) {
+
+                addTagParam(newTweet, tagInTweet);
+            }
+
+            return newTweet;
 
 
         } else {
@@ -135,7 +152,36 @@ public class TweetService {
             throw new NotAllowedLengthOfTextException("Not allowed length of tweet");
         }
     }
-//Get the name of the picture added by the user to the tweet
+
+//add hashTags to tweet
+    private void addTagParam(Tweet tweet, Set<String> tagInTweet) {
+
+        Set<String> finalSet = TagUtil.getTag(tagInTweet);
+
+        for (String tag : finalSet) {
+
+            if (tag.length() > 0) {
+
+                if (hashTagRepo.findByTag(tag) == null) {
+
+                    HashTag hashTag = new HashTag();
+
+                    hashTag.setTag(tag);
+                    hashTagRepo.save(hashTag);
+
+                    tweet.getListTagsInTweet().add(hashTag);
+
+                } else {
+                    HashTag hashTagFromDb = hashTagRepo.findByTag(tag);
+
+                    tweet.getListTagsInTweet().add(hashTagFromDb);
+                }
+            }
+        }
+        tweetRepo.save(tweet);
+    }
+
+    //Get the name of the picture added by the user to the tweet
     public String addTweetPic (MultipartFile file) throws IOException {
 
         if (file != null) {

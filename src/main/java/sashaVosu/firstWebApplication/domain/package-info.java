@@ -27,6 +27,16 @@
                 @Parameter(name = "increment_size", value = "1"),
         }
 )
+
+@GenericGenerator(
+        name = "tag_seq",
+        strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+        parameters = {
+                @Parameter(name = "tag_seq", value = "sequence"),
+                @Parameter(name = "initial_value", value = "1"),
+                @Parameter(name = "increment_size", value = "1"),
+        }
+)
 package sashaVosu.firstWebApplication.domain;
 
 import org.hibernate.annotations.GenericGenerator;

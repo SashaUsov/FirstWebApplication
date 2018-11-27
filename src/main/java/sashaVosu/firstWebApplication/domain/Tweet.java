@@ -47,4 +47,12 @@ public class Tweet {
 
     @OneToMany(mappedBy = "firstTweet", fetch = FetchType.LAZY)
     private Set<Tweet> whoReTweet = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "tweet_tag",
+            joinColumns = { @JoinColumn(name = "tweet_id") },
+            inverseJoinColumns = { @JoinColumn(name = "tag_id") }
+    )
+    private Set<HashTag> listTagsInTweet = new HashSet<>();
 }

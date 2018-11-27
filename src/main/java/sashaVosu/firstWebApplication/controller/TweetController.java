@@ -7,7 +7,7 @@ import sashaVosu.firstWebApplication.domain.Error;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.fasades.TweetFacades;
-import sashaVosu.firstWebApplication.service.Utils;
+import sashaVosu.firstWebApplication.utils.Utils;
 import sashaVosu.firstWebApplication.service.ReTweetService;
 import sashaVosu.firstWebApplication.service.TweetService;
 import sashaVosu.firstWebApplication.service.UserTweetLikesService;
