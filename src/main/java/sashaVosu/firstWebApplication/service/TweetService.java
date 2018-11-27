@@ -160,19 +160,21 @@ public class TweetService {
 
         for (String tag : finalSet) {
 
-            if (tag.length() > 0) {
+            String findTag = tag.toLowerCase();
 
-                if (hashTagRepo.findOneByTag(tag) == null) {
+            if (findTag.length() > 0) {
+
+                if (hashTagRepo.findOneByTag(findTag) == null) {
 
                     HashTag hashTag = new HashTag();
 
-                    hashTag.setTag(tag);
+                    hashTag.setTag(findTag);
                     hashTagRepo.save(hashTag);
 
                     tweet.getListTagsInTweet().add(hashTag);
 
                 } else {
-                    HashTag hashTagFromDb = hashTagRepo.findOneByTag(tag);
+                    HashTag hashTagFromDb = hashTagRepo.findOneByTag(findTag);
 
                     tweet.getListTagsInTweet().add(hashTagFromDb);
                 }
