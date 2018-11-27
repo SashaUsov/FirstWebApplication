@@ -32,8 +32,7 @@ public class TweetService {
     private final HashTagRepo hashTagRepo;
 
     public TweetService(TweetRepo tweetRepo,
-                        UserTweetLikesRepo userTweetLikesRepo, HashTagRepo hashTagRepo)
-    {
+                        UserTweetLikesRepo userTweetLikesRepo, HashTagRepo hashTagRepo) {
         this.tweetRepo = tweetRepo;
         this.userTweetLikesRepo = userTweetLikesRepo;
         this.hashTagRepo = hashTagRepo;
@@ -79,7 +78,7 @@ public class TweetService {
 
     }
 
-//delete one tweet by tweet id from TWEET  and USER-LIKE-TWEET table
+    //delete one tweet by tweet id from TWEET  and USER-LIKE-TWEET table
     public void del(Long id, String nickName) {
 
         Tweet tweet = tweetRepo.findOneById(id);
@@ -104,7 +103,7 @@ public class TweetService {
 
     }
 
-    public TweetModel getOne (Long id) {
+    public TweetModel getOne(Long id) {
 
         return Utils.convert(tweetRepo.findOneById(id));
     }
@@ -114,11 +113,28 @@ public class TweetService {
                              String currentPrincipalName,
                              Long id
     ) {
-        Tweet toUpdate = tweetRepo.findOneByCreatorAndId(currentPrincipalName, id);
 
-        toUpdate.setText(model.getTweetText());
+        if (model.getTweetText().length() >= 1
+                && model.getTweetText().length() <= 140) {
 
-        return Utils.convert(tweetRepo.save(toUpdate));
+            Tweet toUpdate = tweetRepo.findOneByCreatorAndId(currentPrincipalName, id);
+
+            toUpdate.setText(model.getTweetText());
+            toUpdate.getListTagsInTweet().clear();
+
+            Set<String> tagInTweet = TagUtil.tagDetector(model.getTweetText());
+
+            if (tagInTweet.size() != 0) {
+
+                addTagParam(toUpdate, tagInTweet);
+            }
+
+            return Utils.convert(tweetRepo.save(toUpdate));
+
+        } else {
+
+            throw new NotAllowedLengthOfTextException("Not allowed length of tweet");
+        }
     }
 
 //create new tweet
