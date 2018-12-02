@@ -2,12 +2,10 @@ package sashaVosu.firstWebApplication.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import sashaVosu.firstWebApplication.converters.UserConverters;
-import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.ApplicationUser;
+import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.dto.CreateUserModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.domain.dto.UserModel;
@@ -35,8 +33,7 @@ public class UserService {
 
     public UserService(UserRepo userRepo,
                        TweetRepo tweetRepo,
-                       UserTweetLikesRepo userTweetLikesRepo)
-    {
+                       UserTweetLikesRepo userTweetLikesRepo) {
         this.userRepo = userRepo;
         this.tweetRepo = tweetRepo;
         this.userTweetLikesRepo = userTweetLikesRepo;
@@ -45,14 +42,14 @@ public class UserService {
     @Value("${upload.path}")
     public String uploadPath;
 
-//return list of all users
+    //return list of all users
     public List<UserModel> getUserList() {
 
         return userRepo.findAll().stream()
                 .map(UserConverters::toModel).collect(Collectors.toList());
     }
 
-//create new user
+    //create new user
     public UserModel userCreate(CreateUserModel model) {
 
         ApplicationUser userFromDb = userRepo.findOneByNickNameAndEmail(model.getNickName(), model.getEmail());
@@ -70,7 +67,7 @@ public class UserService {
     }
 
 
-//delete user account and all user tweet and like from user-tweet-like table
+    //delete user account and all user tweet and like from user-tweet-like table
 //Deleted account cannot be recovered.
     public void deleteProfile(String nickName) {
 
@@ -92,7 +89,7 @@ public class UserService {
         userRepo.deleteOneById(userId);
     }
 
-//get one user by user id
+    //get one user by user id
     public UserModel getOneUser(Long id) {
 
         ApplicationUser user = userRepo.findOneById(id);
@@ -107,7 +104,7 @@ public class UserService {
         }
     }
 
-//add avatar image to user profile
+    //add avatar image to user profile
     public void addProfilePic(String nickName, MultipartFile file) throws IOException {
 
         ApplicationUser user = userRepo.findOneByNickName(nickName);
@@ -132,7 +129,7 @@ public class UserService {
 
     }
 
-//Returns a list of tweets in which users are tagged
+    //Returns a list of tweets in which users are tagged
     public List<TweetModel> getTweetListWhereIMark(String nickName, String userNick) {
 
         if (userNick.equals(nickName)) {

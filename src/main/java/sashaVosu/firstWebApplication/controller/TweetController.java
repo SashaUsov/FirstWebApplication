@@ -24,22 +24,19 @@ public class TweetController {
 
     private final UserTweetLikesService userTweetLikesService;
 
-    private final ReTweetService reTweetService;
-
     private final TweetFacades tweetFacades;
 
     public TweetController(TweetService tweetService,
                            UserTweetLikesService userTweetLikesService,
-                           ReTweetService reTweetService, TweetFacades tweetFacades)
-    {
+                           TweetFacades tweetFacades
+    ) {
         this.tweetService = tweetService;
         this.userTweetLikesService = userTweetLikesService;
-        this.reTweetService = reTweetService;
         this.tweetFacades = tweetFacades;
     }
 
 //return list of all tweets
-    @GetMapping("list")
+    @GetMapping
     private List<TweetModel> listOfTweets() {
 
         String nickName = Utils.getNickName();
@@ -60,7 +57,7 @@ public class TweetController {
     }
 
 //return TweetModel to the user after creating new tweet
-    @PostMapping("add")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TweetModel createTweet(@RequestBody CreateTweetModel model
     ) {
@@ -88,75 +85,13 @@ public class TweetController {
         tweetService.del(id, nickName);
     }
 
-//put like to tweet. if successful returns true
-    @PutMapping("like/{id}")
-    public void putLike(@PathVariable("id") Long tweetId) {
-
-        String nickName = Utils.getNickName();
-
-        userTweetLikesService.like(tweetId, nickName);
-    }
-
-//remove like from tweet
-    @DeleteMapping("unlike/{id}")
-    public void unlike(@PathVariable("id") Long tweetId) {
-
-        String nickName = Utils.getNickName();
-
-        userTweetLikesService.unlike(tweetId, nickName);
-    }
-
-//Repost tweet user to your page
-    @PostMapping("retweet/{id}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public TweetModel createTweet(@RequestBody CreateTweetModel model,
-                                  @PathVariable("id") Long tweetId
-    ) {
-        String nickName = Utils.getNickName();
-
-        return reTweetService.reTweet(nickName, model, tweetId);
-    }
-
-//Get a list of tweets containing the original message
-    @GetMapping("tweetShare/{id}")
-    public List<TweetModel> tweetShare(@PathVariable("id") Long tweetId) {
-
-        return reTweetService.listOfReTweets(tweetId);
-    }
-
-//Tweets shared by this user
-    @GetMapping("iShared")
-    public List<TweetModel> tweetsUserShared() {
-
-        String nickName = Utils.getNickName();
-
-        List<TweetModel> modelList = tweetService.getTweetsList();
-
-        List<TweetModel> listWithLike = tweetFacades.getTweetsList(nickName, modelList);
-
-        return tweetService.myReTweetList(listWithLike);
-    }
-
 //Get the name of the picture added by the user to the tweet
-    @PostMapping("add-pic")
+    @PostMapping("pic")
     public String addTweetPic(@RequestParam("file") MultipartFile file) throws IOException {
 
         return tweetService.addTweetPic(file);
     }
 
-//get tweet list by tag
-    @GetMapping("hash-tag/{tag}")
-    public List<TweetModel> getTweetListByTag(@PathVariable("tag") String tagToFind) {
-
-        return tweetService.getTweetListByTag(tagToFind);
-    }
-
-//get user list by mark in tweet
-    @GetMapping("mark-in-tweet/{id}")
-    public List<UserModel> getMarkUserList(@PathVariable("id") Long tweetId){
-
-        return tweetService.getMarkUserList(tweetId);
-    }
 
     @ExceptionHandler
     public Error handleException(Exception e) {

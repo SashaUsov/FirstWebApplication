@@ -41,6 +41,9 @@ public class Tweet {
     @Column(name = "pic_name")
     private String pic;
 
+//    @Column(name = "published")
+//    private boolean published;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "re_tweet")
     private Tweet firstTweet;
