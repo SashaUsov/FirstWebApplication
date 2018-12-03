@@ -17,21 +17,21 @@ public class ReTweetService {
 
     private final TweetRepo tweetRepo;
 
-    public ReTweetService(TweetRepo tweetRepo)
-    {
+    public ReTweetService(TweetRepo tweetRepo) {
         this.tweetRepo = tweetRepo;
     }
 
-//Repost tweet user to your page
+    //Repost tweet user to your page
     public TweetModel reTweet(String nickName,
                               CreateTweetModel tweetModel,
                               Long tweetId
     ) {
 
-        Tweet tweetFromDb = tweetRepo.findOneById(tweetId);
+        Tweet tweetFromDb = tweetRepo.findOneByIdAndPublished(tweetId, true);
 
         Tweet reTweet = TweetConverters.toEntity(tweetModel, nickName);
 
+        reTweet.setPublished(true);
 
         if (tweetModel.getTweetText().length() >= 1
                 && tweetModel.getTweetText().length() <= 140) {
@@ -65,10 +65,10 @@ public class ReTweetService {
         }
     }
 
-//Get a list of tweets containing the original message
+    //Get a list of tweets containing the original message
     public List<TweetModel> listOfReTweets(Long tweetId) {
 
-        Tweet tweetFromDb = tweetRepo.findOneById(tweetId);
+        Tweet tweetFromDb = tweetRepo.findOneByIdAndPublished(tweetId, true);
 
         return tweetFromDb.getWhoReTweet().stream()
                 .map(ReTweetConverters::toModel)

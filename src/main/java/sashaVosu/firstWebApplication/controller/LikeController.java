@@ -37,7 +37,7 @@ public class LikeController {
 
     //return list of tweet what likes specific user
     @GetMapping
-    public List<TweetModel> likesTweetList () {
+    public List<TweetModel> likesTweetList() {
 
         String nickName = Utils.getNickName();
 

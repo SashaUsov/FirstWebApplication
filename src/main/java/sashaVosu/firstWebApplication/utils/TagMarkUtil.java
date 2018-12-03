@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class TagMarkUtil {
 
-//Searches for all words in the string containing #
+    //Searches for all words in the string containing #
     public static Set<String> tagDetector(String input) {
 
         return Arrays.stream(input.split(" "))
@@ -15,12 +15,12 @@ public class TagMarkUtil {
                 .collect(Collectors.toSet());
     }
 
-//Cuts out # of words and returns tags
+    //Cuts out # of words and returns tags
     public static Set<String> takeClearWord(Set<String> tagSet) {
 
         Set<String> finalSet = new HashSet<>();
 
-        for (String str : tagSet){
+        for (String str : tagSet) {
 
             String string = Arrays.stream(str.split(""))
                     .skip(1)
@@ -39,5 +39,6 @@ public class TagMarkUtil {
                 .filter(s -> s.contains("@"))
                 .collect(Collectors.toSet());
     }
-    
+
+
 }

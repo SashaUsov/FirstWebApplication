@@ -12,7 +12,7 @@ import sashaVosu.firstWebApplication.repo.UserRepo;
 @Component
 public class DetailsService implements UserDetailsService {
 
-    private  final UserRepo users;
+    private final UserRepo users;
 
     public DetailsService(UserRepo users) {
         this.users = users;
@@ -22,7 +22,7 @@ public class DetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UserNotFoundException {
 
         ApplicationUser user = users.findOneByNickName(username);
-        if (user == null){
+        if (user == null) {
             throw new UserNotFoundException(username + " was not found");
         }
         return new User(

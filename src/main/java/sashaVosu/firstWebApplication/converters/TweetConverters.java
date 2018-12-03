@@ -1,16 +1,14 @@
 package sashaVosu.firstWebApplication.converters;
 
-import sashaVosu.firstWebApplication.domain.HashTag;
 import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 public class TweetConverters {
 
-//method helper. convert tweet dto class to tweet entity
+    //method helper. convert tweet dto class to tweet entity
     public static Tweet toEntity(CreateTweetModel tweetModel,
                                  String nickName
     ) {
@@ -29,7 +27,7 @@ public class TweetConverters {
         return newTweet;
     }
 
-//method helper. convert tweet entity to tweet dto model
+    //method helper. convert tweet entity to tweet dto model
     public static TweetModel toModel(Tweet tweet) {
 
         TweetModel model = new TweetModel();
@@ -41,7 +39,7 @@ public class TweetConverters {
         model.setReTweetCount(tweet.getWhoReTweet().size());
         model.setReTweet(tweet.isReTweet());
 
-        if(tweet.getPic() != null && !tweet.getPic().isEmpty()) {
+        if (tweet.getPic() != null && !tweet.getPic().isEmpty()) {
 
             model.setPic(tweet.getPic());
         }

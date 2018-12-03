@@ -16,7 +16,7 @@ public class HashTag {
     @Column(name = "tag")
     private String tag;
 
-    @Column(name = "id", updatable=false, nullable=false)
+    @Column(name = "id", updatable = false, nullable = false)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tag_seq")
     private Long id;
@@ -24,8 +24,8 @@ public class HashTag {
     @ManyToMany
     @JoinTable(
             name = "tweet_tag",
-            joinColumns = { @JoinColumn(name = "tag_id") },
-            inverseJoinColumns = { @JoinColumn(name = "tweet_id") }
+            joinColumns = {@JoinColumn(name = "tag_id")},
+            inverseJoinColumns = {@JoinColumn(name = "tweet_id")}
     )
     private Set<Tweet> tweetWithTagList = new HashSet<>();
 }

@@ -21,13 +21,13 @@ public class TweetModel {
 
     private LocalDateTime creationData;
 
-    private Long likeCount;
+    private int likeCount;
 
     private Boolean iLikeIt;
 
     public TweetModel() {
         iLikeIt = Boolean.FALSE;
-        likeCount = 0L;
+        likeCount = 0;
     }
 
     public void setILikeIt(Boolean iLikeIt) {
@@ -47,26 +47,28 @@ public class TweetModel {
 
         TweetModel model = (TweetModel) o;
 
+        if (likeCount != model.likeCount) return false;
         if (isReTweet != model.isReTweet) return false;
-        if (text != null ? !text.equals(model.text) : model.text != null) return false;
+        if (!text.equals(model.text)) return false;
         if (!id.equals(model.id)) return false;
-        if (creator != null ? !creator.equals(model.creator) : model.creator != null) return false;
-        if (creationData != null ? !creationData.equals(model.creationData) : model.creationData != null) return false;
-        if (likeCount != null ? !likeCount.equals(model.likeCount) : model.likeCount != null) return false;
+        if (!creator.equals(model.creator)) return false;
+        if (!creationData.equals(model.creationData)) return false;
         if (iLikeIt != null ? !iLikeIt.equals(model.iLikeIt) : model.iLikeIt != null) return false;
-        return reTweetCount != null ? reTweetCount.equals(model.reTweetCount) : model.reTweetCount == null;
+        if (reTweetCount != null ? !reTweetCount.equals(model.reTweetCount) : model.reTweetCount != null) return false;
+        return pic != null ? pic.equals(model.pic) : model.pic == null;
     }
 
     @Override
     public int hashCode() {
-        int result = text != null ? text.hashCode() : 0;
+        int result = text.hashCode();
         result = 31 * result + id.hashCode();
-        result = 31 * result + (creator != null ? creator.hashCode() : 0);
-        result = 31 * result + (creationData != null ? creationData.hashCode() : 0);
-        result = 31 * result + (likeCount != null ? likeCount.hashCode() : 0);
+        result = 31 * result + creator.hashCode();
+        result = 31 * result + creationData.hashCode();
+        result = 31 * result + likeCount;
         result = 31 * result + (iLikeIt != null ? iLikeIt.hashCode() : 0);
         result = 31 * result + (reTweetCount != null ? reTweetCount.hashCode() : 0);
         result = 31 * result + (isReTweet ? 1 : 0);
+        result = 31 * result + (pic != null ? pic.hashCode() : 0);
         return result;
     }
 }

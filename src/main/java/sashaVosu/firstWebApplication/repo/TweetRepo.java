@@ -9,23 +9,23 @@ import java.util.List;
 
 public interface TweetRepo extends JpaRepository<Tweet, Long> {
 
-    @Transactional
-    void deleteByIdAndCreator(Long id, String creator);
-
     Tweet findOneByCreatorAndId(String creator, Long id);
-
-    Tweet findOneById(Long id);
-
-    List<Tweet> findAllByCreator(String currentPrincipalName);
-
-    List<Tweet> findAllByIdIn(Collection<Long> tweetIdList);
 
     @Transactional
     void deleteAllByCreator(String nickName);
 
     @Transactional
-    void deleteAllByFirstTweet(Tweet tweet);
-
-    @Transactional
     void deleteAllByFirstTweetIn(Collection<Tweet> firstTweet);
+
+    List<Tweet> findAllByFirstTweet(Tweet tweet);
+
+    Tweet findOneByIdAndPublished(Long id, boolean published);
+
+    List<Tweet> findAllByPublished(boolean published);
+
+    List<Tweet> findAllByCreatorAndPublished(String nickName, boolean published);
+
+    List<Tweet> findAllByPublishedAndFirstTweetIn(boolean published, Collection<Tweet> firstTweet);
+
+    List<Tweet> findAllByPublishedAndIdIn(boolean published, Collection<Long> id);
 }

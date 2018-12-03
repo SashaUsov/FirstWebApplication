@@ -29,18 +29,18 @@ public class MarkController {
 
     //get user list by mark in tweet
     @GetMapping("{id}")
-    public List<UserModel> getMarkUserList(@PathVariable("id") Long tweetId){
+    public List<UserModel> getMarkUserList(@PathVariable("id") Long tweetId) {
 
         return tweetService.getMarkUserList(tweetId);
     }
 
     //Returns a list of tweets in which users are tagged
-    @GetMapping("{userNick}")
-    public List<TweetModel> getTweetListWhereIMark(@PathVariable("userNick") String userNick){
+    @GetMapping
+    public List<TweetModel> getTweetListWhereIMark() {
 
         String nickName = Utils.getNickName();
 
-        return userService.getTweetListWhereIMark(nickName, userNick);
+        return userService.getTweetListWhereIMark(nickName);
 
     }
 }

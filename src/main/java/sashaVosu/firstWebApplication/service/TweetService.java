@@ -16,8 +16,9 @@ import sashaVosu.firstWebApplication.repo.HashTagRepo;
 import sashaVosu.firstWebApplication.repo.TweetRepo;
 import sashaVosu.firstWebApplication.repo.UserRepo;
 import sashaVosu.firstWebApplication.repo.UserTweetLikesRepo;
+import sashaVosu.firstWebApplication.utils.DeleteTweetUtil;
 import sashaVosu.firstWebApplication.utils.TagMarkUtil;
-import sashaVosu.firstWebApplication.utils.Utils;
+import sashaVosu.firstWebApplication.utils.TweetReTweetUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,32 +52,33 @@ public class TweetService {
     @Value("${pic.path}")
     public String picPath;
 
-//return list of all tweets with like count and user like status as to tweet
+    //return list of all tweets with like count and user like status as to tweet
     public List<TweetModel> getTweetsList() {
 
-        List<Tweet> tweetList = tweetRepo.findAll();
+        List<Tweet> tweetList = tweetRepo.findAllByPublished(true);
 
         return tweetList.stream()
-                .map(Utils::convert).collect(Collectors.toList());
+                .map(TweetReTweetUtil::convert).collect(Collectors.toList());
 
     }
 
-//get list of all tweets by specific user id. With data about likes
+    //get list of all tweets by specific user id. With data about likes
     public List<TweetModel> getListOfMyTweet(String nickName) {
 
-        return tweetRepo.findAllByCreator(nickName).stream()
-                .map(Utils::convert)
+        return tweetRepo.findAllByCreatorAndPublished(nickName, true).stream()
+                .map(TweetReTweetUtil::convert)
                 .collect(Collectors.toList());
     }
 
-//Tweets shared by current user
+    //Tweets shared by current user
     public List<TweetModel> myReTweetList(List<TweetModel> myTweets) {
 
-        return myTweets.stream().filter(TweetModel::isReTweet).collect(Collectors.toList());
+        return myTweets.stream().filter(TweetModel::isReTweet)
+                .collect(Collectors.toList());
 
     }
 
-//return TweetModel to the user after creating new tweet
+    //return TweetModel to the user after creating new tweet
     public TweetModel tweetCreate(CreateTweetModel tweetModel,
                                   String nickName
     ) {
@@ -91,7 +93,11 @@ public class TweetService {
     //delete one tweet by tweet id from TWEET  and USER-LIKE-TWEET table
     public void del(Long id, String nickName) {
 
-        Tweet tweet = tweetRepo.findOneById(id);
+        Tweet tweet = tweetRepo.findOneByIdAndPublished(id, true);
+
+        tweet.setPublished(false);
+
+        tweetRepo.save(tweet);
 
         if (tweet.isReTweet()) {
             userTweetLikesRepo.deleteAllByTweetId(id);
@@ -100,37 +106,37 @@ public class TweetService {
             firstTweet.getWhoReTweet().remove(tweet);
             tweetRepo.save(firstTweet);
 
-            tweetRepo.deleteByIdAndCreator(id, nickName);
-
         } else {
 
-            userTweetLikesRepo.deleteAllByTweetId(id);
+            List<Tweet> deactTweet = tweetRepo.findAllByFirstTweet(tweet).stream()
+                    .map(DeleteTweetUtil::deactivateTweet)
+                    .collect(Collectors.toList());
 
-            tweetRepo.deleteAllByFirstTweet(tweet);
+            deactTweet.stream().map(tweetRepo::save);
 
-            tweetRepo.deleteByIdAndCreator(id, nickName);
         }
 
     }
 
     public TweetModel getOne(Long id) {
 
-        return Utils.convert(tweetRepo.findOneById(id));
+        return TweetReTweetUtil.convert(tweetRepo.findOneByIdAndPublished(id, true));
     }
 
-//update tweet by tweet id
+    //update tweet by tweet id
     public TweetModel update(CreateTweetModel model,
-                             String currentPrincipalName,
+                             String creator,
                              Long id
     ) {
 
         if (model.getTweetText().length() >= 1
                 && model.getTweetText().length() <= 140) {
 
-            Tweet toUpdate = tweetRepo.findOneByCreatorAndId(currentPrincipalName, id);
+            Tweet toUpdate = tweetRepo.findOneByCreatorAndId(creator, id);
 
             toUpdate.setText(model.getTweetText());
             toUpdate.getListTagsInTweet().clear();
+            toUpdate.getMarkUserList().clear();
 
             Set<String> tagInTweet = TagMarkUtil.tagDetector(model.getTweetText());
 
@@ -139,7 +145,14 @@ public class TweetService {
                 addTagParam(toUpdate, tagInTweet);
             }
 
-            return Utils.convert(tweetRepo.save(toUpdate));
+            Set<String> markInTweet = TagMarkUtil.userMarkDetector(toUpdate.getText());
+
+            if (markInTweet.size() != 0) {
+
+                addMarkParam(toUpdate, markInTweet);
+            }
+
+            return TweetReTweetUtil.convert(toUpdate);
 
         } else {
 
@@ -147,19 +160,20 @@ public class TweetService {
         }
     }
 
-//create new tweet
+    //create new tweet
     private Tweet createTweet(CreateTweetModel tweetModel,
                               String nickName
     ) {
 
 
         if (tweetModel.getTweetText().length() >= 1
-                && tweetModel.getTweetText().length() <= 140)
-        {
+                && tweetModel.getTweetText().length() <= 140) {
 
             Tweet newTweet = TweetConverters.toEntity(tweetModel, nickName);
 
             newTweet.setReTweet(false);
+
+            newTweet.setPublished(true);
 
             tweetRepo.save(newTweet);
 
@@ -186,25 +200,22 @@ public class TweetService {
         }
     }
 
-//mark user in tweet
+    //mark user in tweet
     private void addMarkParam(Tweet tweet, Set<String> markInTweet) {
 
         Set<String> finalSet = TagMarkUtil.takeClearWord(markInTweet);
 
         for (String mark : finalSet) {
 
-            ApplicationUser user = userRepo.findOneByNickName(mark);
+            ApplicationUser user = userRepo.findOneByNickNameAndActive(mark, true);
 
-            if (user != null) {
+            tweet.getMarkUserList().add(user);
 
-                tweet.getMarkUserList().add(user);
-
-            }
         }
         tweetRepo.save(tweet);
     }
 
-//add hashTags to tweet
+    //add hashTags to tweet
     private void addTagParam(Tweet tweet, Set<String> tagInTweet) {
 
         Set<String> finalSet = TagMarkUtil.takeClearWord(tagInTweet);
@@ -234,8 +245,8 @@ public class TweetService {
         tweetRepo.save(tweet);
     }
 
-//Get the name of the picture added by the user to the tweet
-    public String addTweetPic (MultipartFile file) throws IOException {
+    //Get the name of the picture added by the user to the tweet
+    public String addTweetPic(MultipartFile file) throws IOException {
 
         if (file != null) {
 
@@ -255,21 +266,21 @@ public class TweetService {
         return null;
     }
 
-//get tweet list by tag
+    //get tweet list by tag
     public List<TweetModel> getTweetListByTag(String tag) {
         String hashTag = tag.toLowerCase();
 
         HashTag hashTagFromDb = hashTagRepo.findOneByTag(tag);
 
-        return hashTagFromDb.getTweetWithTagList().stream()
-                .map(Utils::convert)
+        return hashTagFromDb.getTweetWithTagList().stream().filter(Tweet::isPublished)
+                .map(TweetReTweetUtil::convert)
                 .collect(Collectors.toList());
     }
 
-//get user list by mark in tweet
+    //get user list by mark in tweet
     public List<UserModel> getMarkUserList(Long tweetId) {
 
-        Tweet oneTweetById = tweetRepo.findOneById(tweetId);
+        Tweet oneTweetById = tweetRepo.findOneByIdAndPublished(tweetId, true);
 
         return oneTweetById.getMarkUserList().stream()
                 .map(UserConverters::toModel)

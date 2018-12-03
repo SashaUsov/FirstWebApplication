@@ -1,0 +1,16 @@
+databaseChangeLog:
+
+    - changeSet:
+        id: 1
+        author: sasha_vosu
+        changes:
+
+        - addColumn:
+            tableName: tweet
+            columns:
+              - column:
+                  name: published
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                     nullable: false

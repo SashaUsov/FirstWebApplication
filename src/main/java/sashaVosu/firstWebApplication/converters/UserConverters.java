@@ -11,7 +11,7 @@ import java.util.Collections;
 
 public class UserConverters {
 
-//method helper. convert user dto class to user entity
+    //method helper. convert user dto class to user entity
     public static ApplicationUser toEntity(CreateUserModel model) {
 
         final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
@@ -31,7 +31,7 @@ public class UserConverters {
         return newUser;
     }
 
-//method helper. convert user entity to user dto model
+    //method helper. convert user entity to user dto model
     public static UserModel toModel(ApplicationUser user) {
 
         UserModel model = new UserModel();

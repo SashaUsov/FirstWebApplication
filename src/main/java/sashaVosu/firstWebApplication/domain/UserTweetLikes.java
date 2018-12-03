@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "user_tweet_likes")
 public class UserTweetLikes {
 
-    @Column(name = "id", updatable=false, nullable=false)
+    @Column(name = "id", updatable = false, nullable = false)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_tweet_likes_seq")
     private Long id;

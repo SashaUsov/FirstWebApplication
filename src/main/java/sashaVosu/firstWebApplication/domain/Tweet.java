@@ -30,19 +30,19 @@ public class Tweet {
     @NotNull
     private String creator;
 
-    @Column(name = "id", updatable=false, nullable=false)
+    @Column(name = "id", updatable = false, nullable = false)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tweet_sequence")
     private Long id;
 
     @Column(name = "is_re_tweet")
-    private boolean isReTweet;
+    private boolean reTweet;
 
     @Column(name = "pic_name")
     private String pic;
 
-//    @Column(name = "published")
-//    private boolean published;
+    @Column(name = "published")
+    private boolean published;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "re_tweet")
@@ -54,16 +54,16 @@ public class Tweet {
     @ManyToMany
     @JoinTable(
             name = "tweet_tag",
-            joinColumns = { @JoinColumn(name = "tweet_id") },
-            inverseJoinColumns = { @JoinColumn(name = "tag_id") }
+            joinColumns = {@JoinColumn(name = "tweet_id")},
+            inverseJoinColumns = {@JoinColumn(name = "tag_id")}
     )
     private Set<HashTag> listTagsInTweet = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
             name = "tweet_mark_user",
-            joinColumns = { @JoinColumn(name = "tweet_id") },
-            inverseJoinColumns = { @JoinColumn(name = "user_id") }
+            joinColumns = {@JoinColumn(name = "tweet_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
     private Set<ApplicationUser> markUserList = new HashSet<>();
 }

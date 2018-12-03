@@ -20,7 +20,7 @@ public class SubscriberService {
         this.userRepo = userRepo;
     }
 
-//Subscribe to user
+    //Subscribe to user
     public void subscribe(String currentUser, Long channelId) {
 
         ApplicationUser subscriber = userRepo.findOneByNickName(currentUser);
@@ -32,7 +32,7 @@ public class SubscriberService {
         userRepo.save(userChannel);
     }
 
-//Unsubscribe from user
+    //Unsubscribe from user
     @Transactional
     public void unsubscribe(String currentUser, Long channelId) {
 
@@ -45,7 +45,7 @@ public class SubscriberService {
         userRepo.save(subscriber);
     }
 
-//Show list of followers
+    //Show list of followers
     public List<UserModel> subscribersList(Long userId) {
 
         ApplicationUser user = userRepo.findOneById(userId);
@@ -57,7 +57,7 @@ public class SubscriberService {
                 .collect(Collectors.toList());
     }
 
-//Show list of subscriptions
+    //Show list of subscriptions
     public List<UserModel> subscriptionsList(Long userId) {
 
         ApplicationUser user = userRepo.findOneById(userId);

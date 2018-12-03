@@ -11,10 +11,12 @@ import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.domain.dto.UserModel;
 import sashaVosu.firstWebApplication.exception.AccessNotAllowedException;
 import sashaVosu.firstWebApplication.exception.UserExistsException;
+import sashaVosu.firstWebApplication.exception.UserNotFoundException;
 import sashaVosu.firstWebApplication.repo.TweetRepo;
 import sashaVosu.firstWebApplication.repo.UserRepo;
 import sashaVosu.firstWebApplication.repo.UserTweetLikesRepo;
-import sashaVosu.firstWebApplication.utils.Utils;
+import sashaVosu.firstWebApplication.utils.DeleteTweetUtil;
+import sashaVosu.firstWebApplication.utils.TweetReTweetUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +47,7 @@ public class UserService {
     //return list of all users
     public List<UserModel> getUserList() {
 
-        return userRepo.findAll().stream()
+        return userRepo.findAllByActive(true).stream()
                 .map(UserConverters::toModel).collect(Collectors.toList());
     }
 
@@ -71,28 +73,44 @@ public class UserService {
 //Deleted account cannot be recovered.
     public void deleteProfile(String nickName) {
 
-        Long userId = userRepo.findOneByNickName(nickName).getId();
+        Long userId = userRepo.findOneByNickNameAndActive(nickName, true).getId();
 
-        List<Tweet> tweetList = tweetRepo.findAllByCreator(nickName);
+        List<Tweet> tweetList = tweetRepo.findAllByCreatorAndPublished(nickName, true);
 
-        List<Long> tweetIdList = tweetList.stream().map(Tweet::getId)
+        List<Long> tweetIdList = tweetList.stream()
+                .map(Tweet::getId)
                 .collect(Collectors.toList());
 
         userTweetLikesRepo.deleteAllByTweetIdIn(tweetIdList);
 
         userTweetLikesRepo.deleteAllByUserId(userId);
 
-        tweetRepo.deleteAllByFirstTweetIn(tweetList);
+        List<Tweet> allByFirstTweetIn = tweetRepo.findAllByPublishedAndFirstTweetIn(true, tweetList);
 
-        tweetRepo.deleteAllByCreator(nickName);
+        List<Tweet> allReTweet = allByFirstTweetIn.stream()
+                .map(DeleteTweetUtil::deactivateTweet)
+                .collect(Collectors.toList());
 
-        userRepo.deleteOneById(userId);
+        allReTweet.stream().map(tweetRepo::save);
+
+        List<Tweet> deactTweet = tweetList.stream()
+                .map(DeleteTweetUtil::deactivateTweet)
+                .collect(Collectors.toList());
+
+        deactTweet.stream().map(tweetRepo::save);
+
+        ApplicationUser user = userRepo.findOneByNickNameAndActive(nickName, true);
+
+        user.setActive(false);
+
+        userRepo.save(user);
+
     }
 
     //get one user by user id
     public UserModel getOneUser(Long id) {
 
-        ApplicationUser user = userRepo.findOneById(id);
+        ApplicationUser user = userRepo.findOneByIdAndActive(id, true);
 
         if (user != null) {
 
@@ -100,14 +118,14 @@ public class UserService {
 
         } else {
 
-            return null;
+            throw new UserNotFoundException("User not found");
         }
     }
 
     //add avatar image to user profile
     public void addProfilePic(String nickName, MultipartFile file) throws IOException {
 
-        ApplicationUser user = userRepo.findOneByNickName(nickName);
+        ApplicationUser user = userRepo.findOneByNickNameAndActive(nickName, true);
 
         if (file != null) {
 
@@ -126,21 +144,17 @@ public class UserService {
 
             userRepo.save(user);
         }
-
     }
 
     //Returns a list of tweets in which users are tagged
-    public List<TweetModel> getTweetListWhereIMark(String nickName, String userNick) {
+    public List<TweetModel> getTweetListWhereIMark(String nickName) {
 
-        if (userNick.equals(nickName)) {
-            ApplicationUser marksUser = userRepo.findOneByNickName(nickName);
 
-            return marksUser.getUserMarkedTweetList().stream()
-                    .map(Utils::convert)
-                    .collect(Collectors.toList());
-        } else {
-            throw new AccessNotAllowedException("Access to the resource is forbidden for the user " + nickName);
-        }
+        ApplicationUser marksUser = userRepo.findOneByNickNameAndActive(nickName, true);
+
+        return marksUser.getUserMarkedTweetList().stream()
+                .map(TweetReTweetUtil::convert)
+                .collect(Collectors.toList());
     }
 }
 

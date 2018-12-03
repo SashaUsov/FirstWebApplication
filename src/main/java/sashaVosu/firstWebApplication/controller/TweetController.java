@@ -35,7 +35,7 @@ public class TweetController {
         this.tweetFacades = tweetFacades;
     }
 
-//return list of all tweets
+    //return list of all tweets
     @GetMapping
     private List<TweetModel> listOfTweets() {
 
@@ -47,7 +47,7 @@ public class TweetController {
     }
 
     @GetMapping("{id}")
-    public TweetModel getOneTweet(@PathVariable("id") Long id){
+    public TweetModel getOneTweet(@PathVariable("id") Long id) {
 
         String nickName = Utils.getNickName();
 
@@ -56,7 +56,7 @@ public class TweetController {
         return userTweetLikesService.likeStatistic(model, nickName);
     }
 
-//return TweetModel to the user after creating new tweet
+    //return TweetModel to the user after creating new tweet
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TweetModel createTweet(@RequestBody CreateTweetModel model
@@ -66,26 +66,24 @@ public class TweetController {
         return tweetService.tweetCreate(model, nickName);
     }
 
-//update one tweet by tweet id
+    //update one tweet by tweet id
     @PutMapping("{id}")
     public TweetModel updateTweet(@PathVariable("id") Long id,
-                                  @RequestBody CreateTweetModel model)
-    {
+                                  @RequestBody CreateTweetModel model) {
         String nickName = Utils.getNickName();
 
         return tweetService.update(model, nickName, id);
     }
 
-//delete one tweet by tweet id
+    //delete one tweet by tweet id
     @DeleteMapping("{id}")
-    public void delete(@PathVariable("id") Long id)
-    {
+    public void delete(@PathVariable("id") Long id) {
         String nickName = Utils.getNickName();
 
         tweetService.del(id, nickName);
     }
 
-//Get the name of the picture added by the user to the tweet
+    //Get the name of the picture added by the user to the tweet
     @PostMapping("pic")
     public String addTweetPic(@RequestParam("file") MultipartFile file) throws IOException {
 

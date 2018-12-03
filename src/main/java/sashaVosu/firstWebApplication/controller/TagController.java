@@ -25,5 +25,4 @@ public class TagController {
 
         return tweetService.getTweetListByTag(tagToFind);
     }
-
 }

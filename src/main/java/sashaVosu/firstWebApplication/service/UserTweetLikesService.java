@@ -8,7 +8,7 @@ import sashaVosu.firstWebApplication.domain.dto.UserModel;
 import sashaVosu.firstWebApplication.repo.TweetRepo;
 import sashaVosu.firstWebApplication.repo.UserRepo;
 import sashaVosu.firstWebApplication.repo.UserTweetLikesRepo;
-import sashaVosu.firstWebApplication.utils.Utils;
+import sashaVosu.firstWebApplication.utils.TweetReTweetUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,16 +17,16 @@ import java.util.stream.Collectors;
 @Service
 public class UserTweetLikesService {
 
-    private final UserTweetLikesRepo userTweetRepo;
+    private final UserTweetLikesRepo userTweetLikesRepo;
 
     private final UserRepo userRepo;
 
     private final TweetRepo tweetRepo;
 
-    public UserTweetLikesService(UserTweetLikesRepo userTweetRepo,
+    public UserTweetLikesService(UserTweetLikesRepo userTweetLikesRepo,
                                  UserRepo userRepo,
                                  TweetRepo tweetRepo) {
-        this.userTweetRepo = userTweetRepo;
+        this.userTweetLikesRepo = userTweetLikesRepo;
         this.userRepo = userRepo;
         this.tweetRepo = tweetRepo;
     }
@@ -47,7 +47,7 @@ public class UserTweetLikesService {
         create.setTweetId(tweetId);
         create.setTimeWhenLiked(LocalDateTime.now());
 
-        userTweetRepo.save(create);
+        userTweetLikesRepo.save(create);
     }
 
     //remove like from tweet
@@ -55,7 +55,7 @@ public class UserTweetLikesService {
 
         Long userId = getUserIdByNickName(nickName);
 
-        userTweetRepo.deleteByUserIdAndTweetId(userId, tweetId);
+        userTweetLikesRepo.deleteByUserIdAndTweetId(userId, tweetId);
     }
 
     //Return list of Tweet what user likes
@@ -65,8 +65,9 @@ public class UserTweetLikesService {
 
         List<Long> tweetIdList = getTweetIdList(userIdByNickName);
 
-        List<TweetModel> tweetModelList = tweetRepo.findAllByIdIn(tweetIdList).stream()
-                .map(Utils::convert)
+        List<TweetModel> tweetModelList = tweetRepo.findAllByPublishedAndIdIn(true, tweetIdList)
+                .stream()
+                .map(TweetReTweetUtil::convert)
                 .collect(Collectors.toList());
 
         return tweetModelList.stream()
@@ -77,7 +78,7 @@ public class UserTweetLikesService {
     //set like count and user like status as to tweet
     public TweetModel likeStatistic(TweetModel model, String nickName) {
 
-        Long likeCount = (long) userTweetRepo.findAllByTweetId(model.getId()).size();
+        int likeCount = userTweetLikesRepo.findAllByTweetId(model.getId()).size();
 
         boolean iLikeIt = whoLikeTweet(model.getId()).stream()
                 .anyMatch(a -> nickName.equals(a.getNickName()));
@@ -90,12 +91,12 @@ public class UserTweetLikesService {
     }
 
     private Long getUserIdByNickName(String nickName) {
-        return userRepo.findOneByNickName(nickName).getId();
+        return userRepo.findOneByNickNameAndActive(nickName, true).getId();
     }
 
     //Return list of tweet Id what specific user like
     private List<Long> getTweetIdList(Long userId) {
-        return userTweetRepo.findAllByUserId(userId).stream()
+        return userTweetLikesRepo.findAllByUserId(userId).stream()
                 .map(UserTweetLikes::getTweetId)
                 .collect(Collectors.toList());
     }
@@ -103,7 +104,7 @@ public class UserTweetLikesService {
     //return list of user who like tweet by tweet id
     private List<UserModel> whoLikeTweet(Long tweetId) {
 
-        List<Long> userIdList = userTweetRepo.findAllByTweetId(tweetId).stream()
+        List<Long> userIdList = userTweetLikesRepo.findAllByTweetId(tweetId).stream()
                 .map(UserTweetLikes::getUserId)
                 .collect(Collectors.toList());
 

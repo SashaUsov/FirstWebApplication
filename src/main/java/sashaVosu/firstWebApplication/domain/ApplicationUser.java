@@ -17,7 +17,7 @@ import java.util.Set;
 @Table(name = "account")
 public class ApplicationUser {
 
-    @Column(name = "id", updatable=false, nullable=false)
+    @Column(name = "id", updatable = false, nullable = false)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usr_sequence")
     private Long id;
@@ -56,29 +56,29 @@ public class ApplicationUser {
     @ManyToMany
     @JoinTable(
             name = "user_subscriptions",
-            joinColumns = { @JoinColumn(name = "channel_id") },
-            inverseJoinColumns = { @JoinColumn(name = "subscriber_id") }
+            joinColumns = {@JoinColumn(name = "channel_id")},
+            inverseJoinColumns = {@JoinColumn(name = "subscriber_id")}
     )
     private Set<ApplicationUser> subscribers = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
             name = "user_subscriptions",
-            joinColumns = { @JoinColumn(name = "subscriber_id") },
-            inverseJoinColumns = { @JoinColumn(name = "channel_id") }
+            joinColumns = {@JoinColumn(name = "subscriber_id")},
+            inverseJoinColumns = {@JoinColumn(name = "channel_id")}
     )
     private Set<ApplicationUser> subscriptions = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
             name = "tweet_mark_user",
-            joinColumns = { @JoinColumn(name = "user_id") },
-            inverseJoinColumns = { @JoinColumn(name = "tweet_id") }
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "tweet_id")}
     )
     private Set<Tweet> userMarkedTweetList = new HashSet<>();
 
     @Column(name = "is_active")
-    private boolean isActive;
+    private boolean active;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))

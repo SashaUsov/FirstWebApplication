@@ -36,14 +36,14 @@ public class SubscribeController {
     }
 
     //Show list of followers
-    @GetMapping("subscribers/{id}")
+    @GetMapping("followers/{id}")
     public List<UserModel> showSubscribers(@PathVariable("id") Long userId) {
 
         return subscriberService.subscribersList(userId);
     }
 
     //Show list of subscriptions
-    @GetMapping("subscriptions/{id}")
+    @GetMapping("follow/{id}")
     public List<UserModel> showSubscriptions(@PathVariable("id") Long userId) {
 
         return subscriberService.subscriptionsList(userId);

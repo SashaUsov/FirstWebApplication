@@ -22,14 +22,14 @@ public class ProfileController {
         this.userService = userService;
     }
 
-//return list of all users
+    //return list of all users
     @GetMapping
     private List<UserModel> listOfUser() {
 
         return userService.getUserList();
     }
 
-//create new user
+    //create new user
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserModel createUser(@RequestBody CreateUserModel model) {

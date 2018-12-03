@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("Account")
+@RequestMapping("account")
 public class AccountController {
 
     private final UserService userService;
@@ -31,17 +31,17 @@ public class AccountController {
         this.tweetFacades = tweetFacades;
     }
 
-//return list of tweet what create specific user
+    //return list of tweet what create specific user
     @GetMapping
-    public List<TweetModel> getMyTweetList(){
+    public List<TweetModel> getMyTweetList() {
         String nickName = Utils.getNickName();
 
-        List<TweetModel> myTweetList =  tweetService.getListOfMyTweet(nickName);
+        List<TweetModel> myTweetList = tweetService.getListOfMyTweet(nickName);
 
         return tweetFacades.getTweetsList(nickName, myTweetList);
     }
 
-//add avatar image to user profile
+    //add avatar image to user profile
     @PostMapping("img")
     @ResponseStatus(HttpStatus.CREATED)
     public void addProfilePic(@RequestParam("file") MultipartFile file) throws IOException {
@@ -51,7 +51,8 @@ public class AccountController {
         userService.addProfilePic(nickName, file);
 
     }
-//delete user account and all user and like from user-tweet-like table
+
+    //delete user account and all user and like from user-tweet-like table
 //Deleted account cannot be recovered.
     @DeleteMapping
     public void deleteAccount() {

@@ -19,5 +19,11 @@ public interface UserRepo extends JpaRepository<ApplicationUser, String> {
     List<ApplicationUser> findAllByIdIn(Collection<Long> id);
 
     ApplicationUser findOneById(Long id);
+
+    List<ApplicationUser> findAllByActive(boolean active);
+
+    ApplicationUser findOneByIdAndActive(Long id, boolean active);
+
+    ApplicationUser findOneByNickNameAndActive(String nickName, boolean active);
 }
 
