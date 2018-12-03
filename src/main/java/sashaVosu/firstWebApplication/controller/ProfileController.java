@@ -1,6 +1,7 @@
 package sashaVosu.firstWebApplication.controller;
 
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,9 +25,9 @@ public class ProfileController {
 
     //return list of all users
     @GetMapping
-    private List<UserModel> listOfUser() {
+    private List<UserModel> listOfUser(Pageable pageable) {
 
-        return userService.getUserList();
+        return userService.getUserList(pageable);
     }
 
     //create new user

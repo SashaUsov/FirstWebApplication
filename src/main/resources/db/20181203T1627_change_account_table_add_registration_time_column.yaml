@@ -1,0 +1,17 @@
+databaseChangeLog:
+
+    - changeSet:
+        id: 1
+        author: sasha_vosu
+        changes:
+
+        - addColumn:
+              columns:
+              - column:
+                  name: registration_date
+                  type: timestamp
+                  defaultValueDate: CURRENT_TIMESTAMP
+                  constraints:
+                     nullable: false
+              tableName: account
+

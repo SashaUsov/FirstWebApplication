@@ -38,3 +38,5 @@ databaseChangeLog:
         file: db/20181127T1805_create_tweet_mark_user_table.yaml
     - include:
         file: db/20181202T1500_change_tweet_table_add_published_column.yaml
+    - include:
+        file: db/20181203T1627_change_account_table_add_registration_time_column.yaml

@@ -1,6 +1,10 @@
 package sashaVosu.firstWebApplication.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import sashaVosu.firstWebApplication.converters.UserConverters;
@@ -9,7 +13,6 @@ import sashaVosu.firstWebApplication.domain.Tweet;
 import sashaVosu.firstWebApplication.domain.dto.CreateUserModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.domain.dto.UserModel;
-import sashaVosu.firstWebApplication.exception.AccessNotAllowedException;
 import sashaVosu.firstWebApplication.exception.UserExistsException;
 import sashaVosu.firstWebApplication.exception.UserNotFoundException;
 import sashaVosu.firstWebApplication.repo.TweetRepo;
@@ -45,10 +48,16 @@ public class UserService {
     public String uploadPath;
 
     //return list of all users
-    public List<UserModel> getUserList() {
+    public List<UserModel> getUserList(Pageable pageable) {
 
-        return userRepo.findAllByActive(true).stream()
-                .map(UserConverters::toModel).collect(Collectors.toList());
+        int page = pageable.getPageNumber();
+        int size = pageable.getPageSize();
+
+        Page<ApplicationUser> pager = userRepo.findAllByActive(true, new PageRequest(page, size, Sort.Direction.ASC,"registration"));
+
+        return pager.getContent().stream()
+                .map(UserConverters::toModel)
+                .collect(Collectors.toList());
     }
 
     //create new user

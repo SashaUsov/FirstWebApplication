@@ -7,6 +7,7 @@ import sashaVosu.firstWebApplication.domain.Role;
 import sashaVosu.firstWebApplication.domain.dto.CreateUserModel;
 import sashaVosu.firstWebApplication.domain.dto.UserModel;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 public class UserConverters {
@@ -26,6 +27,7 @@ public class UserConverters {
         newUser.setGender(model.getGender());
         newUser.setAge(model.getAge());
         newUser.setActive(true);
+        newUser.setRegistration(LocalDateTime.now());
         newUser.setRoles(Collections.singleton(Role.USER));
 
         return newUser;

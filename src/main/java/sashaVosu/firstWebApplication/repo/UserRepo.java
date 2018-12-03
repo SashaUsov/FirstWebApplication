@@ -1,13 +1,15 @@
 package sashaVosu.firstWebApplication.repo;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import sashaVosu.firstWebApplication.domain.ApplicationUser;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
 
-public interface UserRepo extends JpaRepository<ApplicationUser, String> {
+public interface UserRepo extends PagingAndSortingRepository<ApplicationUser, String> {
 
     ApplicationUser findOneByNickNameAndEmail(String nickname, String email);
 
@@ -20,7 +22,7 @@ public interface UserRepo extends JpaRepository<ApplicationUser, String> {
 
     ApplicationUser findOneById(Long id);
 
-    List<ApplicationUser> findAllByActive(boolean active);
+    Page<ApplicationUser> findAllByActive(boolean active, Pageable pageable);
 
     ApplicationUser findOneByIdAndActive(Long id, boolean active);
 

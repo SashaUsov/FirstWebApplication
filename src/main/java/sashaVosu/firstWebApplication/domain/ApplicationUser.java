@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -52,6 +53,9 @@ public class ApplicationUser {
 
     @Column(name = "file_name")
     private String fileName;
+
+    @Column(name = "registration_date", updatable = false, nullable = false)
+    private LocalDateTime registration;
 
     @ManyToMany
     @JoinTable(
