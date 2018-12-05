@@ -1,5 +1,8 @@
 package sashaVosu.firstWebApplication.service;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import sashaVosu.firstWebApplication.converters.UserConverters;
 import sashaVosu.firstWebApplication.domain.UserTweetLikes;
@@ -59,13 +62,17 @@ public class UserTweetLikesService {
     }
 
     //Return list of Tweet what user likes
-    public List<TweetModel> tweetWhatLike(String nickName) {
+    public List<TweetModel> tweetWhatLike(String nickName, Pageable pageable) {
 
         Long userIdByNickName = getUserIdByNickName(nickName);
 
+        int page = pageable.getPageNumber();
+        int size = pageable.getPageSize();
+
         List<Long> tweetIdList = getTweetIdList(userIdByNickName);
 
-        List<TweetModel> tweetModelList = tweetRepo.findAllByPublishedAndIdIn(true, tweetIdList)
+        List<TweetModel> tweetModelList = tweetRepo.findAllByPublishedAndIdIn(true, tweetIdList,
+                new PageRequest(page, size, Sort.Direction.DESC,"creationData"))
                 .stream()
                 .map(TweetReTweetUtil::convert)
                 .collect(Collectors.toList());

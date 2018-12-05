@@ -1,5 +1,6 @@
 package sashaVosu.firstWebApplication.controller;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.service.UserTweetLikesService;
@@ -37,11 +38,11 @@ public class LikeController {
 
     //return list of tweet what likes specific user
     @GetMapping
-    public List<TweetModel> likesTweetList() {
+    public List<TweetModel> likesTweetList(Pageable pageable) {
 
         String nickName = Utils.getNickName();
 
-        return userTweetLikesService.tweetWhatLike(nickName);
+        return userTweetLikesService.tweetWhatLike(nickName, pageable);
 
     }
 }

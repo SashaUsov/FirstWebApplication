@@ -1,13 +1,15 @@
 package sashaVosu.firstWebApplication.repo;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import sashaVosu.firstWebApplication.domain.Tweet;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
 
-public interface TweetRepo extends JpaRepository<Tweet, Long> {
+public interface TweetRepo extends PagingAndSortingRepository<Tweet, Long> {
 
     Tweet findOneByCreatorAndId(String creator, Long id);
 
@@ -21,11 +23,13 @@ public interface TweetRepo extends JpaRepository<Tweet, Long> {
 
     Tweet findOneByIdAndPublished(Long id, boolean published);
 
-    List<Tweet> findAllByPublished(boolean published);
+    Page<Tweet> findAllByPublished(boolean published, Pageable pageable);
 
-    List<Tweet> findAllByCreatorAndPublished(String nickName, boolean published);
+    Page<Tweet> findAllByCreatorAndPublished(String nickName, boolean published, Pageable pageable);
 
     List<Tweet> findAllByPublishedAndFirstTweetIn(boolean published, Collection<Tweet> firstTweet);
 
-    List<Tweet> findAllByPublishedAndIdIn(boolean published, Collection<Long> id);
+    Page<Tweet> findAllByPublishedAndIdIn(boolean published, Collection<Long> id, Pageable pageable);
+
+    List<Tweet> findAllByCreatorAndPublished(String nickName, boolean published);
 }

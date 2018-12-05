@@ -1,5 +1,8 @@
 package sashaVosu.firstWebApplication.controller;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
@@ -48,11 +51,15 @@ public class ReTweetController {
 
     //Tweets shared by this user
     @GetMapping
-    public List<TweetModel> tweetsUserShared() {
+    public List<TweetModel> tweetsUserShared(Pageable pageable) {
 
         String nickName = Utils.getNickName();
 
-        List<TweetModel> modelList = tweetService.getTweetsList();
+        int page = pageable.getPageNumber();
+        int size = pageable.getPageSize();
+
+        List<TweetModel> modelList = tweetService.getTweetsList(new PageRequest(page, size,
+                Sort.Direction.DESC,"creationData"));
 
         List<TweetModel> listWithLike = tweetFacades.getTweetsList(nickName, modelList);
 

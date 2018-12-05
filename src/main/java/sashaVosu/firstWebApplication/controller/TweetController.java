@@ -1,17 +1,16 @@
 package sashaVosu.firstWebApplication.controller;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sashaVosu.firstWebApplication.domain.Error;
 import sashaVosu.firstWebApplication.domain.dto.CreateTweetModel;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
-import sashaVosu.firstWebApplication.domain.dto.UserModel;
 import sashaVosu.firstWebApplication.fasades.TweetFacades;
-import sashaVosu.firstWebApplication.utils.Utils;
-import sashaVosu.firstWebApplication.service.ReTweetService;
 import sashaVosu.firstWebApplication.service.TweetService;
 import sashaVosu.firstWebApplication.service.UserTweetLikesService;
+import sashaVosu.firstWebApplication.utils.Utils;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,11 +36,11 @@ public class TweetController {
 
     //return list of all tweets
     @GetMapping
-    private List<TweetModel> listOfTweets() {
+    private List<TweetModel> listOfTweets(Pageable pageable) {
 
         String nickName = Utils.getNickName();
 
-        List<TweetModel> modelList = tweetService.getTweetsList();
+        List<TweetModel> modelList = tweetService.getTweetsList(pageable);
 
         return tweetFacades.getTweetsList(nickName, modelList);
     }

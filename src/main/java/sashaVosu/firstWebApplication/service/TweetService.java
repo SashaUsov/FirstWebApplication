@@ -1,6 +1,10 @@
 package sashaVosu.firstWebApplication.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import sashaVosu.firstWebApplication.converters.TweetConverters;
@@ -53,9 +57,13 @@ public class TweetService {
     public String picPath;
 
     //return list of all tweets with like count and user like status as to tweet
-    public List<TweetModel> getTweetsList() {
+    public List<TweetModel> getTweetsList(Pageable pageable) {
 
-        List<Tweet> tweetList = tweetRepo.findAllByPublished(true);
+        int page = pageable.getPageNumber();
+        int size = pageable.getPageSize();
+
+        Page<Tweet> tweetList = tweetRepo.findAllByPublished(true,
+                new PageRequest(page, size, Sort.Direction.DESC,"creationData"));
 
         return tweetList.stream()
                 .map(TweetReTweetUtil::convert).collect(Collectors.toList());
@@ -63,9 +71,13 @@ public class TweetService {
     }
 
     //get list of all tweets by specific user id. With data about likes
-    public List<TweetModel> getListOfMyTweet(String nickName) {
+    public List<TweetModel> getListOfMyTweet(String nickName, Pageable pageable) {
 
-        return tweetRepo.findAllByCreatorAndPublished(nickName, true).stream()
+        int page = pageable.getPageNumber();
+        int size = pageable.getPageSize();
+
+        return tweetRepo.findAllByCreatorAndPublished(nickName, true,
+                new PageRequest(page, size, Sort.Direction.DESC,"creationData")).stream()
                 .map(TweetReTweetUtil::convert)
                 .collect(Collectors.toList());
     }

@@ -1,5 +1,6 @@
 package sashaVosu.firstWebApplication.controller;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,10 +34,10 @@ public class AccountController {
 
     //return list of tweet what create specific user
     @GetMapping
-    public List<TweetModel> getMyTweetList() {
+    public List<TweetModel> getMyTweetList(Pageable pageable) {
         String nickName = Utils.getNickName();
 
-        List<TweetModel> myTweetList = tweetService.getListOfMyTweet(nickName);
+        List<TweetModel> myTweetList = tweetService.getListOfMyTweet(nickName, pageable);
 
         return tweetFacades.getTweetsList(nickName, myTweetList);
     }
