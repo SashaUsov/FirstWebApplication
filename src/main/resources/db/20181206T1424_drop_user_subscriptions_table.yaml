@@ -1,0 +1,10 @@
+databaseChangeLog:
+
+    - changeSet:
+            id: dropTable
+            author: sasha_vosu
+            changes:
+
+            - dropTable:
+                cascadeConstraints: true
+                tableName: user_subscriptions

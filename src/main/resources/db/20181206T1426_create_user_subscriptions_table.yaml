@@ -1,0 +1,26 @@
+databaseChangeLog:
+
+    - changeSet:
+        id: 1
+        author: sasha_vosu
+        changes:
+
+        - createTable:
+            tableName: user_subscriptions
+            columns:
+              - column:
+                 name: id
+                 type: bigint
+                 autoIncrement: true
+                 constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                 name: channel_id
+                 type: bigint
+              - column:
+                 name: subscriber_id
+                 type: bigint
+              - column:
+                 name: subscription_time
+                 type: timestamp

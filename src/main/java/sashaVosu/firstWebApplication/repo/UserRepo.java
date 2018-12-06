@@ -27,5 +27,9 @@ public interface UserRepo extends PagingAndSortingRepository<ApplicationUser, St
     ApplicationUser findOneByIdAndActive(Long id, boolean active);
 
     ApplicationUser findOneByNickNameAndActive(String nickName, boolean active);
+
+    Page<ApplicationUser> findAllByActiveAndIdIn(boolean active, Collection<Long> id, Pageable pageable);
+
+    List<ApplicationUser> findAllByActiveAndIdIn(boolean active, Collection<Long> id);
 }
 

@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
-import sashaVosu.firstWebApplication.domain.dto.UserModel;
 import sashaVosu.firstWebApplication.fasades.TweetFacades;
 import sashaVosu.firstWebApplication.service.*;
 import sashaVosu.firstWebApplication.utils.Utils;
@@ -23,13 +22,17 @@ public class AccountController {
 
     private final TweetFacades tweetFacades;
 
+    private final SubscriberService subscriberService;
+
     public AccountController(UserService userService,
                              TweetService tweetService,
-                             TweetFacades tweetFacades
+                             TweetFacades tweetFacades,
+                             SubscriberService subscriberService
     ) {
         this.userService = userService;
         this.tweetService = tweetService;
         this.tweetFacades = tweetFacades;
+        this.subscriberService = subscriberService;
     }
 
     //return list of tweet what create specific user
@@ -63,4 +66,21 @@ public class AccountController {
         userService.deleteProfile(nickName);
     }
 
+    //Do I subscribe to this user
+    @GetMapping("i-subscribe/{id}")
+    public boolean iFollow(@PathVariable("id") Long channelId) {
+
+        String nickName = Utils.getNickName();
+
+        return subscriberService.iFollow(nickName, channelId);
+    }
+
+    //Is this user following me
+    @GetMapping("subscribe-me/{id}")
+    public boolean followMe(@PathVariable("id") Long channelId) {
+
+        String nickName = Utils.getNickName();
+
+        return subscriberService.followMe(nickName, channelId);
+    }
 }

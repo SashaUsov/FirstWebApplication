@@ -59,22 +59,6 @@ public class ApplicationUser {
 
     @ManyToMany
     @JoinTable(
-            name = "user_subscriptions",
-            joinColumns = {@JoinColumn(name = "channel_id")},
-            inverseJoinColumns = {@JoinColumn(name = "subscriber_id")}
-    )
-    private Set<ApplicationUser> subscribers = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(
-            name = "user_subscriptions",
-            joinColumns = {@JoinColumn(name = "subscriber_id")},
-            inverseJoinColumns = {@JoinColumn(name = "channel_id")}
-    )
-    private Set<ApplicationUser> subscriptions = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(
             name = "tweet_mark_user",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "tweet_id")}
