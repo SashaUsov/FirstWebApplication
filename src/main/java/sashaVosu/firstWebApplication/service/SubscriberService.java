@@ -12,7 +12,9 @@ import sashaVosu.firstWebApplication.domain.dto.UserModel;
 import sashaVosu.firstWebApplication.repo.SubscriptionRepo;
 import sashaVosu.firstWebApplication.repo.UserRepo;
 
+import javax.persistence.Id;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +39,7 @@ public class SubscriberService {
 
         UserSubscriptions subscribe = new UserSubscriptions();
 
+        subscribe.setSubscriptionTime(LocalDateTime.now());
         subscribe.setChannel(channelId);
         subscribe.setSubscriber(subscriber.getId());
 
@@ -57,7 +60,7 @@ public class SubscriberService {
     }
 
     //Show list of followers
-    public List<UserModel> subscribersList(Long userId, Pageable pageable) {
+    public List<Long> subscribersList(Long userId, Pageable pageable) {
 
         int page = pageable.getPageNumber();
         int size = pageable.getPageSize();
@@ -68,12 +71,12 @@ public class SubscriberService {
                 new PageRequest(page, size, Sort.Direction.ASC, "nickName"));
 
         return myFollowerList.getContent().stream()
-                .map(UserConverters::toModel)
+                .map(ApplicationUser::getId)
                 .collect(Collectors.toList());
     }
 
     //Show list of subscriptions
-    public List<UserModel> subscriptionsList(Long userId, Pageable pageable) {
+    public List<Long> subscriptionsList(Long userId, Pageable pageable) {
 
         int page = pageable.getPageNumber();
         int size = pageable.getPageSize();
@@ -84,10 +87,11 @@ public class SubscriberService {
                 new PageRequest(page, size, Sort.Direction.ASC, "nickName"));
 
         return iFollow.getContent().stream()
-                .map(UserConverters::toModel)
+                .map(ApplicationUser::getId)
                 .collect(Collectors.toList());
     }
 
+    //user follow me count
     public int subscribersCount(Long userId) {
 
         List<Long> subscribersList = subscribersIdList(userId);
@@ -95,6 +99,7 @@ public class SubscriberService {
         return userRepo.findAllByActiveAndIdIn(true, subscribersList).size();
     }
 
+    //user count what i follow
     public int subscriptionsCount(Long userId) {
 
         List<Long> subscriptionsList = subscriptionsIdList(userId);
@@ -102,22 +107,84 @@ public class SubscriberService {
         return userRepo.findAllByActiveAndIdIn(true, subscriptionsList).size();
     }
 
+    //Do I subscribe to this user
     public boolean iFollow(String nickName, Long channelId){
 
-        Long userId = userRepo.findOneByNickName(nickName).getId();
+        Long userId = myId(nickName);
 
         UserSubscriptions subscribe = subscriptionRepo.findOneByChannelAndSubscriber(channelId, userId);
 
         return subscribe != null;
     }
 
+    //Is this user following me
     public boolean followMe(String nickName, Long channelId){
 
-        Long userId = userRepo.findOneByNickName(nickName).getId();
+        Long userId = myId(nickName);
 
         UserSubscriptions subscribe = subscriptionRepo.findOneByChannelAndSubscriber(userId, channelId);
 
         return subscribe != null;
+    }
+
+    //List of mutual subscriptions
+    public List<Long> mutualSubscriptions(String nickName,
+                                          Long channelId,
+                                          Pageable pageable
+    ) {
+        Long userId = myId(nickName);
+
+        String channelName = userRepo.findOneById(channelId).getNickName();
+
+        List<Long> mySubscriptions = subscriptionsList(userId, pageable);
+
+        for(Long x : mySubscriptions){
+            System.out.println(x);
+        }
+        return mySubscriptions.stream().filter(a -> iFollow(channelName,a))
+                .collect(Collectors.toList());
+    }
+
+    //List of mutual followers
+    public List<Long> mutualSubscribers(String nickName,
+                                        Long channelId,
+                                        Pageable pageable
+    ) {
+        Long userId = myId(nickName);
+
+        String channelName = userRepo.findOneById(channelId).getNickName();
+
+        List<Long> mySubscribers = subscribersList(userId, pageable);
+
+        return mySubscribers.stream().filter(a -> followMe(channelName, a))
+                .collect(Collectors.toList());
+    }
+
+    //Mutual subscriptions count
+    public int mutualSubsCount(String nickName,
+                               Long channelId,
+                               Pageable pageable
+    ){
+        return mutualSubscriptions(nickName,
+                channelId,
+                new PageRequest(1, Integer.MAX_VALUE, Sort.Direction.ASC, "nickName"))
+                .size();
+    }
+
+    //Mutual followers count
+    public int mutualFollowCount(String nickName,
+                                 Long channelId,
+                                 Pageable pageable
+    ){
+        return mutualSubscribers(nickName,
+                channelId,
+                new PageRequest(1, Integer.MAX_VALUE, Sort.Direction.ASC, "nickName"))
+                .size();
+    }
+
+    Long myId(String nickName) {
+
+        return userRepo.findOneByNickName(nickName).getId();
     }
 
     List<Long> subscribersIdList(Long userId) {
@@ -134,8 +201,7 @@ public class SubscriberService {
         List<UserSubscriptions> subscriptionsList = subscriptionRepo.findAllBySubscriber(userId);
 
         return subscriptionsList.stream()
-                .map(UserSubscriptions::getSubscriber)
+                .map(UserSubscriptions::getChannel)
                 .collect(Collectors.toList());
-
     }
 }

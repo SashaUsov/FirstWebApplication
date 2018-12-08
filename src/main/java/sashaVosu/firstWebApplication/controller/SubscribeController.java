@@ -38,7 +38,7 @@ public class SubscribeController {
 
     //Show list of followers
     @GetMapping("followers/{id}")
-    public List<UserModel> showSubscribers(@PathVariable("id") Long userId,
+    public List<Long> showSubscribers(@PathVariable("id") Long userId,
                                            Pageable pageable
     ) {
 
@@ -47,7 +47,7 @@ public class SubscribeController {
 
     //Show list of subscriptions
     @GetMapping("follow/{id}")
-    public List<UserModel> showSubscriptions(@PathVariable("id") Long userId,
+    public List<Long> showSubscriptions(@PathVariable("id") Long userId,
                                              Pageable pageable
     ) {
 
@@ -66,5 +66,45 @@ public class SubscribeController {
     public int subscriptionsCount(@PathVariable("id") Long userId) {
 
         return  subscriberService.subscriptionsCount(userId);
+    }
+
+    //List of mutual subscriptions
+    @GetMapping("mutual-subscriptions/{id}")
+    public List<Long> mutualSubscriptions(@PathVariable("id") Long channelId,
+                                          Pageable pageable
+    ) {
+        String nickName = Utils.getNickName();
+
+        return subscriberService.mutualSubscriptions(nickName, channelId, pageable);
+    }
+
+    //List of mutual followers
+    @GetMapping("mutual-subscribers/{id}")
+    public List<Long> mutualSubscribers(@PathVariable("id") Long channelId,
+                                        Pageable pageable
+    ) {
+        String nickName = Utils.getNickName();
+
+        return subscriberService.mutualSubscribers(nickName, channelId, pageable);
+    }
+
+    //Mutual subscriptions count
+    @GetMapping("mutual-s-count/{id}")
+    public int mutualSubsCount(@PathVariable("id") Long channelId,
+                               Pageable pageable
+    ) {
+        String nickName = Utils.getNickName();
+
+        return subscriberService.mutualSubsCount(nickName, channelId, pageable);
+    }
+
+    //Mutual followers count
+    @GetMapping("mutual-f-count/{id}")
+    public int mutualFollowCount(@PathVariable("id") Long channelId,
+                               Pageable pageable
+    ) {
+        String nickName = Utils.getNickName();
+
+        return subscriberService.mutualFollowCount(nickName, channelId, pageable);
     }
 }
