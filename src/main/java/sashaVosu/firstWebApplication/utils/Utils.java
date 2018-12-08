@@ -2,10 +2,6 @@ package sashaVosu.firstWebApplication.utils;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import sashaVosu.firstWebApplication.converters.ReTweetConverters;
-import sashaVosu.firstWebApplication.converters.TweetConverters;
-import sashaVosu.firstWebApplication.domain.Tweet;
-import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 
 public class Utils {
 

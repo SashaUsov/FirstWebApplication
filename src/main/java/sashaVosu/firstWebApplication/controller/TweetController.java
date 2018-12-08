@@ -36,7 +36,7 @@ public class TweetController {
 
     //return list of all tweets
     @GetMapping
-    private List<TweetModel> listOfTweets(Pageable pageable) {
+    public List<TweetModel> listOfTweets(Pageable pageable) {
 
         String nickName = Utils.getNickName();
 

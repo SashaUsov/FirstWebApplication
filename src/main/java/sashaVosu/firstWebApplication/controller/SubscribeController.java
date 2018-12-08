@@ -89,9 +89,8 @@ public class SubscribeController {
 
     //Mutual subscriptions count
     @GetMapping("mutual-s-count/{id}")
-    public int mutualSubsCount(@PathVariable("id") Long channelId,
-                               Pageable pageable
-    ) {
+    public int mutualSubsCount(@PathVariable("id") Long channelId) {
+
         String nickName = Utils.getNickName();
 
         return subscriberService.mutualSubsCount(nickName, channelId);
@@ -99,9 +98,8 @@ public class SubscribeController {
 
     //Mutual followers count
     @GetMapping("mutual-f-count/{id}")
-    public int mutualFollowCount(@PathVariable("id") Long channelId,
-                               Pageable pageable
-    ) {
+    public int mutualFollowCount(@PathVariable("id") Long channelId) {
+
         String nickName = Utils.getNickName();
 
         return subscriberService.mutualFollowCount(nickName, channelId);

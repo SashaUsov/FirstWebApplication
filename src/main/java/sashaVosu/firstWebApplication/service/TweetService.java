@@ -107,25 +107,28 @@ public class TweetService {
 
         Tweet tweet = tweetRepo.findOneByIdAndPublished(id, true);
 
-        tweet.setPublished(false);
+        if(tweet.getCreator().equals(nickName)) {
 
-        tweetRepo.save(tweet);
+            tweet.setPublished(false);
 
-        if (tweet.isReTweet()) {
-            userTweetLikesRepo.deleteAllByTweetId(id);
+            tweetRepo.save(tweet);
 
-            Tweet firstTweet = tweet.getFirstTweet();
-            firstTweet.getWhoReTweet().remove(tweet);
-            tweetRepo.save(firstTweet);
+            if (tweet.isReTweet()) {
+                userTweetLikesRepo.deleteAllByTweetId(id);
 
-        } else {
+                Tweet firstTweet = tweet.getFirstTweet();
+                firstTweet.getWhoReTweet().remove(tweet);
+                tweetRepo.save(firstTweet);
 
-            List<Tweet> deactTweet = tweetRepo.findAllByFirstTweet(tweet).stream()
-                    .map(DeleteTweetUtil::deactivateTweet)
-                    .collect(Collectors.toList());
+            } else {
 
-            deactTweet.stream().map(tweetRepo::save);
+                List<Tweet> deactTweet = tweetRepo.findAllByFirstTweet(tweet).stream()
+                        .map(DeleteTweetUtil::deactivateTweet)
+                        .collect(Collectors.toList());
 
+                deactTweet.stream().map(tweetRepo::save);
+
+            }
         }
 
     }
@@ -282,7 +285,7 @@ public class TweetService {
     public List<TweetModel> getTweetListByTag(String tag) {
         String hashTag = tag.toLowerCase();
 
-        HashTag hashTagFromDb = hashTagRepo.findOneByTag(tag);
+        HashTag hashTagFromDb = hashTagRepo.findOneByTag(hashTag);
 
         return hashTagFromDb.getTweetWithTagList().stream().filter(Tweet::isPublished)
                 .map(TweetReTweetUtil::convert)

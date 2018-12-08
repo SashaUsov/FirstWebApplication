@@ -53,7 +53,8 @@ public class UserService {
         int page = pageable.getPageNumber();
         int size = pageable.getPageSize();
 
-        Page<ApplicationUser> pager = userRepo.findAllByActive(true, new PageRequest(page, size, Sort.Direction.ASC,"registration"));
+        Page<ApplicationUser> pager = userRepo.findAllByActive(true,
+                new PageRequest(page, size, Sort.Direction.ASC,"registration"));
 
         return pager.getContent().stream()
                 .map(UserConverters::toModel)
