@@ -2,7 +2,6 @@ package sashaVosu.firstWebApplication.controller;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-import sashaVosu.firstWebApplication.domain.dto.UserModel;
 import sashaVosu.firstWebApplication.service.SubscriberService;
 import sashaVosu.firstWebApplication.utils.Utils;
 
@@ -95,7 +94,7 @@ public class SubscribeController {
     ) {
         String nickName = Utils.getNickName();
 
-        return subscriberService.mutualSubsCount(nickName, channelId, pageable);
+        return subscriberService.mutualSubsCount(nickName, channelId);
     }
 
     //Mutual followers count
@@ -105,6 +104,6 @@ public class SubscribeController {
     ) {
         String nickName = Utils.getNickName();
 
-        return subscriberService.mutualFollowCount(nickName, channelId, pageable);
+        return subscriberService.mutualFollowCount(nickName, channelId);
     }
 }

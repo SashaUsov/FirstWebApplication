@@ -5,14 +5,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import sashaVosu.firstWebApplication.converters.UserConverters;
 import sashaVosu.firstWebApplication.domain.ApplicationUser;
 import sashaVosu.firstWebApplication.domain.UserSubscriptions;
-import sashaVosu.firstWebApplication.domain.dto.UserModel;
 import sashaVosu.firstWebApplication.repo.SubscriptionRepo;
 import sashaVosu.firstWebApplication.repo.UserRepo;
 
-import javax.persistence.Id;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -162,8 +159,7 @@ public class SubscriberService {
 
     //Mutual subscriptions count
     public int mutualSubsCount(String nickName,
-                               Long channelId,
-                               Pageable pageable
+                               Long channelId
     ){
         return mutualSubscriptions(nickName,
                 channelId,
@@ -173,8 +169,7 @@ public class SubscriberService {
 
     //Mutual followers count
     public int mutualFollowCount(String nickName,
-                                 Long channelId,
-                                 Pageable pageable
+                                 Long channelId
     ){
         return mutualSubscribers(nickName,
                 channelId,
@@ -182,12 +177,12 @@ public class SubscriberService {
                 .size();
     }
 
-    Long myId(String nickName) {
+    private Long myId(String nickName) {
 
         return userRepo.findOneByNickName(nickName).getId();
     }
 
-    List<Long> subscribersIdList(Long userId) {
+    private List<Long> subscribersIdList(Long userId) {
 
         List<UserSubscriptions> subscribersList = subscriptionRepo.findAllByChannel(userId);
 
@@ -196,7 +191,7 @@ public class SubscriberService {
                 .collect(Collectors.toList());
     }
 
-    List<Long> subscriptionsIdList(Long userId) {
+    private List<Long> subscriptionsIdList(Long userId) {
 
         List<UserSubscriptions> subscriptionsList = subscriptionRepo.findAllBySubscriber(userId);
 
