@@ -9,11 +9,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("subscriptions")
-public class SubscribeController {
+public class SubscriptionsController {
 
     private final SubscriberService subscriberService;
 
-    public SubscribeController(SubscriberService subscriberService) {
+    public SubscriptionsController(SubscriberService subscriberService) {
         this.subscriberService = subscriberService;
     }
 
@@ -35,29 +35,14 @@ public class SubscribeController {
         subscriberService.unsubscribe(nickName, channelId);
     }
 
-    //Show list of followers
-    @GetMapping("followers/{id}")
-    public List<Long> showSubscribers(@PathVariable("id") Long userId,
-                                           Pageable pageable
-    ) {
-
-        return subscriberService.subscribersList(userId, pageable);
-    }
 
     //Show list of subscriptions
-    @GetMapping("follow/{id}")
+    @GetMapping("{id}")
     public List<Long> showSubscriptions(@PathVariable("id") Long userId,
                                              Pageable pageable
     ) {
 
         return subscriberService.subscriptionsList(userId, pageable);
-    }
-
-    //user follow me count
-    @GetMapping("follow-me/count/{id}")
-    public int subscribersCount(@PathVariable("id") Long userId) {
-
-        return  subscriberService.subscribersCount(userId);
     }
 
     //user count what i follow
@@ -68,7 +53,7 @@ public class SubscribeController {
     }
 
     //List of mutual subscriptions
-    @GetMapping("mutual-subscriptions/{id}")
+    @GetMapping("mutual/{id}")
     public List<Long> mutualSubscriptions(@PathVariable("id") Long channelId,
                                           Pageable pageable
     ) {
@@ -77,31 +62,12 @@ public class SubscribeController {
         return subscriberService.mutualSubscriptions(nickName, channelId, pageable);
     }
 
-    //List of mutual followers
-    @GetMapping("mutual-subscribers/{id}")
-    public List<Long> mutualSubscribers(@PathVariable("id") Long channelId,
-                                        Pageable pageable
-    ) {
-        String nickName = Utils.getNickName();
-
-        return subscriberService.mutualSubscribers(nickName, channelId, pageable);
-    }
-
     //Mutual subscriptions count
-    @GetMapping("mutual-s-count/{id}")
+    @GetMapping("m-count/{id}")
     public int mutualSubsCount(@PathVariable("id") Long channelId) {
 
         String nickName = Utils.getNickName();
 
         return subscriberService.mutualSubsCount(nickName, channelId);
-    }
-
-    //Mutual followers count
-    @GetMapping("mutual-f-count/{id}")
-    public int mutualFollowCount(@PathVariable("id") Long channelId) {
-
-        String nickName = Utils.getNickName();
-
-        return subscriberService.mutualFollowCount(nickName, channelId);
     }
 }

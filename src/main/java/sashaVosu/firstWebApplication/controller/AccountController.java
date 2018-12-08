@@ -57,7 +57,7 @@ public class AccountController {
     }
 
     //delete user account and all user and like from user-tweet-like table
-//Deleted account cannot be recovered.
+    //Deleted account cannot be recovered.
     @DeleteMapping
     public void deleteAccount() {
 
