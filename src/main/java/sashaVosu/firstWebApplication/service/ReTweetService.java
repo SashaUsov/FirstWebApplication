@@ -27,7 +27,7 @@ public class ReTweetService {
                               Long tweetId
     ) {
 
-        Tweet tweetFromDb = tweetRepo.findOneByIdAndPublished(tweetId, true);
+        Tweet tweetFromDb = tweetRepo.findOneByIdAndPublishedTrue(tweetId);
 
         Tweet reTweet = TweetConverters.toEntity(tweetModel, nickName);
 
@@ -68,7 +68,7 @@ public class ReTweetService {
     //Get a list of tweets containing the original message
     public List<TweetModel> listOfReTweets(Long tweetId) {
 
-        Tweet tweetFromDb = tweetRepo.findOneByIdAndPublished(tweetId, true);
+        Tweet tweetFromDb = tweetRepo.findOneByIdAndPublishedTrue(tweetId);
 
         return tweetFromDb.getWhoReTweet().stream()
                 .map(ReTweetConverters::toModel)

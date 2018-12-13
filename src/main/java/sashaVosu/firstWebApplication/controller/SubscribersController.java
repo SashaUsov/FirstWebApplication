@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sashaVosu.firstWebApplication.service.SubscriberService;
-import sashaVosu.firstWebApplication.utils.Utils;
+import sashaVosu.firstWebApplication.utils.GetNickNameUtil;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class SubscribersController {
     @GetMapping("count/{id}")
     public int subscribersCount(@PathVariable("id") Long userId) {
 
-        return  subscriberService.subscribersCount(userId);
+        return subscriberService.subscribersCount(userId);
     }
 
     //List of mutual subscribers
@@ -40,7 +40,7 @@ public class SubscribersController {
     public List<Long> mutualSubscribers(@PathVariable("id") Long channelId,
                                         Pageable pageable
     ) {
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         return subscriberService.mutualSubscribers(nickName, channelId, pageable);
     }
@@ -49,7 +49,7 @@ public class SubscribersController {
     @GetMapping("m-count/{id}")
     public int mutualFollowCount(@PathVariable("id") Long channelId) {
 
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         return subscriberService.mutualFollowCount(nickName, channelId);
     }

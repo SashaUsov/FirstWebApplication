@@ -21,14 +21,13 @@ import sashaVosu.firstWebApplication.repo.TweetRepo;
 import sashaVosu.firstWebApplication.repo.UserRepo;
 import sashaVosu.firstWebApplication.repo.UserTweetLikesRepo;
 import sashaVosu.firstWebApplication.utils.DeleteTweetUtil;
+import sashaVosu.firstWebApplication.utils.SaveFileUtil;
 import sashaVosu.firstWebApplication.utils.TagMarkUtil;
 import sashaVosu.firstWebApplication.utils.TweetReTweetUtil;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,8 +61,7 @@ public class TweetService {
         int page = pageable.getPageNumber();
         int size = pageable.getPageSize();
 
-        Page<Tweet> tweetList = tweetRepo.findAllByPublished(true,
-                new PageRequest(page, size, Sort.Direction.DESC,"creationData"));
+        Page<Tweet> tweetList = tweetRepo.findAllByPublishedTrue(PageRequest.of(page, size, Sort.Direction.DESC, "creationData"));
 
         return tweetList.stream()
                 .map(TweetReTweetUtil::convert).collect(Collectors.toList());
@@ -76,8 +74,9 @@ public class TweetService {
         int page = pageable.getPageNumber();
         int size = pageable.getPageSize();
 
-        return tweetRepo.findAllByCreatorAndPublished(nickName, true,
-                new PageRequest(page, size, Sort.Direction.DESC,"creationData")).stream()
+        return tweetRepo.findAllByCreatorAndPublishedTrue(nickName,
+                PageRequest.of(page, size, Sort.Direction.DESC, "creationData"))
+                .stream()
                 .map(TweetReTweetUtil::convert)
                 .collect(Collectors.toList());
     }
@@ -105,9 +104,9 @@ public class TweetService {
     //delete one tweet by tweet id from TWEET  and USER-LIKE-TWEET table
     public void del(Long id, String nickName) {
 
-        Tweet tweet = tweetRepo.findOneByIdAndPublished(id, true);
+        Tweet tweet = tweetRepo.findOneByIdAndPublishedTrue(id);
 
-        if(tweet.getCreator().equals(nickName)) {
+        if (tweet.getCreator().equals(nickName)) {
 
             tweet.setPublished(false);
 
@@ -135,7 +134,7 @@ public class TweetService {
 
     public TweetModel getOne(Long id) {
 
-        return TweetReTweetUtil.convert(tweetRepo.findOneByIdAndPublished(id, true));
+        return TweetReTweetUtil.convert(tweetRepo.findOneByIdAndPublishedTrue(id));
     }
 
     //update tweet by tweet id
@@ -222,7 +221,7 @@ public class TweetService {
 
         for (String mark : finalSet) {
 
-            ApplicationUser user = userRepo.findOneByNickNameAndActive(mark, true);
+            ApplicationUser user = userRepo.findOneByNickNameAndActiveTrue(mark);
 
             tweet.getMarkUserList().add(user);
 
@@ -265,18 +264,7 @@ public class TweetService {
 
         if (file != null) {
 
-            File uploadDir = new File(picPath);
-
-            if (!uploadDir.exists()) {
-                uploadDir.mkdir();
-            }
-
-            String uuidFile = UUID.randomUUID().toString();
-            String resultFileName = uuidFile + "." + file.getOriginalFilename();
-
-            file.transferTo(new File(picPath + "/" + resultFileName));
-
-            return resultFileName;
+            return SaveFileUtil.saveFile(file, picPath);
         }
         return null;
     }
@@ -295,7 +283,7 @@ public class TweetService {
     //get user list by mark in tweet
     public List<UserModel> getMarkUserList(Long tweetId) {
 
-        Tweet oneTweetById = tweetRepo.findOneByIdAndPublished(tweetId, true);
+        Tweet oneTweetById = tweetRepo.findOneByIdAndPublishedTrue(tweetId);
 
         return oneTweetById.getMarkUserList().stream()
                 .map(UserConverters::toModel)

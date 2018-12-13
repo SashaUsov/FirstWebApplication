@@ -22,10 +22,6 @@ public class UserModel {
 
     private String email;
 
-    private Integer subscribersCount;
-
-    private Integer subscriptionsCount;
-
     private String fileName;
 
     @Override
@@ -42,9 +38,7 @@ public class UserModel {
         if (gender != null ? !gender.equals(model.gender) : model.gender != null) return false;
         if (age != null ? !age.equals(model.age) : model.age != null) return false;
         if (!email.equals(model.email)) return false;
-        if (subscribersCount != null ? !subscribersCount.equals(model.subscribersCount) : model.subscribersCount != null)
-            return false;
-        return subscriptionsCount != null ? subscriptionsCount.equals(model.subscriptionsCount) : model.subscriptionsCount == null;
+        return fileName != null ? fileName.equals(model.fileName) : model.fileName == null;
     }
 
     @Override
@@ -56,8 +50,7 @@ public class UserModel {
         result = 31 * result + (gender != null ? gender.hashCode() : 0);
         result = 31 * result + (age != null ? age.hashCode() : 0);
         result = 31 * result + email.hashCode();
-        result = 31 * result + (subscribersCount != null ? subscribersCount.hashCode() : 0);
-        result = 31 * result + (subscriptionsCount != null ? subscriptionsCount.hashCode() : 0);
+        result = 31 * result + (fileName != null ? fileName.hashCode() : 0);
         return result;
     }
 }

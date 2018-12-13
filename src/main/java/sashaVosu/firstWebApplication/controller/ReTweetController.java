@@ -10,7 +10,7 @@ import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.fasades.TweetFacades;
 import sashaVosu.firstWebApplication.service.ReTweetService;
 import sashaVosu.firstWebApplication.service.TweetService;
-import sashaVosu.firstWebApplication.utils.Utils;
+import sashaVosu.firstWebApplication.utils.GetNickNameUtil;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class ReTweetController {
     public TweetModel createTweet(@RequestBody CreateTweetModel model,
                                   @PathVariable("id") Long tweetId
     ) {
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         return reTweetService.reTweet(nickName, model, tweetId);
     }
@@ -53,13 +53,13 @@ public class ReTweetController {
     @GetMapping
     public List<TweetModel> tweetsUserShared(Pageable pageable) {
 
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         int page = pageable.getPageNumber();
         int size = pageable.getPageSize();
 
         List<TweetModel> modelList = tweetService.getTweetsList(new PageRequest(page, size,
-                Sort.Direction.DESC,"creationData"));
+                Sort.Direction.DESC, "creationData"));
 
         List<TweetModel> listWithLike = tweetFacades.getTweetsList(nickName, modelList);
 

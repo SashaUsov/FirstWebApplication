@@ -10,7 +10,7 @@ import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.fasades.TweetFacades;
 import sashaVosu.firstWebApplication.service.TweetService;
 import sashaVosu.firstWebApplication.service.UserTweetLikesService;
-import sashaVosu.firstWebApplication.utils.Utils;
+import sashaVosu.firstWebApplication.utils.GetNickNameUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,7 +38,7 @@ public class TweetController {
     @GetMapping
     public List<TweetModel> listOfTweets(Pageable pageable) {
 
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         List<TweetModel> modelList = tweetService.getTweetsList(pageable);
 
@@ -48,7 +48,7 @@ public class TweetController {
     @GetMapping("{id}")
     public TweetModel getOneTweet(@PathVariable("id") Long id) {
 
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         TweetModel model = tweetService.getOne(id);
 
@@ -60,7 +60,7 @@ public class TweetController {
     @ResponseStatus(HttpStatus.CREATED)
     public TweetModel createTweet(@RequestBody CreateTweetModel model
     ) {
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         return tweetService.tweetCreate(model, nickName);
     }
@@ -69,7 +69,7 @@ public class TweetController {
     @PutMapping("{id}")
     public TweetModel updateTweet(@PathVariable("id") Long id,
                                   @RequestBody CreateTweetModel model) {
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         return tweetService.update(model, nickName, id);
     }
@@ -77,7 +77,7 @@ public class TweetController {
     //delete one tweet by tweet id
     @DeleteMapping("{id}")
     public void delete(@PathVariable("id") Long id) {
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         tweetService.del(id, nickName);
     }

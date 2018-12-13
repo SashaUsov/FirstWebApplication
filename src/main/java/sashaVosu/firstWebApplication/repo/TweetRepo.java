@@ -21,15 +21,15 @@ public interface TweetRepo extends PagingAndSortingRepository<Tweet, Long> {
 
     List<Tweet> findAllByFirstTweet(Tweet tweet);
 
-    Tweet findOneByIdAndPublished(Long id, boolean published);
+    Tweet findOneByIdAndPublishedTrue(Long id);
 
-    Page<Tweet> findAllByPublished(boolean published, Pageable pageable);
+    Page<Tweet> findAllByPublishedTrue(Pageable pageable);
 
-    Page<Tweet> findAllByCreatorAndPublished(String nickName, boolean published, Pageable pageable);
+    Page<Tweet> findAllByCreatorAndPublishedTrue(String nickName, Pageable pageable);
 
-    List<Tweet> findAllByPublishedAndFirstTweetIn(boolean published, Collection<Tweet> firstTweet);
+    List<Tweet> findAllByPublishedTrueAndFirstTweetIn(Collection<Tweet> firstTweet);
 
-    Page<Tweet> findAllByPublishedAndIdIn(boolean published, Collection<Long> id, Pageable pageable);
+    Page<Tweet> findAllByPublishedTrueAndIdIn(Collection<Long> id, Pageable pageable);
 
-    List<Tweet> findAllByCreatorAndPublished(String nickName, boolean published);
+    List<Tweet> findAllByCreatorAndPublishedTrue(String nickName);
 }

@@ -23,7 +23,7 @@ public class UserConverters {
         newUser.setPassword(PASSWORD_ENCODER.encode(model.getPassword()));
         newUser.setFirstName(model.getFirstName());
         newUser.setLastName(model.getLastName());
-        newUser.setEmail(model.getEmail());
+        newUser.setEmail(model.getEmail().toLowerCase());
         newUser.setGender(model.getGender());
         newUser.setAge(model.getAge());
         newUser.setActive(true);

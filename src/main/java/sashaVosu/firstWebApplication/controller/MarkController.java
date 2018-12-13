@@ -8,7 +8,7 @@ import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.domain.dto.UserModel;
 import sashaVosu.firstWebApplication.service.TweetService;
 import sashaVosu.firstWebApplication.service.UserService;
-import sashaVosu.firstWebApplication.utils.Utils;
+import sashaVosu.firstWebApplication.utils.GetNickNameUtil;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class MarkController {
     @GetMapping
     public List<TweetModel> getTweetListWhereIMark() {
 
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         return userService.getTweetListWhereIMark(nickName);
 

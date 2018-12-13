@@ -3,7 +3,7 @@ package sashaVosu.firstWebApplication.controller;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import sashaVosu.firstWebApplication.service.SubscriberService;
-import sashaVosu.firstWebApplication.utils.Utils;
+import sashaVosu.firstWebApplication.utils.GetNickNameUtil;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class SubscriptionsController {
     @PostMapping("{id}")
     public void subscribe(@PathVariable("id") Long channelId) {
 
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         subscriberService.subscribe(nickName, channelId);
     }
@@ -30,7 +30,7 @@ public class SubscriptionsController {
     @DeleteMapping("{id}")
     public void unSubscribe(@PathVariable("id") Long channelId) {
 
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         subscriberService.unsubscribe(nickName, channelId);
     }
@@ -39,17 +39,17 @@ public class SubscriptionsController {
     //Show list of subscriptions
     @GetMapping("{id}")
     public List<Long> showSubscriptions(@PathVariable("id") Long userId,
-                                             Pageable pageable
+                                        Pageable pageable
     ) {
 
         return subscriberService.subscriptionsList(userId, pageable);
     }
 
     //user count what i follow
-    @GetMapping("i-follow/count/{id}")
+    @GetMapping("count/{id}")
     public int subscriptionsCount(@PathVariable("id") Long userId) {
 
-        return  subscriberService.subscriptionsCount(userId);
+        return subscriberService.subscriptionsCount(userId);
     }
 
     //List of mutual subscriptions
@@ -57,7 +57,7 @@ public class SubscriptionsController {
     public List<Long> mutualSubscriptions(@PathVariable("id") Long channelId,
                                           Pageable pageable
     ) {
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         return subscriberService.mutualSubscriptions(nickName, channelId, pageable);
     }
@@ -66,7 +66,7 @@ public class SubscriptionsController {
     @GetMapping("m-count/{id}")
     public int mutualSubsCount(@PathVariable("id") Long channelId) {
 
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         return subscriberService.mutualSubsCount(nickName, channelId);
     }

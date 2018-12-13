@@ -22,14 +22,14 @@ public interface UserRepo extends PagingAndSortingRepository<ApplicationUser, St
 
     ApplicationUser findOneById(Long id);
 
-    Page<ApplicationUser> findAllByActive(boolean active, Pageable pageable);
+    Page<ApplicationUser> findAllByActiveTrue(Pageable pageable);
 
-    ApplicationUser findOneByIdAndActive(Long id, boolean active);
+    ApplicationUser findOneByIdAndActiveTrue(Long id);
 
-    ApplicationUser findOneByNickNameAndActive(String nickName, boolean active);
+    ApplicationUser findOneByNickNameAndActiveTrue(String nickName);
 
-    Page<ApplicationUser> findAllByActiveAndIdIn(boolean active, Collection<Long> id, Pageable pageable);
+    Page<ApplicationUser> findAllByActiveTrueAndIdIn(Collection<Long> id, Pageable pageable);
 
-    List<ApplicationUser> findAllByActiveAndIdIn(boolean active, Collection<Long> id);
+    List<ApplicationUser> findAllByActiveTrueAndIdIn(Collection<Long> id);
 }
 

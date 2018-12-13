@@ -19,12 +19,11 @@ import sashaVosu.firstWebApplication.repo.TweetRepo;
 import sashaVosu.firstWebApplication.repo.UserRepo;
 import sashaVosu.firstWebApplication.repo.UserTweetLikesRepo;
 import sashaVosu.firstWebApplication.utils.DeleteTweetUtil;
+import sashaVosu.firstWebApplication.utils.SaveFileUtil;
 import sashaVosu.firstWebApplication.utils.TweetReTweetUtil;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,8 +52,7 @@ public class UserService {
         int page = pageable.getPageNumber();
         int size = pageable.getPageSize();
 
-        Page<ApplicationUser> pager = userRepo.findAllByActive(true,
-                new PageRequest(page, size, Sort.Direction.ASC,"registration"));
+        Page<ApplicationUser> pager = userRepo.findAllByActiveTrue(PageRequest.of(page, size, Sort.Direction.ASC, "registration"));
 
         return pager.getContent().stream()
                 .map(UserConverters::toModel)
@@ -64,7 +62,7 @@ public class UserService {
     //create new user
     public UserModel userCreate(CreateUserModel model) {
 
-        ApplicationUser userFromDb = userRepo.findOneByNickNameAndEmail(model.getNickName(), model.getEmail());
+        ApplicationUser userFromDb = userRepo.findOneByNickNameAndEmail(model.getNickName(), model.getEmail().toLowerCase());
 
         if (userFromDb == null) {
 
@@ -83,9 +81,9 @@ public class UserService {
 //Deleted account cannot be recovered.
     public void deleteProfile(String nickName) {
 
-        Long userId = userRepo.findOneByNickNameAndActive(nickName, true).getId();
+        Long userId = userRepo.findOneByNickNameAndActiveTrue(nickName).getId();
 
-        List<Tweet> tweetList = tweetRepo.findAllByCreatorAndPublished(nickName, true);
+        List<Tweet> tweetList = tweetRepo.findAllByCreatorAndPublishedTrue(nickName);
 
         List<Long> tweetIdList = tweetList.stream()
                 .map(Tweet::getId)
@@ -95,7 +93,7 @@ public class UserService {
 
         userTweetLikesRepo.deleteAllByUserId(userId);
 
-        List<Tweet> allByFirstTweetIn = tweetRepo.findAllByPublishedAndFirstTweetIn(true, tweetList);
+        List<Tweet> allByFirstTweetIn = tweetRepo.findAllByPublishedTrueAndFirstTweetIn(tweetList);
 
         List<Tweet> allReTweet = allByFirstTweetIn.stream()
                 .map(DeleteTweetUtil::deactivateTweet)
@@ -109,7 +107,7 @@ public class UserService {
 
         deactTweet.stream().map(tweetRepo::save);
 
-        ApplicationUser user = userRepo.findOneByNickNameAndActive(nickName, true);
+        ApplicationUser user = userRepo.findOneByNickNameAndActiveTrue(nickName);
 
         user.setActive(false);
 
@@ -120,7 +118,7 @@ public class UserService {
     //get one user by user id
     public UserModel getOneUser(Long id) {
 
-        ApplicationUser user = userRepo.findOneByIdAndActive(id, true);
+        ApplicationUser user = userRepo.findOneByIdAndActiveTrue(id);
 
         if (user != null) {
 
@@ -135,20 +133,11 @@ public class UserService {
     //add avatar image to user profile
     public void addProfilePic(String nickName, MultipartFile file) throws IOException {
 
-        ApplicationUser user = userRepo.findOneByNickNameAndActive(nickName, true);
+        ApplicationUser user = userRepo.findOneByNickNameAndActiveTrue(nickName);
 
         if (file != null) {
 
-            File uploadDir = new File(uploadPath);
-
-            if (!uploadDir.exists()) {
-                uploadDir.mkdir();
-            }
-
-            String uuidFile = UUID.randomUUID().toString();
-            String resultFileName = uuidFile + "." + file.getOriginalFilename();
-
-            file.transferTo(new File(uploadPath + "/" + resultFileName));
+            String resultFileName = SaveFileUtil.saveFile(file, uploadPath);
 
             user.setFileName(resultFileName);
 
@@ -160,7 +149,7 @@ public class UserService {
     public List<TweetModel> getTweetListWhereIMark(String nickName) {
 
 
-        ApplicationUser marksUser = userRepo.findOneByNickNameAndActive(nickName, true);
+        ApplicationUser marksUser = userRepo.findOneByNickNameAndActiveTrue(nickName);
 
         return marksUser.getUserMarkedTweetList().stream()
                 .map(TweetReTweetUtil::convert)

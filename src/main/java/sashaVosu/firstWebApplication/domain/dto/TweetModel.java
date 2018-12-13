@@ -2,11 +2,8 @@ package sashaVosu.firstWebApplication.domain.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import sashaVosu.firstWebApplication.domain.HashTag;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 //dto class to create tweet model from entity and give back to frontend
 @Getter

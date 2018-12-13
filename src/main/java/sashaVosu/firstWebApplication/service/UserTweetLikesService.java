@@ -71,8 +71,8 @@ public class UserTweetLikesService {
 
         List<Long> tweetIdList = getTweetIdList(userIdByNickName);
 
-        List<TweetModel> tweetModelList = tweetRepo.findAllByPublishedAndIdIn(true, tweetIdList,
-                new PageRequest(page, size, Sort.Direction.DESC,"creationData"))
+        List<TweetModel> tweetModelList = tweetRepo.findAllByPublishedTrueAndIdIn(tweetIdList,
+                PageRequest.of(page, size, Sort.Direction.DESC, "creationData"))
                 .stream()
                 .map(TweetReTweetUtil::convert)
                 .collect(Collectors.toList());
@@ -98,7 +98,7 @@ public class UserTweetLikesService {
     }
 
     private Long getUserIdByNickName(String nickName) {
-        return userRepo.findOneByNickNameAndActive(nickName, true).getId();
+        return userRepo.findOneByNickNameAndActiveTrue(nickName).getId();
     }
 
     //Return list of tweet Id what specific user like

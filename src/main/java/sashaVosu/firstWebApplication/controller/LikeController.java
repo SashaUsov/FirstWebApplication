@@ -4,7 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.service.UserTweetLikesService;
-import sashaVosu.firstWebApplication.utils.Utils;
+import sashaVosu.firstWebApplication.utils.GetNickNameUtil;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class LikeController {
     @PutMapping("{id}")
     public void putLike(@PathVariable("id") Long tweetId) {
 
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         userTweetLikesService.like(tweetId, nickName);
     }
@@ -31,7 +31,7 @@ public class LikeController {
     @DeleteMapping("{id}")
     public void unlike(@PathVariable("id") Long tweetId) {
 
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         userTweetLikesService.unlike(tweetId, nickName);
     }
@@ -40,7 +40,7 @@ public class LikeController {
     @GetMapping
     public List<TweetModel> likesTweetList(Pageable pageable) {
 
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         return userTweetLikesService.tweetWhatLike(nickName, pageable);
 

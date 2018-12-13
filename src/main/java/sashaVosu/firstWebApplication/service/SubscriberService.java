@@ -64,8 +64,8 @@ public class SubscriberService {
 
         List<Long> subscribersIdList = subscribersIdList(userId);
 
-        Page<ApplicationUser> myFollowerList = userRepo.findAllByActiveAndIdIn(true, subscribersIdList,
-                new PageRequest(page, size, Sort.Direction.ASC, "nickName"));
+        Page<ApplicationUser> myFollowerList = userRepo.findAllByActiveTrueAndIdIn(subscribersIdList,
+                PageRequest.of(page, size, Sort.Direction.ASC, "nickName"));
 
         return myFollowerList.getContent().stream()
                 .map(ApplicationUser::getId)
@@ -80,8 +80,8 @@ public class SubscriberService {
 
         List<Long> list = subscriptionsIdList(userId);
 
-        Page<ApplicationUser> iFollow = userRepo.findAllByActiveAndIdIn(true, list,
-                new PageRequest(page, size, Sort.Direction.ASC, "nickName"));
+        Page<ApplicationUser> iFollow = userRepo.findAllByActiveTrueAndIdIn(list,
+                PageRequest.of(page, size, Sort.Direction.ASC, "nickName"));
 
         return iFollow.getContent().stream()
                 .map(ApplicationUser::getId)
@@ -93,7 +93,7 @@ public class SubscriberService {
 
         List<Long> subscribersList = subscribersIdList(userId);
 
-        return userRepo.findAllByActiveAndIdIn(true, subscribersList).size();
+        return userRepo.findAllByActiveTrueAndIdIn(subscribersList).size();
     }
 
     //user count what i follow
@@ -101,11 +101,11 @@ public class SubscriberService {
 
         List<Long> subscriptionsList = subscriptionsIdList(userId);
 
-        return userRepo.findAllByActiveAndIdIn(true, subscriptionsList).size();
+        return userRepo.findAllByActiveTrueAndIdIn(subscriptionsList).size();
     }
 
     //Do I subscribe to this user
-    public boolean iFollow(String nickName, Long channelId){
+    public boolean iFollow(String nickName, Long channelId) {
 
         Long userId = myId(nickName);
 
@@ -115,7 +115,7 @@ public class SubscriberService {
     }
 
     //Is this user following me
-    public boolean followMe(String nickName, Long channelId){
+    public boolean followMe(String nickName, Long channelId) {
 
         Long userId = myId(nickName);
 
@@ -135,10 +135,10 @@ public class SubscriberService {
 
         List<Long> mySubscriptions = subscriptionsList(userId, pageable);
 
-        for(Long x : mySubscriptions){
+        for (Long x : mySubscriptions) {
             System.out.println(x);
         }
-        return mySubscriptions.stream().filter(a -> iFollow(channelName,a))
+        return mySubscriptions.stream().filter(a -> iFollow(channelName, a))
                 .collect(Collectors.toList());
     }
 
@@ -160,20 +160,20 @@ public class SubscriberService {
     //Mutual subscriptions count
     public int mutualSubsCount(String nickName,
                                Long channelId
-    ){
+    ) {
         return mutualSubscriptions(nickName,
                 channelId,
-                new PageRequest(1, Integer.MAX_VALUE, Sort.Direction.ASC, "nickName"))
+                PageRequest.of(1, Integer.MAX_VALUE, Sort.Direction.ASC, "nickName"))
                 .size();
     }
 
     //Mutual followers count
     public int mutualFollowCount(String nickName,
                                  Long channelId
-    ){
+    ) {
         return mutualSubscribers(nickName,
                 channelId,
-                new PageRequest(1, Integer.MAX_VALUE, Sort.Direction.ASC, "nickName"))
+                PageRequest.of(1, Integer.MAX_VALUE, Sort.Direction.ASC, "nickName"))
                 .size();
     }
 

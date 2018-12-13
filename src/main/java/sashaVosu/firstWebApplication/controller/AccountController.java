@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import sashaVosu.firstWebApplication.domain.dto.TweetModel;
 import sashaVosu.firstWebApplication.fasades.TweetFacades;
 import sashaVosu.firstWebApplication.service.*;
-import sashaVosu.firstWebApplication.utils.Utils;
+import sashaVosu.firstWebApplication.utils.GetNickNameUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,7 +38,7 @@ public class AccountController {
     //return list of tweet what create specific user
     @GetMapping
     public List<TweetModel> getMyTweetList(Pageable pageable) {
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         List<TweetModel> myTweetList = tweetService.getListOfMyTweet(nickName, pageable);
 
@@ -50,7 +50,7 @@ public class AccountController {
     @ResponseStatus(HttpStatus.CREATED)
     public void addProfilePic(@RequestParam("file") MultipartFile file) throws IOException {
 
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         userService.addProfilePic(nickName, file);
 
@@ -61,7 +61,7 @@ public class AccountController {
     @DeleteMapping
     public void deleteAccount() {
 
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         userService.deleteProfile(nickName);
     }
@@ -70,7 +70,7 @@ public class AccountController {
     @GetMapping("i-subscribe/{id}")
     public boolean iFollow(@PathVariable("id") Long channelId) {
 
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         return subscriberService.iFollow(nickName, channelId);
     }
@@ -79,7 +79,7 @@ public class AccountController {
     @GetMapping("subscribe-me/{id}")
     public boolean followMe(@PathVariable("id") Long channelId) {
 
-        String nickName = Utils.getNickName();
+        String nickName = GetNickNameUtil.getNickName();
 
         return subscriberService.followMe(nickName, channelId);
     }
