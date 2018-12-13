@@ -2,6 +2,7 @@ package sashaVosu.firstWebApplication.controller;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+import sashaVosu.firstWebApplication.domain.dto.RecommendSubscribe;
 import sashaVosu.firstWebApplication.service.SubscriberService;
 import sashaVosu.firstWebApplication.utils.GetNickNameUtil;
 
@@ -69,5 +70,14 @@ public class SubscriptionsController {
         String nickName = GetNickNameUtil.getNickName();
 
         return subscriberService.mutualSubsCount(nickName, channelId);
+    }
+
+    @GetMapping("/recommend")
+    public List<RecommendSubscribe> recommendToSubscribe(Pageable pageable) {
+
+        String nickName = GetNickNameUtil.getNickName();
+
+        return subscriberService.recommendToSubscribe(nickName, pageable);
+
     }
 }

@@ -7,8 +7,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import sashaVosu.firstWebApplication.domain.ApplicationUser;
 import sashaVosu.firstWebApplication.domain.UserSubscriptions;
+import sashaVosu.firstWebApplication.domain.dto.RecommendSubscribe;
 import sashaVosu.firstWebApplication.repo.SubscriptionRepo;
 import sashaVosu.firstWebApplication.repo.UserRepo;
+import sashaVosu.firstWebApplication.utils.RecommendComparatorUtil;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -175,6 +177,19 @@ public class SubscriberService {
                 channelId,
                 PageRequest.of(1, Integer.MAX_VALUE, Sort.Direction.ASC, "nickName"))
                 .size();
+    }
+
+    public List<RecommendSubscribe> recommendToSubscribe(String nickName, Pageable pageable) {
+
+        Long id = userRepo.findOneByNickName(nickName).getId();
+
+        List<Long> subscriptionsList = subscriptionsIdList(id);
+
+        Page<RecommendSubscribe> recommend = subscriptionRepo.findSubsRecommend(id, subscriptionsList, pageable);
+
+        List<RecommendSubscribe> content = recommend.getContent();
+
+        return content.stream().sorted(new RecommendComparatorUtil()).collect(Collectors.toList());
     }
 
     private Long myId(String nickName) {
