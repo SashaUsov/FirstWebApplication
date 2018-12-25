@@ -1,11 +1,9 @@
 package sashaVosu.firstWebApplication.domain.dto;
 
 import lombok.Getter;
-import lombok.Setter;
 
 //dto class to create user model from entity and give back to frontend
 @Getter
-@Setter
 public class UserModel {
 
     private Long id;
@@ -23,6 +21,74 @@ public class UserModel {
     private String email;
 
     private String fileName;
+
+    private UserModel() {
+
+    }
+
+    public class UserBuilder {
+
+        private UserBuilder() {
+            // private constructor
+        }
+
+        public UserBuilder setId(Long id) {
+            UserModel.this.id = id;
+
+            return this;
+        }
+
+        public UserBuilder setNickName(String nickName) {
+            UserModel.this.nickName = nickName;
+
+            return this;
+        }
+
+        public UserBuilder setLastName(String lastName) {
+            UserModel.this.lastName = lastName;
+
+            return this;
+        }
+
+        public UserBuilder setGender(String gender) {
+            UserModel.this.gender = gender;
+
+            return this;
+        }
+
+        public UserBuilder setAge(String age) {
+            UserModel.this.age = age;
+
+            return this;
+        }
+
+        public UserBuilder setEmail(String email) {
+            UserModel.this.email = email;
+
+            return this;
+        }
+
+        public UserBuilder setFileName(String fileName) {
+            UserModel.this.fileName = fileName;
+
+            return this;
+        }
+
+        public UserBuilder setFirstName(String firstName) {
+            UserModel.this.firstName = firstName;
+
+            return this;
+        }
+
+        public UserModel build() {
+            return UserModel.this;
+        }
+
+    }
+
+    public static UserBuilder newBuilder() {
+        return new UserModel().new UserBuilder();
+    }
 
     @Override
     public boolean equals(Object o) {

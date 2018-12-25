@@ -36,20 +36,19 @@ public class UserConverters {
     //method helper. convert user entity to user dto model
     public static UserModel toModel(ApplicationUser user) {
 
-        UserModel model = new UserModel();
-
-        model.setNickName(user.getNickName());
-        model.setFirstName(user.getFirstName());
-        model.setLastName(user.getLastName());
-        model.setId(user.getId());
-        model.setGender(user.getGender());
-        model.setAge(user.getAge());
-        model.setEmail(user.getEmail());
+        UserModel.UserBuilder model = UserModel.newBuilder()
+                .setNickName(user.getNickName())
+                .setFirstName(user.getFirstName())
+                .setLastName(user.getLastName())
+                .setId(user.getId())
+                .setGender(user.getGender())
+                .setAge(user.getAge())
+                .setEmail(user.getEmail());
 
         if (user.getFileName() != null) {
             model.setFileName(user.getFileName());
         }
 
-        return model;
+        return model.build();
     }
 }
